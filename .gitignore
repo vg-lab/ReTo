@@ -1,0 +1,10 @@
+src/*~
+*~
+doc/html
+doc/latex
+*Makefile*
+*.orig
+.*.swp
+#*
+*#*
+CMake/common
