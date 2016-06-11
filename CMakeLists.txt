@@ -35,11 +35,12 @@ set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 include( Common )
 
-common_find_package( Boost REQUIRED COMPONENTS unit_test_framework )
+common_find_package( Boost COMPONENTS unit_test_framework )
 common_find_package_post( )
 
 add_subdirectory( reto )
 add_subdirectory( examples )
+add_subdirectory( tests )
 
 include( CPackConfig )
 include( DoxygenRule )
