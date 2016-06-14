@@ -24,32 +24,33 @@
 #include <fstream>
 #include <iostream>
 
-ProgramShader::ProgramShader(void) {
+namespace reto
+{
+  ProgramShader::ProgramShader(void) {
     _program = -1;
     _attrsList.clear();
     _uniformList.clear();
     _uboList.clear();
     #ifdef SUBPROGRAMS
-        _subprograms.clear();
+      _subprograms.clear();
     #endif
     _shaders.clear();
 
     #ifdef OCC_QUERY
-        // Occlusion query object
-        glGenQueries(1, &_occQuery);
+      // Occlusion query object
+      glGenQueries(1, &_occQuery);
     #endif
-}
+  }
 
-ProgramShader::~ProgramShader(void) {
+  ProgramShader::~ProgramShader(void) {
     destroy();
-}
+  }
 
-void ProgramShader::loadFromText(const std::string& vsSource, const std::string& fsSource) {
-    loadFromText(vsSource, GL_VERTEX_SHADER);
-    loadFromText(fsSource, GL_FRAGMENT_SHADER);
-}
+  bool ProgramShader::loadFromText(const std::string& vsSource, const std::string& fsSource) {
+    return (loadFromText(vsSource, GL_VERTEX_SHADER) && loadFromText(fsSource, GL_FRAGMENT_SHADER));
+  }
 
-void ProgramShader::loadFromText(const std::string& source, GLenum type) {
+  bool ProgramShader::loadFromText(const std::string& source, GLenum type) {
     // Create and compile shader
     GLuint shader;
     shader = glCreateShader(type);
@@ -60,58 +61,59 @@ void ProgramShader::loadFromText(const std::string& source, GLenum type) {
     glCompileShader(shader);
     glGetShaderiv (shader, GL_COMPILE_STATUS, &status);
     if (status == GL_FALSE) {
-        GLint infoLogLength;        
-        glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-        GLchar *infoLog= new GLchar[infoLogLength];
-        glGetShaderInfoLog (shader, infoLogLength, NULL, infoLog);
-        std::cerr << "Compile log: " << infoLog << std::endl;
-        delete [] infoLog;
-        return;
+      GLint infoLogLength;        
+      glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+      GLchar *infoLog= new GLchar[infoLogLength];
+      glGetShaderInfoLog (shader, infoLogLength, NULL, infoLog);
+      std::cerr << "Compile log: " << infoLog << std::endl;
+      delete [] infoLog;
+      return false;
     }
 
     // Add to shaders in use
     _shaders.push_back(shader);
-}
+    return true;
+  }
 
-void ProgramShader::loadFromTextVS(const std::string& source) {
-    loadFromText(source, GL_VERTEX_SHADER);
-}
+  bool ProgramShader::loadFromTextVS(const std::string& source) {
+    return loadFromText(source, GL_VERTEX_SHADER);
+  }
 
-void ProgramShader::loadFromTextFS(const std::string& source) {
-    loadFromText(source, GL_FRAGMENT_SHADER);
-}
+  bool ProgramShader::loadFromTextFS(const std::string& source) {
+    return loadFromText(source, GL_FRAGMENT_SHADER);
+  }
 
-#ifdef GEOMETRY_SHADERS
-    void ProgramShader::loadFromTextGS(const std::string& source) {
-        loadFromText(source, GL_GEOMETRY_SHADER);
+  #ifdef GEOMETRY_SHADERS
+    bool ProgramShader::loadFromTextGS(const std::string& source) {
+      return loadFromText(source, GL_GEOMETRY_SHADER);
     }
-#endif
+  #endif
 
-#ifdef TESSELATION_SHADERS
-    void ProgramShader::loadFromTextTES(const std::string& source) {
-        loadFromText(source, GL_TESS_EVALUATION_SHADER);
+  #ifdef TESSELATION_SHADERS
+    bool ProgramShader::loadFromTextTES(const std::string& source) {
+      return loadFromText(source, GL_TESS_EVALUATION_SHADER);
     }
 
-    void ProgramShader::loadFromTextTCS(const std::string& source) {
-        loadFromText(source, GL_TESS_CONTROL_SHADER);
+    bool ProgramShader::loadFromTextTCS(const std::string& source) {
+      return loadFromText(source, GL_TESS_CONTROL_SHADER);
     }
-#endif
+  #endif
 
-#ifdef COMPUTE_SHADERS 
-    void ProgramShader::loadFromTextCS(const std::string& source) {
-        loadFromText(source, GL_COMPUTE_SHADER);
+  #ifdef COMPUTE_SHADERS 
+    bool ProgramShader::loadFromTextCS(const std::string& source) {
+      return loadFromText(source, GL_COMPUTE_SHADER);
     }
-#endif
+  #endif
 
-void ProgramShader::load(const std::string& fileName, GLenum type) {
+  bool ProgramShader::load(const std::string& fileName, GLenum type) {
     unsigned int fileLen;
 
     // Load file
     std::ifstream file;
     file.open(fileName.c_str(), std::ios::in);
     if (!file) {
-        std::cout << "File " << fileName << " not found" << std::endl;
-        return;
+      std::cout << "File " << fileName << " not found" << std::endl;
+      return false;
     }
 
     // File length
@@ -124,9 +126,9 @@ void ProgramShader::load(const std::string& fileName, GLenum type) {
 
     int i = 0;
     while (file.good()) {
-        source[i] = char(file.get());
-        if (!file.eof()) i++;
-        else fileLen = i;
+      source[i] = char(file.get());
+      if (!file.eof()) i++;
+      else fileLen = i;
     }
     source[fileLen] = '\0';
     file.close();
@@ -140,306 +142,345 @@ void ProgramShader::load(const std::string& fileName, GLenum type) {
     glCompileShader(shader);
     glGetShaderiv (shader, GL_COMPILE_STATUS, &status);
     if (status == GL_FALSE) {
-        GLint infoLogLength;        
-        glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-        GLchar *infoLog= new GLchar[infoLogLength];
-        glGetShaderInfoLog (shader, infoLogLength, NULL, infoLog);
-        std::cerr << "Compile log ("<< fileName << "): " << infoLog << std::endl;
-        delete [] infoLog;
-        return;
+      GLint infoLogLength;        
+      glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &infoLogLength);
+      GLchar *infoLog= new GLchar[infoLogLength];
+      glGetShaderInfoLog (shader, infoLogLength, NULL, infoLog);
+      std::cerr << "Compile log ("<< fileName << "): " << infoLog << std::endl;
+      delete [] infoLog;
+      return false;
     }
     delete source;
 
     // Add to shaders in use
     _shaders.push_back(shader);
-}
+    return true;
+  }
 
-void ProgramShader::load(const std::string& vsFile, const std::string& fsFile) {
-    load(vsFile, GL_VERTEX_SHADER);
-    load(fsFile, GL_FRAGMENT_SHADER);
-}
+  bool ProgramShader::load(const std::string& vsFile, const std::string& fsFile) {
+    return (load(vsFile, GL_VERTEX_SHADER) && load(fsFile, GL_FRAGMENT_SHADER));
+  }
 
-void ProgramShader::loadVS(const std::string& file) {
-    load(file, GL_VERTEX_SHADER);
-}
+  bool ProgramShader::loadVS(const std::string& file) {
+    return load(file, GL_VERTEX_SHADER);
+  }
 
-void ProgramShader::loadFS(const std::string& file) {
-    load(file, GL_FRAGMENT_SHADER);
-}
+  bool ProgramShader::loadFS(const std::string& file) {
+    return load(file, GL_FRAGMENT_SHADER);
+  }
 
-#ifdef GEOMETRY_SHADERS
-    void ProgramShader::loadGS(const std::string& file) {
-        load(file, GL_GEOMETRY_SHADER);
+  #ifdef GEOMETRY_SHADERS
+    bool ProgramShader::loadGS(const std::string& file) {
+      return load(file, GL_GEOMETRY_SHADER);
     }
-#endif
+  #endif
 
-#ifdef TESSELATION_SHADERS
-    void ProgramShader::loadTES(const std::string& file) {
-        load(file, GL_TESS_EVALUATION_SHADER);
+  #ifdef TESSELATION_SHADERS
+    bool ProgramShader::loadTES(const std::string& file) {
+      return load(file, GL_TESS_EVALUATION_SHADER);
     }
 
-    void ProgramShader::loadTCS(const std::string& file) {
-        load(file, GL_TESS_CONTROL_SHADER);
+    bool ProgramShader::loadTCS(const std::string& file) {
+      return load(file, GL_TESS_CONTROL_SHADER);
     }
-#endif
+  #endif
 
-#ifdef COMPUTE_SHADERS 
-    void ProgramShader::loadCS(const std::string& file) {
-        load(file, GL_COMPUTE_SHADER);
+  #ifdef COMPUTE_SHADERS 
+    bool ProgramShader::loadCS(const std::string& file) {
+      return load(file, GL_COMPUTE_SHADER);
     }
-#endif
+  #endif
 
-void ProgramShader::destroy() {
+  void ProgramShader::destroy() {
     _program = -1;
     _attrsList.clear();
     _uniformList.clear();
     _uboList.clear();
 
     #ifdef SUBPROGRAMS
-        _subprograms.clear();
+      _subprograms.clear();
     #endif
     _shaders.clear();
     GLuint size = _shaders.size();
     for(GLuint i = 0; i < size; i++) {
-        if(_shaders[i] != 0) {
-            glDetachShader(_program, _shaders[i]);
-        }
+      if(_shaders[i] != 0) {
+        glDetachShader(_program, _shaders[i]);
+      }
     }
     glDeleteProgram(_program);
-}
+  }
 
-void ProgramShader::create() {
+  void ProgramShader::create() {
     _program = glCreateProgram();
     GLuint size = _shaders.size();
     for(GLuint i = 0; i < size; i++) {
-        if(_shaders[i] != 0) {
-            glAttachShader(_program, _shaders[i]);
-        }
+      if(_shaders[i] != 0) {
+        glAttachShader(_program, _shaders[i]);
+      }
     }
-}
+  }
 
-void ProgramShader::link() {
+  bool ProgramShader::link() {
     // link and check whether the program links fine
     GLint status;
     glLinkProgram (_program);
     glGetProgramiv (_program, GL_LINK_STATUS, &status);
     if (status == GL_FALSE) {
-        GLint infoLogLength;
-        
-        glGetProgramiv (_program, GL_INFO_LOG_LENGTH, &infoLogLength);
-        GLchar *infoLog = new GLchar[infoLogLength];
-        glGetProgramInfoLog (_program, infoLogLength, NULL, infoLog);
-        std::cerr << "Link log: " << infoLog << std::endl;
-        delete [] infoLog;
+      GLint infoLogLength;
+      
+      glGetProgramiv (_program, GL_INFO_LOG_LENGTH, &infoLogLength);
+      GLchar *infoLog = new GLchar[infoLogLength];
+      glGetProgramInfoLog (_program, infoLogLength, NULL, infoLog);
+      std::cerr << "Link log: " << infoLog << std::endl;
+      delete [] infoLog;
+      return false;
     }
-}
+    return true;
+  }
 
-void ProgramShader::use() {
+  void ProgramShader::use() {
     glUseProgram(_program);
-}
+  }
 
-void ProgramShader::unuse() {
+  void ProgramShader::unuse() {
     glUseProgram(-1);
-}
+  }
 
-void ProgramShader::compile_and_link() {
+  bool ProgramShader::compile_and_link() {
     create();
-    link();
-} 
- 
-GLuint ProgramShader::program() { 
+    return link();
+  } 
+   
+  GLuint ProgramShader::program() { 
     return _program; 
-} 
+  } 
 
-void ProgramShader::add_attribute(const std::string& attr) {
+  void ProgramShader::add_attribute(const std::string& attr) {
     _attrsList[attr] = glGetAttribLocation(_program, attr.c_str());
-}
+  }
 
-void ProgramShader::add_attributes(const std::vector<char*> attrs) {
+  void ProgramShader::add_attributes(const std::vector<char*> attrs) {
     for(auto& a: attrs) {
-        add_attribute(a);
+      add_attribute(a);
     }
-}
+  }
 
-void ProgramShader::add_uniform(const std::string& uniform_name) {
+  void ProgramShader::add_uniform(const std::string& uniform_name) {
     _uniformList[uniform_name] = glGetUniformLocation(_program, uniform_name.c_str());
-}
+  }
 
-void ProgramShader::add_uniforms(const std::vector<char*> uniforms) {
+  void ProgramShader::add_uniforms(const std::vector<char*> uniforms) {
     for(auto& u: uniforms) {
-        add_uniform(u);
+      add_uniform(u);
     }
-}
+  }
 
-void ProgramShader::add_ubo(const std::string& ubo_name) {
+  void ProgramShader::add_ubo(const std::string& ubo_name) {
     _uboList[ubo_name] = glGetUniformBlockIndex(_program, ubo_name.c_str());
-}
+  }
 
-#ifdef SUBPROGRAMS
+  #ifdef SUBPROGRAMS
     void ProgramShader::add_subroutine(const std::string& name, GLenum shaderType) {
-        GLuint idx = glGetSubroutineIndex(_program, shaderType, name.c_str());
-        auto sub = SubProgram(name.c_str(), idx);
-        _subprograms.insert(std::pair<GLenum, SubProgram>(shaderType, sub));
+      GLuint idx = glGetSubroutineIndex(_program, shaderType, name.c_str());
+      auto sub = SubProgram(name.c_str(), idx);
+      _subprograms.insert(std::pair<GLenum, SubProgram>(shaderType, sub));
     }
-#endif
+  #endif
 
-void ProgramShader::bind_attribute(const std::string& attr, GLuint index) {
+  void ProgramShader::bind_attribute(const std::string& attr, GLuint index) {
     glBindAttribLocation(_program, index, attr.c_str());
-}
+  }
 
-GLuint ProgramShader::attribute(const std::string& attr) {
+  GLuint ProgramShader::attribute(const std::string& attr) {
     return _attrsList[attr];
-}
+  }
 
-GLuint ProgramShader::operator ()(const std::string& attr) {
+  GLuint ProgramShader::operator ()(const std::string& attr) {
     return  attribute(attr);
-}
+  }
 
-GLuint ProgramShader::uniform(const std::string& uniform_name) {
+  GLuint ProgramShader::uniform(const std::string& uniform_name) {
     return _uniformList[uniform_name];
-}
+  }
 
-GLuint ProgramShader::operator [](const std::string& attr) {
+  GLuint ProgramShader::operator [](const std::string& attr) {
     return  uniform(attr);
-}
+  }
 
-GLuint ProgramShader::ubo(const std::string& _ubo) {
+  GLuint ProgramShader::ubo(const std::string& _ubo) {
     return _uboList[_ubo];
-}
+  }
 
-#ifdef SUBPROGRAMS
+  #ifdef SUBPROGRAMS
     GLuint ProgramShader::subprogram(const std::string& name, GLenum shaderType) {
-        std::multimap<GLenum, SubProgram>::iterator v = _subprograms.find(shaderType);
-        int number = _subprograms.count(shaderType);
-        for(int i = 0; i < number; i++) {
-            if((*v).second.name == name) {
-                return (*v).second.index;
-            }
-            v++;
+      // TODO: http://www.cplusplus.com/reference/map/multimap/equal_range/
+      std::multimap<GLenum, SubProgram>::iterator v = _subprograms.find(shaderType);
+      int number = _subprograms.count(shaderType);
+      for(int i = 0; i < number; i++) {
+        if((*v).second.name == name) {
+          return (*v).second.index;
         }
-        std::cerr << "Subroutine not found" << std::endl;
-        return -1;
+        v++;
+      }
+      std::cerr << "Subroutine not found" << std::endl;
+      return -1;
     }
-#endif
+  #endif
 
-void ProgramShader::bind_uniform(const std::string& unif, GLuint idx) {
+  void ProgramShader::bind_uniform(const std::string& unif, GLuint idx) {
     if(_uniformList.find(unif) == _uniformList.end()) {
-        _uniformList[unif] = idx;
+      _uniformList[unif] = idx;
     } else {
-        std::cerr << "Uniform exist" << std::endl;
+      std::cerr << "Uniform exist" << std::endl;
     }
-}
+  }
 
-void ProgramShader::send_uniform(const std::string& uniform_name, float x, float y, float z) {
+  void ProgramShader::send_uniform(const std::string& uniform_name, float x, float y, float z) {
     GLint loc = uniform(uniform_name);
     glUniform3f(loc, x, y, z);
-}
+  }
 
-void ProgramShader::send_uniform2v(const std::string& uniform_name, const std::vector< float > & v) {
+  void ProgramShader::send_uniform2v(const std::string& uniform_name, const std::vector< float > & v) {
     GLint loc = uniform(uniform_name);
     glUniform2fv(loc, 1, v.data( ));
-}
+  }
 
-void ProgramShader::send_uniform3v(const std::string& uniform_name, const std::vector< float > & v) {
+  void ProgramShader::send_uniform3v(const std::string& uniform_name, const std::vector< float > & v) {
     GLint loc = uniform(uniform_name);
     glUniform3fv(loc, 1, v.data( ));
-}
+  }
 
-void ProgramShader::send_uniform4v(const std::string& uniform_name, const std::vector< float > & v) {
+  void ProgramShader::send_uniform4v(const std::string& uniform_name, const std::vector< float > & v) {
     GLint loc = uniform(uniform_name);
     glUniform4fv(loc, 1,v.data( ));
-}
+  }
 
-void ProgramShader::send_uniform4m(const std::string& uniform_name, const std::vector< float > & m, GLboolean inverse) {
+  void ProgramShader::send_uniform4m(const std::string& uniform_name, const std::vector< float > & m, GLboolean inverse) {
     GLint loc = uniform(uniform_name);
     glUniformMatrix4fv(loc, 1, inverse, m.data( ));
-}
+  }
 
-void ProgramShader::send_uniform3m(const std::string& uniform_name, const std::vector< float > & m) {
+  void ProgramShader::send_uniform3m(const std::string& uniform_name, const std::vector< float > & m) {
     GLint loc = uniform(uniform_name);
     glUniformMatrix3fv(loc, 1, GL_FALSE, m.data( ));
-}
+  }
 
-void ProgramShader::send_uniformf(const std::string& uniform_name, GLfloat val) {
+  void ProgramShader::send_uniformf(const std::string& uniform_name, GLfloat val) {
     GLint loc = uniform(uniform_name);
     glUniform1f(loc, val);
-}
+  }
 
-void ProgramShader::send_uniformi(const std::string& uniform_name, int val) {
+  void ProgramShader::send_uniformi(const std::string& uniform_name, GLint val) {
     GLint loc = uniform(uniform_name);
     glUniform1i(loc, val);
-}
+  }
 
-void ProgramShader::send_uniformb(const std::string& uniform_name, bool val) {
+  void ProgramShader::send_uniformb(const std::string& uniform_name, GLboolean val) {
     GLint loc = uniform(uniform_name);
     glUniform1i(loc, val);
-}
+  }
 
-void ProgramShader::send_uniformu(const std::string& uniform_name, GLuint val) {
+  void ProgramShader::send_uniformu(const std::string& uniform_name, GLuint val) {
     GLint loc = uniform(uniform_name);
     glUniform1ui(loc, val);
-}
+  }
 
-#ifdef SUBPROGRAMS
+  #ifdef SUBPROGRAMS
     void ProgramShader::active_subprogram(const std::string& name, GLenum shaderType) {
-        std::multimap<GLenum, SubProgram>::iterator v = _subprograms.find(shaderType);
-        int number = _subprograms.count(shaderType);
-        for(int i = 0; i < number; i++) {
-            if((*v).second.name == name) {
-                glUniformSubroutinesuiv(shaderType, 1, &(*v).second.index);
-                return;
-            }
-            v++;
+      // TODO: http://www.cplusplus.com/reference/map/multimap/equal_range/
+      std::multimap<GLenum, SubProgram>::iterator v = _subprograms.find(shaderType);
+      int number = _subprograms.count(shaderType);
+      for(int i = 0; i < number; i++) {
+        if((*v).second.name == name) {
+          glUniformSubroutinesuiv(shaderType, 1, &(*v).second.index);
+          return;
         }
-        std::cerr << "Subroutine not found" << std::endl;
+        v++;
+      }
+      std::cerr << "Subroutine not found" << std::endl;
     }
-#endif
+  #endif
 
-#ifdef COMPUTE_SHADERS
+  #ifdef COMPUTE_SHADERS
     void ProgramShader::launchComputeWork(GLuint nGx, GLuint nGy, GLuint nGz) {
-        glDispatchCompute(nGx, nGy, nGz);
+      glDispatchCompute(nGx, nGy, nGz);
     }
-#endif
+  #endif
 
-#ifdef TESSELATION_SHADERS
-    void ProgramShader::patchVertices(GLuint n) {
-        glPatchParameteri(GL_PATCH_VERTICES, n);
-    }
-    void ProgramShader::innerLevel(GLfloat l) {
-        glPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, &l);
-    }
-    void ProgramShader::outerLevel(GLfloat l) {
-        glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, &l);
+  #ifdef TESSELATION_SHADERS
 
+    GLuint ProgramShader::getPatchVertices() {
+      GLint n;
+      glGetIntegerv(GL_PATCH_VERTICES, &n);
+      return n;
     }
-#endif
+    GLfloat ProgramShader::getInnerLevel() {
+      GLfloat l;
+      glGetFloatv(GL_PATCH_DEFAULT_INNER_LEVEL, &l);
+      return l;
+    }
+    GLfloat ProgramShader::getOuterLevel() {
+      GLfloat l;
+      glGetFloatv(GL_PATCH_DEFAULT_OUTER_LEVEL, &l);
+      return l;
+    }
 
-#ifdef OCC_QUERY
+    void ProgramShader::setPatchVertices(GLuint n) {
+      glPatchParameteri(GL_PATCH_VERTICES, n);
+    }
+    void ProgramShader::setInnerLevel(GLfloat l) {
+      glPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, &l);
+    }
+    void ProgramShader::setOuterLevel(GLfloat l) {
+      glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, &l);
+    }
+  #endif
+
+  #ifdef OCC_QUERY
     bool ProgramShader::occlusion_query(std::function<void()> renderFunc) {
-        // Disable writing to the color buffer and depth buffer. 
-        // We just wanna check if they would be rendered, not actually render them
-        glColorMask(false, false, false, false);
-        glDepthMask(GL_FALSE);
-        glBeginQuery(GL_SAMPLES_PASSED, _occQuery);
-        renderFunc();
-        glEndQuery(GL_SAMPLES_PASSED);
-        GLint samplesPassed = 0;
-        glGetQueryObjectiv(_occQuery, GL_QUERY_RESULT, &samplesPassed);
-        // Re-enable writing to color buffer and depth buffer
-        glColorMask(true, true, true, true);
-        glDepthMask(GL_TRUE);
-        return samplesPassed > 0;
+      // Disable writing to the color buffer and depth buffer. 
+      // We just wanna check if they would be rendered, not actually render them
+      glColorMask(false, false, false, false);
+      glDepthMask(GL_FALSE);
+      glBeginQuery(GL_SAMPLES_PASSED, _occQuery);
+      renderFunc();
+      glEndQuery(GL_SAMPLES_PASSED);
+      GLint samplesPassed = 0;
+      glGetQueryObjectiv(_occQuery, GL_QUERY_RESULT, &samplesPassed);
+      // Re-enable writing to color buffer and depth buffer
+      glColorMask(true, true, true, true);
+      glDepthMask(GL_TRUE);
+      return samplesPassed > 0;
     }
-#endif
+  #endif
 
-#ifdef GEOMETRY_SHADERS
-    void ProgramShader::geometryMaxOutput(GLuint o) {
-        glProgramParameteri(_program, GL_GEOMETRY_VERTICES_OUT, o);
+  #ifdef GEOMETRY_SHADERS
+    void ProgramShader::setGeometryMaxOutput(GLuint o) {
+      glProgramParameteri(_program, GL_GEOMETRY_VERTICES_OUT, o);
     }
-    void ProgramShader::geometryInputType(GLuint i) {
-        glProgramParameteri(_program, GL_GEOMETRY_INPUT_TYPE, i);
+    void ProgramShader::setGeometryInputType(GLuint i) {
+      glProgramParameteri(_program, GL_GEOMETRY_INPUT_TYPE, i);
     }
-    void ProgramShader::geometryOutputType(GLuint o) {
-        glProgramParameteri(_program, GL_GEOMETRY_OUTPUT_TYPE, o);
+    void ProgramShader::setGeometryOutputType(GLuint o) {
+      glProgramParameteri(_program, GL_GEOMETRY_OUTPUT_TYPE, o);
     }
-#endif
+
+    GLint ProgramShader::getGeometryMaxOutput() {
+      GLint o;
+      glGetProgramiv(_program, GL_GEOMETRY_VERTICES_OUT, &o);
+      return o;
+    }
+
+    GLint ProgramShader::getGeometryInputType() {
+      GLint o;
+      glGetProgramiv(_program, GL_GEOMETRY_INPUT_TYPE, &o);
+      return o;
+    }
+
+    GLint ProgramShader::getGeometryOutputType() {
+      GLint o;
+      glGetProgramiv(_program, GL_GEOMETRY_OUTPUT_TYPE, &o);
+      return o;
+    }
+  #endif
+}

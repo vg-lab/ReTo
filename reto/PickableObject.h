@@ -23,43 +23,52 @@
 #ifndef _PICKABLE_OBJECT_H_ 
 #define _PICKABLE_OBJECT_H_ 
 
-class PickableObject {
-public:
-	PickableObject();
-	~PickableObject();
+#include <vector>
+#include "ProgramShader.h"
 
-	void setBoundingBox(std::vector<Vertex>& vertices);
-protected:
-	typedef struct {
-		float x, y, z;
-	} Vertex;
+namespace reto {
+	class PickableObject {
+		public:
+			typedef struct Vertex {
+				float x, y, z;
+			} Vertex;
 
-	typedef struct {
-		float xMin;
-		float xMax;
-		float yMin;
-		float yMax;
-		float zMin;
-		float zMax;
-  	} TBoundingBox;
+			typedef struct {
+				Vertex origin, direction;
+			} ray;
 
-  	TBoundingBox box;
+			PickableObject();
+			~PickableObject();
 
-  	/*GLfloat
-	    min_x, max_x,
-	    min_y, max_y,
-	    min_z, max_z;
-	min_x = max_x = mesh->vertices[0].x;
-	min_y = max_y = mesh->vertices[0].y;
-	min_z = max_z = mesh->vertices[0].z;
-  	for (int i = 0; i < mesh->vertices.size(); i++) {
-	    if (mesh->vertices[i].x < min_x) min_x = mesh->vertices[i].x;
-	    if (mesh->vertices[i].x > max_x) max_x = mesh->vertices[i].x;
-	    if (mesh->vertices[i].y < min_y) min_y = mesh->vertices[i].y;
-	    if (mesh->vertices[i].y > max_y) max_y = mesh->vertices[i].y;
-	    if (mesh->vertices[i].z < min_z) min_z = mesh->vertices[i].z;
-	    if (mesh->vertices[i].z > max_z) max_z = mesh->vertices[i].z;
-  	}*/
-};
+			bool intersection(ray r);
+
+			void setBoundingBox(std::vector<Vertex>& vertices);
+
+			uint inline id() {
+				return objectId;
+			}
+
+			void renderWithPick() {}	// TODO: virtual = 0;
+		protected:
+			typedef struct {
+				float xMin;
+				float xMax;
+				float yMin;
+				float yMax;
+				float zMin;
+				float zMax;
+		  	} TBoundingBox;
+
+		  	TBoundingBox box;
+
+		  	static uint globalId;
+
+		  	uint objectId;
+
+		  	static ProgramShader program;
+
+		  	static ProgramShader initProgramShader();
+	};
+}
 
 #endif /*_PICKABLE_OBJECT_H_*/

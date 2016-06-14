@@ -24,6 +24,8 @@
  * TODO:
  *  -glDispatchComputeIndirect(GLintptr indirect);
  *  -TransformFeedback in vertex and geometry shaders
+ *  -Check dont used uniforms
+ *  -Methods to get tess and geom I/O
  */
  
 #ifndef _PROGRAMSHADER_H_ 
@@ -54,51 +56,54 @@
 #define OCC_QUERY
 
 #ifdef OCC_QUERY
-    #include <functional>
+  #include <functional>
 #endif
  
-class ProgramShader { 
-public: 
+namespace reto
+{
+
+  class ProgramShader { 
+  public: 
     ProgramShader(void); 
     ~ProgramShader(void); 
- 
+   
     void destroy(); 
      
-    void load(const std::string& vsFile, const std::string& fsFile); 
-    void load(const std::string& file, GLenum type); 
-    void loadVS(const std::string& file);
-    void loadFS(const std::string& file);
-#ifdef GEOMETRY_SHADERS
-    void loadGS(const std::string& file);
-#endif
-#ifdef TESSELATION_SHADERS
-    void loadTES(const std::string& file);
-    void loadTCS(const std::string& file);
-#endif
-#ifdef COMPUTE_SHADERS 
-    void loadCS(const std::string& file);
-#endif
-    void loadFromText(const std::string& vsSource, const std::string& fsSource); 
-    void loadFromText(const std::string& source, GLenum type); 
-    void loadFromTextVS(const std::string& source);
-    void loadFromTextFS(const std::string& source);
-#ifdef GEOMETRY_SHADERS
-    void loadFromTextGS(const std::string& source);
-#endif
-#ifdef TESSELATION_SHADERS
-    void loadFromTextTES(const std::string& source);
-    void loadFromTextTCS(const std::string& source);
-#endif
-#ifdef COMPUTE_SHADERS 
-    void loadFromTextCS(const std::string& source); 
-#endif
+    bool load(const std::string& vsFile, const std::string& fsFile); 
+    bool load(const std::string& file, GLenum type); 
+    bool loadVS(const std::string& file);
+    bool loadFS(const std::string& file);
+  #ifdef GEOMETRY_SHADERS
+    bool loadGS(const std::string& file);
+  #endif
+  #ifdef TESSELATION_SHADERS
+    bool loadTES(const std::string& file);
+    bool loadTCS(const std::string& file);
+  #endif
+  #ifdef COMPUTE_SHADERS 
+    bool loadCS(const std::string& file);
+  #endif
+    bool loadFromText(const std::string& vsSource, const std::string& fsSource); 
+    bool loadFromText(const std::string& source, GLenum type); 
+    bool loadFromTextVS(const std::string& source);
+    bool loadFromTextFS(const std::string& source);
+  #ifdef GEOMETRY_SHADERS
+    bool loadFromTextGS(const std::string& source);
+  #endif
+  #ifdef TESSELATION_SHADERS
+    bool loadFromTextTES(const std::string& source);
+    bool loadFromTextTCS(const std::string& source);
+  #endif
+  #ifdef COMPUTE_SHADERS 
+    bool loadFromTextCS(const std::string& source); 
+  #endif
 
-    void compile_and_link();
+    bool compile_and_link();
     GLuint program();
 
     void use();  
     void unuse();
- 
+   
     void add_attribute(const std::string& attr);
     void add_attributes(const std::vector<char*> attrs);
     void bind_attribute(const std::string& attr, GLuint index);
@@ -108,9 +113,9 @@ public:
     void add_ubo(const std::string& _ubo);
 
     #ifdef SUBPROGRAMS
-        void add_subroutine(const std::string& name, GLenum shaderType);
+      void add_subroutine(const std::string& name, GLenum shaderType);
     #endif
- 
+   
     GLuint attribute(const std::string& _attr); 
     GLuint uniform(const std::string& _unif);
     GLuint ubo(const std::string& _ubo);
@@ -118,8 +123,8 @@ public:
     GLuint operator()(const std::string& _attr);
     GLuint operator[](const std::string& _unif);
 
-    void send_uniformb(const std::string& uniform, bool val);
-    void send_uniformi(const std::string& uniform, int val);
+    void send_uniformb(const std::string& uniform, GLboolean val);
+    void send_uniformi(const std::string& uniform, GLint val);
     void send_uniformu(const std::string& uniform, GLuint val);
     void send_uniformf(const std::string& uniform, GLfloat val);
 
@@ -131,29 +136,37 @@ public:
     void send_uniform4m(const std::string& uniform, const std::vector< float > & m, GLboolean inverse = GL_FALSE); 
 
     #ifdef SUBPROGRAMS
-        void active_subprogram(const std::string& name, GLenum shaderType);
+      void active_subprogram(const std::string& name, GLenum shaderType);
     #endif
 
     #ifdef OCC_QUERY
-        bool occlusion_query(std::function<void()> renderFunc);
+      bool occlusion_query(std::function<void()> renderFunc);
     #endif
 
     #ifdef COMPUTE_SHADERS
-        void launchComputeWork(GLuint nGx, GLuint nGy, GLuint nGz);
+      void launchComputeWork(GLuint nGx, GLuint nGy, GLuint nGz);
     #endif
     #ifdef TESSELATION_SHADERS
-        void patchVertices(GLuint n);
-        void innerLevel(GLfloat l);
-        void outerLevel(GLfloat l);
+      GLuint getPatchVertices();
+      GLfloat getInnerLevel();
+      GLfloat getOuterLevel();
+
+      void setPatchVertices(GLuint n);
+      void setInnerLevel(GLfloat l);
+      void setOuterLevel(GLfloat l);
     #endif
     #ifdef GEOMETRY_SHADERS
-        void geometryMaxOutput(GLuint o);
-        void geometryInputType(GLuint i);
-        void geometryOutputType(GLuint o);
+      GLint getGeometryMaxOutput();
+      GLint getGeometryInputType();
+      GLint getGeometryOutputType();
+
+      void setGeometryMaxOutput(GLuint o);
+      void setGeometryInputType(GLuint i);
+      void setGeometryOutputType(GLuint o);
     #endif
-protected: 
+  protected: 
     void create(); 
-    void link();
+    bool link();
 
     GLuint _program;
     std::map<std::string, GLuint> _attrsList; 
@@ -161,22 +174,22 @@ protected:
     std::map<std::string, GLuint> _uboList;
 
     #ifdef SUBPROGRAMS
-        typedef struct SubProgram {
-            const char* name;
-            GLuint index;
-            SubProgram(const char* n, GLuint i) {
-                this->name = n;
-                this->index = i;
-            }
-        } SubProgram;
-        std::multimap<GLenum, SubProgram> _subprograms;
+      typedef struct SubProgram {
+        const char* name;
+        GLuint index;
+        SubProgram(const char* n, GLuint i) {
+          this->name = n;
+          this->index = i;
+        }
+      } SubProgram;
+      std::multimap<GLenum, SubProgram> _subprograms;
     #endif
     std::vector<GLuint> _shaders; 
 
     #ifdef OCC_QUERY
-        GLuint _occQuery;
+      GLuint _occQuery;
     #endif
-}; 
- 
+  }; 
+}
 #endif /* _PROGRAMSHADER_H_ */ 
 

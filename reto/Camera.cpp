@@ -24,8 +24,8 @@
 namespace reto
 {
 
-  Camera::Camera( void )
+  /*Camera::Camera( void )
   {
-  }
+  }*/
 
 } // namespace lib

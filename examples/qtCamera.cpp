@@ -23,7 +23,7 @@
 
 int main ( void )
 {
-  reto::Camera c;
+  //reto::Camera c;
 
   return 0;
 }

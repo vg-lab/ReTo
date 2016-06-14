@@ -14,4 +14,10 @@ set(RETO_SOURCES
   ProgramShader.cpp
 )
 
+set(RETO_LINK_LIBRARIES  
+  ${OPENGL_LIBRARIES}
+  ${GLEW_LIBRARIES}
+  ${GLUT_LIBRARIES}
+)
+
 common_library( ReTo )
