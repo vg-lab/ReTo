@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE( test_program_shader ) {
 	bool compile = prog.compile_and_link();
 	BOOST_CHECK( compile == true );
 
-	prog.add_uniform("MVP");
+	prog.addUniform("MVP");
 	BOOST_CHECK(prog["MVP"] == 1);
 	BOOST_CHECK(prog.uniform("MVP") == 1);
 

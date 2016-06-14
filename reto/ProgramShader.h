@@ -104,16 +104,16 @@ namespace reto
     void use();  
     void unuse();
    
-    void add_attribute(const std::string& attr);
-    void add_attributes(const std::vector<char*> attrs);
-    void bind_attribute(const std::string& attr, GLuint index);
-    void add_uniform(const std::string& uniform);
-    void add_uniforms(const std::vector<char*> uniforms);
-    void bind_uniform(const std::string& uniform, GLuint index);
-    void add_ubo(const std::string& _ubo);
+    void addAttribute(const std::string& attr);
+    void addAttributes(const std::vector<char*> attrs);
+    void bindAttribute(const std::string& attr, GLuint index);
+    void addUniform(const std::string& uniform);
+    void addUniforms(const std::vector<char*> uniforms);
+    void bindUniform(const std::string& uniform, GLuint index);
+    void addUbo(const std::string& _ubo);
 
     #ifdef SUBPROGRAMS
-      void add_subroutine(const std::string& name, GLenum shaderType);
+      void addSubroutine(const std::string& name, GLenum shaderType);
     #endif
    
     GLuint attribute(const std::string& _attr); 
@@ -123,24 +123,24 @@ namespace reto
     GLuint operator()(const std::string& _attr);
     GLuint operator[](const std::string& _unif);
 
-    void send_uniformb(const std::string& uniform, GLboolean val);
-    void send_uniformi(const std::string& uniform, GLint val);
-    void send_uniformu(const std::string& uniform, GLuint val);
-    void send_uniformf(const std::string& uniform, GLfloat val);
+    void sendUniformb(const std::string& uniform, GLboolean val);
+    void sendUniformi(const std::string& uniform, GLint val);
+    void sendUniformu(const std::string& uniform, GLuint val);
+    void sendUniformf(const std::string& uniform, GLfloat val);
 
-    void send_uniform(const std::string& uniform, float x, float y, float z); 
-    void send_uniform2v(const std::string& uniform, const std::vector< float > & v); 
-    void send_uniform3v(const std::string& uniform, const std::vector< float > & v); 
-    void send_uniform4v(const std::string& uniform, const std::vector< float > & v); 
-    void send_uniform3m(const std::string& uniform, const std::vector< float > & m);
-    void send_uniform4m(const std::string& uniform, const std::vector< float > & m, GLboolean inverse = GL_FALSE); 
+    void sendUniform(const std::string& uniform, float x, float y, float z); 
+    void sendUniform2v(const std::string& uniform, const std::vector< float > & v); 
+    void sendUniform3v(const std::string& uniform, const std::vector< float > & v); 
+    void sendUniform4v(const std::string& uniform, const std::vector< float > & v); 
+    void sendUniform3m(const std::string& uniform, const std::vector< float > & m);
+    void sendUniform4m(const std::string& uniform, const std::vector< float > & m, GLboolean inverse = GL_FALSE); 
 
     #ifdef SUBPROGRAMS
-      void active_subprogram(const std::string& name, GLenum shaderType);
+      void activeSubprogram(const std::string& name, GLenum shaderType);
     #endif
 
     #ifdef OCC_QUERY
-      bool occlusion_query(std::function<void()> renderFunc);
+      bool occlusionQuery(std::function<void()> renderFunc);
     #endif
 
     #ifdef COMPUTE_SHADERS

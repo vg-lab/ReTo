@@ -255,39 +255,39 @@ namespace reto
     return _program; 
   } 
 
-  void ProgramShader::add_attribute(const std::string& attr) {
+  void ProgramShader::addAttribute(const std::string& attr) {
     _attrsList[attr] = glGetAttribLocation(_program, attr.c_str());
   }
 
-  void ProgramShader::add_attributes(const std::vector<char*> attrs) {
+  void ProgramShader::addAttributes(const std::vector<char*> attrs) {
     for(auto& a: attrs) {
-      add_attribute(a);
+      addAttribute(a);
     }
   }
 
-  void ProgramShader::add_uniform(const std::string& uniform_name) {
+  void ProgramShader::addUniform(const std::string& uniform_name) {
     _uniformList[uniform_name] = glGetUniformLocation(_program, uniform_name.c_str());
   }
 
-  void ProgramShader::add_uniforms(const std::vector<char*> uniforms) {
+  void ProgramShader::addUniforms(const std::vector<char*> uniforms) {
     for(auto& u: uniforms) {
-      add_uniform(u);
+      addUniform(u);
     }
   }
 
-  void ProgramShader::add_ubo(const std::string& ubo_name) {
+  void ProgramShader::addUbo(const std::string& ubo_name) {
     _uboList[ubo_name] = glGetUniformBlockIndex(_program, ubo_name.c_str());
   }
 
   #ifdef SUBPROGRAMS
-    void ProgramShader::add_subroutine(const std::string& name, GLenum shaderType) {
+    void ProgramShader::addSubroutine(const std::string& name, GLenum shaderType) {
       GLuint idx = glGetSubroutineIndex(_program, shaderType, name.c_str());
       auto sub = SubProgram(name.c_str(), idx);
       _subprograms.insert(std::pair<GLenum, SubProgram>(shaderType, sub));
     }
   #endif
 
-  void ProgramShader::bind_attribute(const std::string& attr, GLuint index) {
+  void ProgramShader::bindAttribute(const std::string& attr, GLuint index) {
     glBindAttribLocation(_program, index, attr.c_str());
   }
 
@@ -327,7 +327,7 @@ namespace reto
     }
   #endif
 
-  void ProgramShader::bind_uniform(const std::string& unif, GLuint idx) {
+  void ProgramShader::bindUniform(const std::string& unif, GLuint idx) {
     if(_uniformList.find(unif) == _uniformList.end()) {
       _uniformList[unif] = idx;
     } else {
@@ -335,58 +335,58 @@ namespace reto
     }
   }
 
-  void ProgramShader::send_uniform(const std::string& uniform_name, float x, float y, float z) {
+  void ProgramShader::sendUniform(const std::string& uniform_name, float x, float y, float z) {
     GLint loc = uniform(uniform_name);
     glUniform3f(loc, x, y, z);
   }
 
-  void ProgramShader::send_uniform2v(const std::string& uniform_name, const std::vector< float > & v) {
+  void ProgramShader::sendUniform2v(const std::string& uniform_name, const std::vector< float > & v) {
     GLint loc = uniform(uniform_name);
     glUniform2fv(loc, 1, v.data( ));
   }
 
-  void ProgramShader::send_uniform3v(const std::string& uniform_name, const std::vector< float > & v) {
+  void ProgramShader::sendUniform3v(const std::string& uniform_name, const std::vector< float > & v) {
     GLint loc = uniform(uniform_name);
     glUniform3fv(loc, 1, v.data( ));
   }
 
-  void ProgramShader::send_uniform4v(const std::string& uniform_name, const std::vector< float > & v) {
+  void ProgramShader::sendUniform4v(const std::string& uniform_name, const std::vector< float > & v) {
     GLint loc = uniform(uniform_name);
     glUniform4fv(loc, 1,v.data( ));
   }
 
-  void ProgramShader::send_uniform4m(const std::string& uniform_name, const std::vector< float > & m, GLboolean inverse) {
+  void ProgramShader::sendUniform4m(const std::string& uniform_name, const std::vector< float > & m, GLboolean inverse) {
     GLint loc = uniform(uniform_name);
     glUniformMatrix4fv(loc, 1, inverse, m.data( ));
   }
 
-  void ProgramShader::send_uniform3m(const std::string& uniform_name, const std::vector< float > & m) {
+  void ProgramShader::sendUniform3m(const std::string& uniform_name, const std::vector< float > & m) {
     GLint loc = uniform(uniform_name);
     glUniformMatrix3fv(loc, 1, GL_FALSE, m.data( ));
   }
 
-  void ProgramShader::send_uniformf(const std::string& uniform_name, GLfloat val) {
+  void ProgramShader::sendUniformf(const std::string& uniform_name, GLfloat val) {
     GLint loc = uniform(uniform_name);
     glUniform1f(loc, val);
   }
 
-  void ProgramShader::send_uniformi(const std::string& uniform_name, GLint val) {
+  void ProgramShader::sendUniformi(const std::string& uniform_name, GLint val) {
     GLint loc = uniform(uniform_name);
     glUniform1i(loc, val);
   }
 
-  void ProgramShader::send_uniformb(const std::string& uniform_name, GLboolean val) {
+  void ProgramShader::sendUniformb(const std::string& uniform_name, GLboolean val) {
     GLint loc = uniform(uniform_name);
     glUniform1i(loc, val);
   }
 
-  void ProgramShader::send_uniformu(const std::string& uniform_name, GLuint val) {
+  void ProgramShader::sendUniformu(const std::string& uniform_name, GLuint val) {
     GLint loc = uniform(uniform_name);
     glUniform1ui(loc, val);
   }
 
   #ifdef SUBPROGRAMS
-    void ProgramShader::active_subprogram(const std::string& name, GLenum shaderType) {
+    void ProgramShader::activeSubprogram(const std::string& name, GLenum shaderType) {
       // TODO: http://www.cplusplus.com/reference/map/multimap/equal_range/
       std::multimap<GLenum, SubProgram>::iterator v = _subprograms.find(shaderType);
       int number = _subprograms.count(shaderType);
@@ -437,7 +437,7 @@ namespace reto
   #endif
 
   #ifdef OCC_QUERY
-    bool ProgramShader::occlusion_query(std::function<void()> renderFunc) {
+    bool ProgramShader::occlusionQuery(std::function<void()> renderFunc) {
       // Disable writing to the color buffer and depth buffer. 
       // We just wanna check if they would be rendered, not actually render them
       glColorMask(false, false, false, false);

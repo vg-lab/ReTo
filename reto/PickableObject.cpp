@@ -20,7 +20,7 @@ namespace reto {
 			"	color = vec4(1.0);\n"
 			"}\n"
 		);
-		program.add_uniform("modelViewProj");
+		program.addUniform("modelViewProj");
 		return program;
 	}
 
