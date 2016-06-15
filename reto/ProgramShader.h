@@ -49,20 +49,21 @@
 #include <GL/glu.h>
 #endif
 
-#define GEOMETRY_SHADERS
-#define COMPUTE_SHADERS
-#define TESSELATION_SHADERS
-#define SUBPROGRAMS
-#define OCC_QUERY
+#define RETO_GEOMETRY_SHADERS
+#define RETO_COMPUTE_SHADERS
+#define RETO_TESSELATION_SHADERS
+#define RETO_SUBPROGRAMS
+#define RETO_OCC_QUERY
 
-#ifdef OCC_QUERY
+#ifdef RETO_OCC_QUERY
   #include <functional>
 #endif
  
 namespace reto
 {
 
-  class ProgramShader { 
+  class ProgramShader 
+  { 
   public: 
     ProgramShader(void); 
     ~ProgramShader(void); 
@@ -73,28 +74,28 @@ namespace reto
     bool load(const std::string& file, GLenum type); 
     bool loadVS(const std::string& file);
     bool loadFS(const std::string& file);
-  #ifdef GEOMETRY_SHADERS
+  #ifdef RETO_GEOMETRY_SHADERS
     bool loadGS(const std::string& file);
   #endif
-  #ifdef TESSELATION_SHADERS
+  #ifdef RETO_TESSELATION_SHADERS
     bool loadTES(const std::string& file);
     bool loadTCS(const std::string& file);
   #endif
-  #ifdef COMPUTE_SHADERS 
+  #ifdef RETO_COMPUTE_SHADERS 
     bool loadCS(const std::string& file);
   #endif
     bool loadFromText(const std::string& vsSource, const std::string& fsSource); 
     bool loadFromText(const std::string& source, GLenum type); 
     bool loadFromTextVS(const std::string& source);
     bool loadFromTextFS(const std::string& source);
-  #ifdef GEOMETRY_SHADERS
+  #ifdef RETO_GEOMETRY_SHADERS
     bool loadFromTextGS(const std::string& source);
   #endif
-  #ifdef TESSELATION_SHADERS
+  #ifdef RETO_TESSELATION_SHADERS
     bool loadFromTextTES(const std::string& source);
     bool loadFromTextTCS(const std::string& source);
   #endif
-  #ifdef COMPUTE_SHADERS 
+  #ifdef RETO_COMPUTE_SHADERS 
     bool loadFromTextCS(const std::string& source); 
   #endif
 
@@ -112,7 +113,7 @@ namespace reto
     void bindUniform(const std::string& uniform, GLuint index);
     void addUbo(const std::string& _ubo);
 
-    #ifdef SUBPROGRAMS
+    #ifdef RETO_SUBPROGRAMS
       void addSubroutine(const std::string& name, GLenum shaderType);
     #endif
    
@@ -135,18 +136,18 @@ namespace reto
     void sendUniform3m(const std::string& uniform, const std::vector< float > & m);
     void sendUniform4m(const std::string& uniform, const std::vector< float > & m, GLboolean inverse = GL_FALSE); 
 
-    #ifdef SUBPROGRAMS
+    #ifdef RETO_SUBPROGRAMS
       void activeSubprogram(const std::string& name, GLenum shaderType);
     #endif
 
-    #ifdef OCC_QUERY
+    #ifdef RETO_OCC_QUERY
       bool occlusionQuery(std::function<void()> renderFunc);
     #endif
 
-    #ifdef COMPUTE_SHADERS
+    #ifdef RETO_COMPUTE_SHADERS
       void launchComputeWork(GLuint nGx, GLuint nGy, GLuint nGz);
     #endif
-    #ifdef TESSELATION_SHADERS
+    #ifdef RETO_TESSELATION_SHADERS
       GLuint getPatchVertices();
       GLfloat getInnerLevel();
       GLfloat getOuterLevel();
@@ -155,7 +156,7 @@ namespace reto
       void setInnerLevel(GLfloat l);
       void setOuterLevel(GLfloat l);
     #endif
-    #ifdef GEOMETRY_SHADERS
+    #ifdef RETO_GEOMETRY_SHADERS
       GLint getGeometryMaxOutput();
       GLint getGeometryInputType();
       GLint getGeometryOutputType();
@@ -173,7 +174,7 @@ namespace reto
     std::map<std::string, GLuint> _uniformList;
     std::map<std::string, GLuint> _uboList;
 
-    #ifdef SUBPROGRAMS
+    #ifdef RETO_SUBPROGRAMS
       typedef struct SubProgram {
         const char* name;
         GLuint index;
@@ -186,7 +187,7 @@ namespace reto
     #endif
     std::vector<GLuint> _shaders; 
 
-    #ifdef OCC_QUERY
+    #ifdef RETO_OCC_QUERY
       GLuint _occQuery;
     #endif
   }; 

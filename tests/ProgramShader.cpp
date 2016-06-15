@@ -25,7 +25,40 @@
 
 using namespace reto;
 
+//OpenGL
+#ifndef SKIP_GLEW_INCLUDE
+#include <GL/glew.h>
+#endif
+#ifdef Darwin
+#include <gl.h>
+#include <glu.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
 BOOST_AUTO_TEST_CASE( test_program_shader ) {
+	
+	glutInit();
+	glutInitContextVersion(3, 3);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+	glutInitContextProfile(GLUT_CORE_PROFILE);
+
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); 
+	glutInitWindowSize(500, 500);
+	glutInitWindowPosition(0, 0);
+	glutCreateWindow("Prácticas GLSL");
+
+	glewExperimental = GL_TRUE;
+	GLenum err = glewInit();
+	if (GLEW_OK != err) {
+		std::cout << "Error: " << glewGetErrorString(err) << std::endl;
+		exit (-1);
+	}
+	const GLubyte *oglVersion = glGetString(GL_VERSION);
+	std::cout << "This system supports OpenGL Version: " << oglVersion << std::endl;
+
 
 	std::string vsShader = (
 		"#version 330 core\n"

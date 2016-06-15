@@ -3,7 +3,7 @@
 namespace reto {
 	uint PickableObject::globalId = 0;
 
-	ProgramShader PickableObject::program = PickableObject::initProgramShader();
+	/*rogramShader PickableObject::program = PickableObject::initProgramShader();
 
 	ProgramShader PickableObject::initProgramShader() {
 		ProgramShader program;
@@ -22,7 +22,7 @@ namespace reto {
 		);
 		program.addUniform("modelViewProj");
 		return program;
-	}
+	}*/
 
 	PickableObject::PickableObject() { }
 

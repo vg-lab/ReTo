@@ -65,9 +65,9 @@ namespace reto {
 
 		  	uint objectId;
 
-		  	static ProgramShader program;
+		  	//static ProgramShader program;
 
-		  	static ProgramShader initProgramShader();
+		  	//static ProgramShader initProgramShader();
 	};
 }
 
