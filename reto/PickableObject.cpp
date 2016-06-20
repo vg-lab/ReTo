@@ -45,7 +45,7 @@ namespace reto {
 		}
 	}
 	bool PickableObject::intersection(ray r) {
-		/*float t0, t1, tmin = 0.0, tmax = 0.0;
+		float t0, t1, tmin = 0.0, tmax = 0.0;
 
 		// X
 		t0 = std::min(box.xMin - r.origin.x / r.direction.x,
@@ -75,7 +75,7 @@ namespace reto {
 		tmin = std::max(t0, tmin);
 		tmax = std::min(t1, tmax);
 		if (tmax <= tmin)
-			return false;*/
+			return false;
 		return true;
 	}
 }
