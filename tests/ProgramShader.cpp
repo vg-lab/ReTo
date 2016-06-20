@@ -25,34 +25,32 @@
 
 using namespace reto;
 
-//OpenGL
-/*#ifndef SKIP_GLEW_INCLUDE
-#include <GL/glew.h>
-#endif
-#ifdef Darwin
-#include <gl.h>
-#include <glu.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif*/
-#ifndef SKIP_GLEW_INCLUDE
-#include <GL/glew.h>
-#endif
-#include <GL/glut.h>
 #include <GL/glew.h>
 
-BOOST_AUTO_TEST_CASE( test_program_shader ) {
+#ifdef Darwin
+  #define __gl_h_
+  #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
+  #include <OpenGL/gl.h>
+  #include <OpenGL/glu.h>
+  #include <GL/freeglut.h>
+#else
+  #include <GL/gl.h>
+  #include <GL/freeglut.h>
+#endif
+
+BOOST_AUTO_TEST_CASE( test_program_shader )
+{
+
 	char *myargv [1];
 	int myargc = 1;
 	myargv [0] = strdup ("foo_test");
 	glutInit(&myargc, myargv);
-	//glutInitContextVersion(4, 3);
-	/*glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+
+	glutInitContextVersion(4, 3);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH); 
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(500, 500);
 	glutInitWindowPosition(0, 0);
 	glutCreateWindow("Prácticas GLSL");
@@ -103,7 +101,7 @@ BOOST_AUTO_TEST_CASE( test_program_shader ) {
 	bool fsCreate = prog.loadFS(fsShader);
 	BOOST_CHECK( fsCreate == true );
 
-	bool compile = prog.compile_and_link();
+	bool compile = prog.compileAndLink();
 	BOOST_CHECK( compile == true );
 
 	prog.addUniform("MVP");
@@ -121,7 +119,7 @@ BOOST_AUTO_TEST_CASE( test_program_shader ) {
 	bool gsCreate = prog2.loadGS(gsShader);
 	BOOST_CHECK( gsCreate == true );
 
-	compile = prog.compile_and_link();
+	compile = prog.compileAndLink();
 	BOOST_CHECK( compile == true );
 
 	BOOST_CHECK(prog2.getGeometryInputType() == GL_POINTS);
@@ -134,5 +132,6 @@ BOOST_AUTO_TEST_CASE( test_program_shader ) {
 
 	BOOST_CHECK(prog2.getGeometryInputType() == GL_TRIANGLES);
 	BOOST_CHECK(prog2.getGeometryOutputType() == GL_TRIANGLE_STRIP);
-	BOOST_CHECK(prog2.getGeometryMaxOutput() == 8);*/
+	BOOST_CHECK(prog2.getGeometryMaxOutput() == 8);
+
 }

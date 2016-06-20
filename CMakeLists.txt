@@ -51,19 +51,19 @@ if(RETO_WITH_ZEROEQ)
     list(APPEND RETO_DEPENDENT_LIBRARIES ZeroEQ)
     common_find_package(Threads REQUIRED)
     list(APPEND RETO_DEPENDENT_LIBRARIES Threads)
-    
+
     common_find_package(Lexis)
     if(LEXIS_FOUND)
       list(APPEND RETO_DEPENDENT_LIBRARIES Lexis)
     endif()
-    
+
     if(RETO_WITH_GMRVLEX)
     common_find_package(  gmrvlex)
     if ( GMRVLEX_FOUND )
       list(APPEND RETO_DEPENDENT_LIBRARIES gmrvlex)
     endif( )
   endif( )
-    
+
   endif( )
 endif( )
 

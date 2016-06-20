@@ -84,7 +84,7 @@ namespace reto
     RETO_API
     bool Anim( void );
 
-      // GETTERS
+    // GETTERS
 
     RETO_API
     float Fov( void );
@@ -145,14 +145,17 @@ namespace reto
     void AnimDuration( float animDuration_ );
 
     private:
-// TODO (Cristian): Harcoded
-    void _PositionVectorized( const std::vector<float>& positionVec_ ) {
+    // TODO (Cristian): Harcoded
+    void _PositionVectorized( const std::vector<float>& positionVec_ )
+    {
     	positionVec_.size();
     }
-    void _Rotation( const Eigen::Matrix3f& rotation_ ) {
+    void _Rotation( const Eigen::Matrix3f& rotation_ )
+    {
     	rotation_.size();
     }
-    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ ) {
+    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ )
+    {
     	viewVec_.size();
     }
 
@@ -212,6 +215,6 @@ namespace reto
   };
 
 
-} //end namespace nlrender
+} //end namespace reto
 
 #endif // __RETO_CAMERA__

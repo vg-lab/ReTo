@@ -19,56 +19,60 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
- 
-#ifndef _PICKABLE_OBJECT_H_ 
-#define _PICKABLE_OBJECT_H_ 
+#ifndef __RETO__PICKABLE_OBJECT__
+#define __RETO__PICKABLE_OBJECT__
 
 #include <vector>
 #include "ProgramShader.h"
 
-namespace reto {
-	class PickableObject {
+namespace reto
+{
+	class PickableObject
+  {
 		public:
-			typedef struct Vertex {
-				float x, y, z;
-			} Vertex;
 
-			typedef struct {
-				Vertex origin, direction;
-			} ray;
+    typedef struct Vertex
+    {
+      float x, y, z;
+    } Vertex;
 
-			PickableObject();
-			~PickableObject();
+    typedef struct
+    {
+      Vertex origin, direction;
+    } ray;
 
-			bool intersection(ray r);
+    PickableObject( void );
+    ~PickableObject( void );
 
-			void setBoundingBox(std::vector<Vertex>& vertices);
+    bool intersection( ray r );
 
-			uint inline id() {
-				return objectId;
-			}
+    void setBoundingBox( std::vector<Vertex>& vertices );
 
-			void renderWithPick() {}	// TODO: virtual = 0;
-		protected:
-			typedef struct {
-				float xMin;
-				float xMax;
-				float yMin;
-				float yMax;
-				float zMin;
-				float zMax;
-		  	} TBoundingBox;
+    unsigned int inline id( void )
+    {
+      return objectId;
+    }
 
-		  	TBoundingBox box;
+    void renderWithPick( void ) {}	// TODO: virtual = 0;
 
-		  	static uint globalId;
+  protected:
+    typedef struct
+    {
+      float xMin;
+      float xMax;
+      float yMin;
+      float yMax;
+      float zMin;
+      float zMax;
+    } TBoundingBox;
 
-		  	uint objectId;
+    TBoundingBox box;
 
-		  	//static ProgramShader program;
+    static unsigned int globalId;
 
-		  	//static ProgramShader initProgramShader();
-	};
+    unsigned int objectId;
+
+  };
 }
 
-#endif /*_PICKABLE_OBJECT_H_*/
+#endif // __RETO__PICKABLE_OBJECT__

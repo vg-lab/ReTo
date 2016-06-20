@@ -27,7 +27,8 @@ namespace reto
 {
 
   Camera::Camera( float fov_, float ratio_, float nearPlane_, float farPlane_,
-      Eigen::Vector3f pivot_, float radius_, float yaw_, float pitch_ )
+                  Eigen::Vector3f pivot_, float radius_, float yaw_,
+                  float pitch_ )
     : _ratio( ratio_ )
     , _nearPlane( nearPlane_ )
     , _farPlane( farPlane_ )
@@ -52,10 +53,10 @@ namespace reto
     _BuildViewMatrix( );
   }
 
-#ifdef RETO_USE_ZEQ
+#ifdef RETO_USE_ZEROEQ
   Camera::Camera( const std::string& uri_, float fov_, float ratio_,
-      float nearPlane_, float farPlane_, Eigen::Vector3f pivot_, float radius_,
-      float yaw_, float pitch_ )
+                  float nearPlane_, float farPlane_, Eigen::Vector3f pivot_,
+                  float radius_, float yaw_, float pitch_ )
     : _ratio( ratio_ )
     , _nearPlane( nearPlane_ )
     , _farPlane( farPlane_ )
@@ -269,52 +270,6 @@ namespace reto
     _animDuration = animDuration_;
   }
 
-
-  // PRIVATE
-
-// TODO (Cristian): Harcoded
-/*#ifndef RETO_USE_ZEQ
-
-  void Camera::_PositionVectorized( std::vector<float>& positionVec_ )
-  {
-    _positionVec = positionVec_;
-  }
-
-  void Camera::_Rotation( Eigen::Matrix3f rotation_ )
-  {
-    _rotation = rotation_;
-  }
-
-  void Camera::_ViewMatrixVectorized( std::vector<float>& viewVec_ )
-  {
-    _viewVec = viewVec_;
-  }
-
-#else
-
-  void Camera::_PositionVectorized( std::vector<float>& positionVec_ )
-  {
-    _positionMutex.lock( );
-    _positionVec = positionVec_;
-    _positionMutex.unlock( );
-  }
-
-  void Camera::_Rotation( Eigen::Matrix3f rotation_ )
-  {
-    _rotationMutex.lock( );
-    _rotation = rotation_;
-    _rotationMutex.unlock( );
-  }
-
-  void Camera::_ViewMatrixVectorized( std::vector<float>& viewVec_ )
-  {
-    _viewMatrixMutex.lock( );
-    _viewVec = viewVec_;
-    _viewMatrixMutex.unlock( );
-  }
-
-#endif*/
-
   void Camera::_BuildProjectionMatrix( void )
   {
     _projVec.resize(16);
@@ -337,7 +292,8 @@ namespace reto
     // row 4
     _projVec[12] = .0f;
     _projVec[13] = .0f;
-    _projVec[14] = ( 2.0f * _farPlane * _nearPlane ) / ( _nearPlane - _farPlane );
+    _projVec[14] = ( 2.0f * _farPlane * _nearPlane ) /
+      ( _nearPlane - _farPlane );
     _projVec[15] = .0f;
   }
 
@@ -378,11 +334,10 @@ namespace reto
     viewVec[13] = - pivot.y( );
     viewVec[14] = - pivot.z( ) - _radius;
     viewVec[15] = 1.0f;
-#ifdef RETO_USE_ZEQ
+#ifdef RETO_USE_ZEROEQ
     if ( _zeqConnection )
     {
       _publisher->publish( zeq::hbp::serializeCamera( viewVec ));
-//      std::cout << "Evento publicado" << std::endl;
     }
 #endif
     _ViewMatrixVectorized( viewVec );
@@ -391,15 +346,15 @@ namespace reto
   void Camera::_BuildViewProjectionMatrix( void )
   {
     Eigen::Matrix4f v, p, vp;
-    v <<  _viewVec[0], _viewVec[4], _viewVec[8], _viewVec[12],
-           _viewVec[1], _viewVec[5], _viewVec[9], _viewVec[13],
-           _viewVec[2], _viewVec[6], _viewVec[10], _viewVec[14],
-           _viewVec[3], _viewVec[7], _viewVec[11], _viewVec[15];
+    v << _viewVec[0], _viewVec[4], _viewVec[8], _viewVec[12],
+         _viewVec[1], _viewVec[5], _viewVec[9], _viewVec[13],
+         _viewVec[2], _viewVec[6], _viewVec[10], _viewVec[14],
+         _viewVec[3], _viewVec[7], _viewVec[11], _viewVec[15];
 
-    p  <<  _projVec[0], _projVec[4], _projVec[8], _projVec[12],
-           _projVec[1], _projVec[5], _projVec[9], _projVec[13],
-           _projVec[2], _projVec[6], _projVec[10], _projVec[14],
-           _projVec[3], _projVec[7], _projVec[11], _projVec[15];
+    p << _projVec[0], _projVec[4], _projVec[8], _projVec[12],
+         _projVec[1], _projVec[5], _projVec[9], _projVec[13],
+         _projVec[2], _projVec[6], _projVec[10], _projVec[14],
+         _projVec[3], _projVec[7], _projVec[11], _projVec[15];
 
     vp = p * v;
 
@@ -427,7 +382,7 @@ namespace reto
 
   }
 
-#ifdef RETO_USE_ZEQ
+#ifdef RETO_USE_ZEROEQ
   void Camera::_OnCameraEvent( const zeq::Event& event_ )
   {
     std::vector<float> viewMatrixVec = zeq::hbp::deserializeCamera( event_ );

@@ -1,7 +1,8 @@
 #include "PickableObject.h"
 
-namespace reto {
-	uint PickableObject::globalId = 0;
+namespace reto
+{
+	unsigned int PickableObject::globalId = 0;
 
 	/*rogramShader PickableObject::program = PickableObject::initProgramShader();
 
@@ -24,27 +25,33 @@ namespace reto {
 		return program;
 	}*/
 
-	PickableObject::PickableObject() { }
+	PickableObject::PickableObject( void )
+  {
+  }
 
-	PickableObject::~PickableObject() { }
+	PickableObject::~PickableObject( void )
+  {
+  }
 
-	void PickableObject::setBoundingBox(std::vector<Vertex>& vertices) {
-		float min_x, max_x,
-			  min_y, max_y,
-			  min_z, max_z;
-		min_x = max_x = vertices[0].x;
-		min_y = max_y = vertices[0].y;
-		min_z = max_z = vertices[0].z;
-		for(Vertex v : vertices) {
-			if (v.x < min_x) min_x = v.x;
-			if (v.x > max_x) max_x = v.x;
-			if (v.y < min_y) min_y = v.y;
-			if (v.y > max_y) max_y = v.y;
-			if (v.z < min_z) min_z = v.z;
-			if (v.z > max_z) max_z = v.z;
+	void PickableObject::setBoundingBox(std::vector<Vertex>& vertices)
+  {
+		float minX, maxX, minY, maxY, minZ, maxZ;
+		minX = maxX = vertices[0].x;
+		minY = maxY = vertices[0].y;
+		minZ = maxZ = vertices[0].z;
+		for( const Vertex& v : vertices )
+    {
+			if (v.x < minX) minX = v.x;
+			if (v.x > maxX) maxX = v.x;
+			if (v.y < minY) minY = v.y;
+			if (v.y > maxY) maxY = v.y;
+			if (v.z < minZ) minZ = v.z;
+			if (v.z > maxZ) maxZ = v.z;
 		}
 	}
-	bool PickableObject::intersection(ray r) {
+
+	bool PickableObject::intersection( ray r )
+  {
 		float t0, t1, tmin = 0.0, tmax = 0.0;
 
 		// X
