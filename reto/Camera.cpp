@@ -84,7 +84,7 @@ namespace reto
     _subscriber->registerHandler( zeq::hbp::EVENT_CAMERA,
       boost::bind( &Camera::_OnCameraEvent , this, _1 ));
 
-    pthread_create( &_subscriberThread, NULL, _Subscriber, this );
+    pthread_create( &_subscriberThread, nullptr, _Subscriber, this );
 
     _BuildProjectionMatrix( );
     _BuildViewMatrix( );
@@ -414,7 +414,7 @@ namespace reto
       subscriber->receive( 10000 );
     }
 
-    pthread_exit( NULL );
+    pthread_exit( nullptr );
   }
 
 #endif

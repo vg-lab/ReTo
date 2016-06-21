@@ -1,8 +1,9 @@
 #include "PickableObject.h"
+#include <algorithm>
 
 namespace reto
 {
-	unsigned int PickableObject::globalId = 0;
+	//unsigned int PickableObject::globalId = 0;
 
 	/*rogramShader PickableObject::program = PickableObject::initProgramShader();
 
@@ -51,7 +52,7 @@ namespace reto
 	}
 
 	bool PickableObject::intersection( ray r )
-  {
+  	{
 		float t0, t1, tmin = 0.0, tmax = 0.0;
 
 		// X

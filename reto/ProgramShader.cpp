@@ -82,37 +82,37 @@ namespace reto
     return true;
   }
 
-  bool ProgramShader::loadFromTextVS( const std::string& source )
+  bool ProgramShader::loadVertexShaderFromText( const std::string& source )
   {
     return loadFromText( source, GL_VERTEX_SHADER );
   }
 
-  bool ProgramShader::loadFromTextFS( const std::string& source )
+  bool ProgramShader::loadFragmentShaderFromText( const std::string& source )
   {
     return loadFromText( source, GL_FRAGMENT_SHADER );
   }
 
   #ifdef RETO_GEOMETRY_SHADERS
-    bool ProgramShader::loadFromTextGS( const std::string& source )
+    bool ProgramShader::loadGeometryShaderFromText( const std::string& source )
     {
       return loadFromText( source, GL_GEOMETRY_SHADER );
     }
   #endif
 
   #ifdef RETO_TESSELATION_SHADERS
-    bool ProgramShader::loadFromTextTES( const std::string& source )
+    bool ProgramShader::loadTesselationEvaluationShaderFromText( const std::string& source )
     {
       return loadFromText( source, GL_TESS_EVALUATION_SHADER );
     }
 
-    bool ProgramShader::loadFromTextTCS( const std::string& source )
+    bool ProgramShader::loadTesselationControlShaderFromText( const std::string& source )
     {
       return loadFromText(source, GL_TESS_CONTROL_SHADER);
     }
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
-    bool ProgramShader::loadFromTextCS( const std::string& source )
+    bool ProgramShader::loadComputeShaderFromText( const std::string& source )
     {
       return loadFromText( source, GL_COMPUTE_SHADER );
     }
@@ -181,37 +181,37 @@ namespace reto
              load( fsFile, GL_FRAGMENT_SHADER ));
   }
 
-  bool ProgramShader::loadVS( const std::string& file )
+  bool ProgramShader::loadVertexShader( const std::string& file )
   {
     return load( file, GL_VERTEX_SHADER );
   }
 
-  bool ProgramShader::loadFS(const std::string& file)
+  bool ProgramShader::loadFragmentShader(const std::string& file)
   {
     return load( file, GL_FRAGMENT_SHADER );
   }
 
   #ifdef RETO_GEOMETRY_SHADERS
-    bool ProgramShader::loadGS( const std::string& file )
+    bool ProgramShader::loadGeometryShader( const std::string& file )
     {
       return load( file, GL_GEOMETRY_SHADER );
     }
   #endif
 
   #ifdef RETO_TESSELATION_SHADERS
-    bool ProgramShader::loadTES( const std::string& file )
+    bool ProgramShader::loadTesselationEvaluationShader( const std::string& file )
     {
       return load( file, GL_TESS_EVALUATION_SHADER );
     }
 
-    bool ProgramShader::loadTCS( const std::string& file )
+    bool ProgramShader::loadTesselationControlShader( const std::string& file )
     {
       return load( file, GL_TESS_CONTROL_SHADER );
     }
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
-    bool ProgramShader::loadCS( const std::string& file )
+    bool ProgramShader::loadComputeShader( const std::string& file )
     {
       return load( file, GL_COMPUTE_SHADER );
     }
@@ -320,9 +320,9 @@ namespace reto
     }
   }
 
-  void ProgramShader::addUbo( const std::string& ubo_name )
+  void ProgramShader::addUbo( const std::string& uboName )
   {
-    _uboList[ubo_name] = glGetUniformBlockIndex( _program, ubo_name.c_str( ));
+    _uboList[uboName] = glGetUniformBlockIndex( _program, uboName.c_str( ));
   }
 
   #ifdef RETO_SUBPROGRAMS
@@ -369,17 +369,12 @@ namespace reto
     GLuint ProgramShader::subprogram( const std::string& name,
                                       GLenum shaderType )
     {
-      // TODO: http://www.cplusplus.com/reference/map/multimap/equal_range/
-      std::multimap<GLenum, SubProgram>::iterator v =
-        _subprograms.find( shaderType );
-      int number = _subprograms.count( shaderType );
-      for( int i = 0; i < number; i++ )
-      {
-        if(( *v ).second.name == name )
-        {
-          return ( *v ).second.index;
+      std::pair<std::multimap<GLenum, SubProgram>::iterator, std::multimap<GLenum, SubProgram>::iterator> ret;
+      ret = _subprograms.equal_range( shaderType );
+      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first; it != ret.second; it++ ) {
+        if(it->second.name == name) {
+          return it->second.index;
         }
-        v++;
       }
       std::cerr << "Subroutine not found" << std::endl;
       return -1;
@@ -471,27 +466,23 @@ namespace reto
     void ProgramShader::activeSubprogram( const std::string& name,
                                           GLenum shaderType )
     {
-      // TODO: http://www.cplusplus.com/reference/map/multimap/equal_range/
-      std::multimap<GLenum, SubProgram>::iterator v =
-        _subprograms.find(shaderType);
-      int number = _subprograms.count( shaderType );
-      for( int i = 0; i < number; i++ )
-      {
-        if((*v).second.name == name )
-        {
-          glUniformSubroutinesuiv( shaderType, 1, &(*v).second.index );
+      std::pair<std::multimap<GLenum, SubProgram>::iterator, std::multimap<GLenum, SubProgram>::iterator> ret;
+      ret = _subprograms.equal_range( shaderType );
+      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first; it != ret.second; it++ ) {
+        if(it->second.name == name) {
+          glUniformSubroutinesuiv( shaderType, 1, &it->second.index );
           return;
         }
-        v++;
       }
       std::cerr << "Subroutine not found" << std::endl;
     }
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
-    void ProgramShader::launchComputeWork( GLuint nGx, GLuint nGy, GLuint nGz )
+    void ProgramShader::launchComputeWork( GLuint numGroupX, GLuint numGroupY, 
+      GLuint numGroupZ )
     {
-      glDispatchCompute( nGx, nGy, nGz );
+      glDispatchCompute( numGroupX, numGroupY, numGroupZ );
     }
   #endif
 
@@ -550,38 +541,38 @@ namespace reto
   #endif
 
   #ifdef RETO_GEOMETRY_SHADERS
-    void ProgramShader::setGeometryMaxOutput( GLuint o )
+    void ProgramShader::setGeometryMaxOutput( GLuint maxOutput )
     {
-      glProgramParameteri( _program, GL_GEOMETRY_VERTICES_OUT, o );
+      glProgramParameteri( _program, GL_GEOMETRY_VERTICES_OUT, maxOutput );
     }
-    void ProgramShader::setGeometryInputType( GLuint i )
+    void ProgramShader::setGeometryInputType( GLuint inputType )
     {
-      glProgramParameteri( _program, GL_GEOMETRY_INPUT_TYPE, i );
+      glProgramParameteri( _program, GL_GEOMETRY_INPUT_TYPE, inputType );
     }
-    void ProgramShader::setGeometryOutputType( GLuint o )
+    void ProgramShader::setGeometryOutputType( GLuint outputType )
     {
-      glProgramParameteri( _program, GL_GEOMETRY_OUTPUT_TYPE, o );
+      glProgramParameteri( _program, GL_GEOMETRY_OUTPUT_TYPE, outputType );
     }
 
     GLint ProgramShader::getGeometryMaxOutput( void )
     {
-      GLint o;
-      glGetProgramiv( _program, GL_GEOMETRY_VERTICES_OUT, &o );
-      return o;
+      GLint maxOutput;
+      glGetProgramiv( _program, GL_GEOMETRY_VERTICES_OUT, &maxOutput );
+      return maxOutput;
     }
 
     GLint ProgramShader::getGeometryInputType( void )
     {
-      GLint o;
-      glGetProgramiv( _program, GL_GEOMETRY_INPUT_TYPE, &o );
-      return o;
+      GLint inputType;
+      glGetProgramiv( _program, GL_GEOMETRY_INPUT_TYPE, &inputType );
+      return inputType;
     }
 
     GLint ProgramShader::getGeometryOutputType( void )
     {
-      GLint o;
-      glGetProgramiv( _program, GL_GEOMETRY_OUTPUT_TYPE, &o );
-      return o;
+      GLint outputType;
+      glGetProgramiv( _program, GL_GEOMETRY_OUTPUT_TYPE, &outputType );
+      return outputType;
     }
   #endif
 }

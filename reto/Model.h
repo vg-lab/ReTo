@@ -19,60 +19,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
-#ifndef __RETO__PICKABLE_OBJECT__
-#define __RETO__PICKABLE_OBJECT__
+#ifndef __RETO__MODEL__
+#define __RETO__MODEL__
 
 #include <vector>
 #include "ProgramShader.h"
 
+#include <vector>
 
-// Deprecated class
 namespace reto
 {
-	class PickableObject
+  class Model
   {
-		public:
-
-    typedef struct Vertex
-    {
-      float x, y, z;
-    } Vertex;
-
-    typedef struct
-    {
-      Vertex origin, direction;
-    } ray;
-
-    PickableObject( void );
-    ~PickableObject( void );
-
-    bool intersection( ray r );
-
-    void setBoundingBox( std::vector<Vertex>& vertices );
-
-    unsigned int inline id( void )
-    {
-      return objectId;
-    }
-
-  protected:
-    typedef struct
-    {
-      float xMin;
-      float xMax;
-      float yMin;
-      float yMax;
-      float zMin;
-      float zMax;
-    } TBoundingBox;
-
-    TBoundingBox box;
-
-    //static unsigned int globalId;
-
-    unsigned int objectId;
-
+    public:
+      virtual void render() = 0;
+      virtual ~Model() = 0;
   };
 }
 
-#endif // __RETO__PICKABLE_OBJECT__
+#endif // __RETO__MODEL__
