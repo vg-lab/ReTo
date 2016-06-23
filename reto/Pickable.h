@@ -23,17 +23,34 @@
 #ifndef __RETO__PICKABLE__
 #define __RETO__PICKABLE__
 
-class Pickable
-{
-public:
-	Pickable( void );
-	virtual ~Pickable ( void ); 
-	virtual unsigned int sendId ( unsigned int currentOffset );
-	virtual void render ( void ) = 0;
+#include <reto/api.h>
 
-protected:
-	int _numIds = 1;
-	void setNumIDs ( int numIds );
+namespace reto
+{
+	class Pickable
+	{
+	public:
+		Pickable( void );
+		virtual ~Pickable ( void ); 
+
+	    /**
+	     * Method to update currentOffset
+	     * @param currentOffset: Current offset
+	     * @return Updated current offset
+	     */
+	    RETO_API
+		virtual unsigned int sendId ( unsigned int currentOffset );
+
+	    /**
+	     * Method to render a Pickable object
+	     */
+	    RETO_API
+		virtual void render ( void ) = 0;
+
+	protected:
+		int _numIds = 1;
+		void setNumIDs ( int numIds );
+	};
 };
 
 #endif // __RETO__PICKABLE__

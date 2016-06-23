@@ -36,7 +36,7 @@ namespace reto
     int WINDOW_HEIGHT = 500;  // TODO: Hardcoded
 
     unsigned int currentId = 0;
-    std::set< Pickable* >::iterator it;
+    std::set< reto::Pickable* >::iterator it;
     for (it = _objects.begin(); it != _objects.end(); it++) 
     {
       currentId = (*it)->sendId( currentId );
@@ -59,7 +59,7 @@ namespace reto
     int WINDOW_HEIGHT = 500;  // TODO: Hardcoded
 
     unsigned int currentId = 0;
-    std::set< Pickable* >::iterator it;
+    std::set< reto::Pickable* >::iterator it;
     for (it = _objects.begin(); it != _objects.end(); it++) 
     {
       currentId = (*it)->sendId( currentId );

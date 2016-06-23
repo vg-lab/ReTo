@@ -48,10 +48,21 @@ namespace reto
     PickingSystem( reto::Camera* camera );
     virtual ~PickingSystem( );
 
+    /**
+     * Method to add a Pickable object
+     * @param p: Pickable object
+     */
     RETO_API
-    void AddObject( Pickable * p );
+    void AddObject( reto::Pickable * p );
+    /**
+     * Method to remove a Pickable object
+     * @param p: Pickable object
+     */
     RETO_API
-    void RemoveObject( Pickable * p );
+    void RemoveObject( reto::Pickable * p );
+    /**
+     * Method to clear Pickable elements
+     */
     RETO_API
     void Clear( void );
 
@@ -62,7 +73,6 @@ namespace reto
      */
     RETO_API
     int click( Point point );
-
 
     /**
      * Method to find front object in a specific area
@@ -75,11 +85,11 @@ namespace reto
 
     protected:
       reto::ProgramShader _program;
-      std::set< Pickable* > _objects;
+      std::set< reto::Pickable* > _objects;
       reto::Camera* _camera;
       
       virtual std::string getVertexCode( );
   };
-}
+};
 
 #endif // __RETO__PICKING_SYSTEM__
