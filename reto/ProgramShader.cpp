@@ -228,8 +228,8 @@ namespace reto
       _subprograms.clear( );
     #endif
     _shaders.clear( );
-    GLuint size = _shaders.size( );
-    for( GLuint i = 0; i < size; ++i )
+    size_t size = _shaders.size( );
+    for( size_t i = 0; i < size; ++i )
     {
       if( _shaders[i] != 0 )
       {
@@ -242,8 +242,8 @@ namespace reto
   void ProgramShader::create( void )
   {
     _program = glCreateProgram( );
-    GLuint size = _shaders.size( );
-    for( GLuint i = 0; i < size; i++ )
+    size_t size = _shaders.size( );
+    for( size_t i = 0; i < size; i++ )
     {
       if( _shaders[i] != 0 )
       {
