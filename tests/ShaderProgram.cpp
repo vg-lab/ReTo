@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE( test_program_shader )
 {
 	char *myargv [1];
 	int myargc = 1;
-	myargv [0] = 'a';
+	myargv [0] = "abcd";
 	glutInit(&myargc, myargv);
 
 	glutInitContextVersion(4, 3);
