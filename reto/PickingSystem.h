@@ -23,11 +23,11 @@
 #define __RETO__PICKING_SYSTEM__
 
 #include <vector>
-#include "ProgramShader.h"
+#include "ShaderProgram.h"
 
 #include <vector>
 #include <set>
-#include "ProgramShader.h"
+#include "ShaderProgram.h"
 #include "Camera.h"
 #include "Pickable.h"
 
@@ -84,11 +84,11 @@ namespace reto
     std::set<unsigned int> area( Point minPoint, Point maxPoint );
 
     protected:
-      reto::ProgramShader _program;
+      reto::ShaderProgram _program;
       std::set< reto::Pickable* > _objects;
       reto::Camera* _camera;
       
-      virtual std::string getVertexCode( );
+      virtual std::string VertexCode( );
   };
 };
 

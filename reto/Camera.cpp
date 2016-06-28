@@ -444,4 +444,48 @@ namespace reto
     return rot;
   }
 
+    // PRIVATE
+
+#ifndef RETO_USE_ZEROEQ
+
+  void Camera::_PositionVectorized( const std::vector<float>& positionVec_ )
+  {
+    _positionVec = positionVec_;
+  }
+
+  void Camera::_Rotation( const Eigen::Matrix3f& rotation_ )
+  {
+    _rotation = rotation_;
+  }
+
+  void Camera::_ViewMatrixVectorized( const std::vector<float>& viewVec_ )
+  {
+    _viewVec = viewVec_;
+  }
+
+#else
+
+  void Camera::_PositionVectorized( const std::vector<float>& positionVec_ )
+  {
+    _positionMutex.lock( );
+    _positionVec = positionVec_;
+    _positionMutex.unlock( );
+  }
+
+  void Camera::_Rotation( const Eigen::Matrix3f& rotation_ )
+  {
+    _rotationMutex.lock( );
+    _rotation = rotation_;
+    _rotationMutex.unlock( );
+  }
+
+  void Camera::_ViewMatrixVectorized( const std::vector<float>& viewVec_ )
+  {
+    _viewMatrixMutex.lock( );
+    _viewVec = viewVec_;
+    _viewMatrixMutex.unlock( );
+  }
+
+#endif
+
 } // end namespace reto

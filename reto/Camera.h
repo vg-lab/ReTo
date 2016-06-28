@@ -145,19 +145,9 @@ namespace reto
     void AnimDuration( float animDuration_ );
 
     private:
-    // TODO (Cristian): Harcoded
-    void _PositionVectorized( const std::vector<float>& positionVec_ )
-    {
-    	positionVec_.size();
-    }
-    void _Rotation( const Eigen::Matrix3f& rotation_ )
-    {
-    	rotation_.size();
-    }
-    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ )
-    {
-    	viewVec_.size();
-    }
+    void _PositionVectorized( const std::vector<float>& positionVec_ );
+    void _Rotation( const Eigen::Matrix3f& rotation_ );
+    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ );
 
     void _BuildProjectionMatrix( void );
     void _BuildViewMatrix( void );

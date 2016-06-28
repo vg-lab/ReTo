@@ -5,7 +5,7 @@ namespace reto
     : _camera(camera)
   {
     _program.loadFromText(
-      getVertexCode( ),
+      VertexCode( ),
       "#version 430\n"
       "out vec4 ourColor;\n"
       "in float pid;\n"
@@ -84,7 +84,7 @@ namespace reto
     return ret;
   }
 
-  std::string PickingSystem::getVertexCode( )
+  std::string PickingSystem::VertexCode( )
   {
     return std::string("#version 430\n"
       "layout (location = 0) in vec3 Position;\n"

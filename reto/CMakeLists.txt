@@ -2,7 +2,7 @@ source_group(\\ FILES CMakeLists.txt)
 
 set(RETO_PUBLIC_HEADERS
   Camera.h
-  ProgramShader.h
+  ShaderProgram.h
   Pickable.h
   PickingSystem.h
 )
@@ -11,7 +11,7 @@ set(RETO_HEADERS )
 
 set(RETO_SOURCES
   Camera.cpp
-  ProgramShader.cpp
+  ShaderProgram.cpp
   Pickable.cpp
   PickingSystem.cpp
 )
