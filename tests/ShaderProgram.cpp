@@ -42,10 +42,11 @@ using namespace reto;
 
 BOOST_AUTO_TEST_CASE( test_program_shader )
 {
-	char *myargv [1];
-	int myargc = 1;
-	myargv [0] = "abcd";
-	glutInit(&myargc, myargv);
+	char fooParam[] = "foo";
+	char *fooargv[] = { fooParam, NULL };
+	int fooargc = 1;
+
+	glutInit( &fooargc, fooargv );
 
 	glutInitContextVersion(4, 3);
 	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
