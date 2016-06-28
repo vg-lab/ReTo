@@ -2,7 +2,7 @@ find_library(NVIDIA_OPENGL_gl_LIBRARY
   GL
   PATHS
   /usr/lib/nvidia-331
-  /usr/lib/nvidia-340
+  /usr/lib/nvidia-340  
   /usr/lib/nvidia-346
   /usr/lib/nvidia-352
   /usr/lib/nvidia-361
