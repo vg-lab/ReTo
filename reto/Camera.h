@@ -1,11 +1,25 @@
 /*
- * @file Camera.h
- * @brief
- * @author Juan Jose Garcia <juanjose.garcia@urjc.es>
- * @date
- * remarks Copyright (c) GMRV/URJC. All rights reserved.
- *         Do not distribute without further notice.
+ * Copyright (c) 2014-2016 GMRV/URJC.
+ *
+ * Authors: Juan Jose Garcia
+ *
+ * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License version 3.0 as published
+ * by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  */
+ 
 #ifndef __RETO_CAMERA__
 #define __RETO_CAMERA__
 
@@ -95,6 +109,13 @@ namespace reto
      */
     RETO_API
     ~Camera(void);
+
+    /**
+     * Method to translate the camera from the actual position
+     * @param increment_ camera translation
+     */
+    RETO_API
+    void LocalTranslation( Eigen::Vector3f increment_ );
 
     /**
      * Method to rotate the camera from the actual rotation

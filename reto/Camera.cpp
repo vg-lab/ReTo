@@ -98,6 +98,11 @@ namespace reto
 
   // PUBLIC
 
+  void Camera::LocalTranslation( Eigen::Vector3f increment_ )
+  {
+    _pivot += _rotation.transpose( ) * increment_;
+    _BuildViewMatrix( );
+  }
   void Camera::LocalRotation( float yaw_, float pitch_ )
   {
     _Rotation( _RotationFromPY( yaw_, pitch_) * _rotation );
