@@ -19,60 +19,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
-#ifndef __RETO__PICKABLE_OBJECT__
-#define __RETO__PICKABLE_OBJECT__
 
-#include <vector>
-#include "ProgramShader.h"
+#ifndef __RETO__PICKABLE__
+#define __RETO__PICKABLE__
+
+#include <reto/api.h>
 
 namespace reto
 {
-	class PickableObject
+  class Pickable
   {
-		public:
+  public:
+    Pickable( void );
+    virtual ~Pickable ( void ); 
 
-    typedef struct Vertex
-    {
-      float x, y, z;
-    } Vertex;
+      /**
+       * Method to update currentOffset
+       * @param currentOffset: Current offset
+       * @return Updated current offset
+       */
+      RETO_API
+    virtual unsigned int sendId ( unsigned int currentOffset );
 
-    typedef struct
-    {
-      Vertex origin, direction;
-    } ray;
-
-    PickableObject( void );
-    ~PickableObject( void );
-
-    bool intersection( ray r );
-
-    void setBoundingBox( std::vector<Vertex>& vertices );
-
-    unsigned int inline id( void )
-    {
-      return objectId;
-    }
-
-    void renderWithPick( void ) {}	// TODO: virtual = 0;
+      /**
+       * Method to render a Pickable object
+       */
+      RETO_API
+    virtual void render ( void ) = 0;
 
   protected:
-    typedef struct
-    {
-      float xMin;
-      float xMax;
-      float yMin;
-      float yMax;
-      float zMin;
-      float zMax;
-    } TBoundingBox;
-
-    TBoundingBox box;
-
-    static unsigned int globalId;
-
-    unsigned int objectId;
-
+    int _numIds = 1;
+    void setNumIDs ( int numIds );
   };
-}
+};
 
-#endif // __RETO__PICKABLE_OBJECT__
+#endif // __RETO__PICKABLE__

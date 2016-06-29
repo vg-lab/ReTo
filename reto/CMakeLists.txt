@@ -2,17 +2,21 @@ source_group(\\ FILES CMakeLists.txt)
 
 set(RETO_PUBLIC_HEADERS
   Camera.h
-  PickableObject.h
-  ProgramShader.h
+  ShaderProgram.h
+  Pickable.h
+  PickingSystem.h
 )
 
 set(RETO_HEADERS )
 
 set(RETO_SOURCES
   Camera.cpp
-  PickableObject.cpp
-  ProgramShader.cpp
+  ShaderProgram.cpp
+  Pickable.cpp
+  PickingSystem.cpp
 )
+
+link_directories(${NVIDIA_OPENGL_gl_LIBRARY_PATH})
 
 set(RETO_LINK_LIBRARIES
   ${OPENGL_LIBRARIES}

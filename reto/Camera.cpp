@@ -84,7 +84,7 @@ namespace reto
     _subscriber->registerHandler( zeq::hbp::EVENT_CAMERA,
       boost::bind( &Camera::_OnCameraEvent , this, _1 ));
 
-    pthread_create( &_subscriberThread, NULL, _Subscriber, this );
+    pthread_create( &_subscriberThread, nullptr, _Subscriber, this );
 
     _BuildProjectionMatrix( );
     _BuildViewMatrix( );
@@ -414,7 +414,7 @@ namespace reto
       subscriber->receive( 10000 );
     }
 
-    pthread_exit( NULL );
+    pthread_exit( nullptr );
   }
 
 #endif
@@ -443,5 +443,49 @@ namespace reto
     rot = rPitch * rYaw;
     return rot;
   }
+
+    // PRIVATE
+
+#ifndef RETO_USE_ZEROEQ
+
+  void Camera::_PositionVectorized( const std::vector<float>& positionVec_ )
+  {
+    _positionVec = positionVec_;
+  }
+
+  void Camera::_Rotation( const Eigen::Matrix3f& rotation_ )
+  {
+    _rotation = rotation_;
+  }
+
+  void Camera::_ViewMatrixVectorized( const std::vector<float>& viewVec_ )
+  {
+    _viewVec = viewVec_;
+  }
+
+#else
+
+  void Camera::_PositionVectorized( const std::vector<float>& positionVec_ )
+  {
+    _positionMutex.lock( );
+    _positionVec = positionVec_;
+    _positionMutex.unlock( );
+  }
+
+  void Camera::_Rotation( const Eigen::Matrix3f& rotation_ )
+  {
+    _rotationMutex.lock( );
+    _rotation = rotation_;
+    _rotationMutex.unlock( );
+  }
+
+  void Camera::_ViewMatrixVectorized( const std::vector<float>& viewVec_ )
+  {
+    _viewMatrixMutex.lock( );
+    _viewVec = viewVec_;
+    _viewMatrixMutex.unlock( );
+  }
+
+#endif
 
 } // end namespace reto

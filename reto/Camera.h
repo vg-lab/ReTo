@@ -49,10 +49,9 @@ namespace reto
    */
   class Camera
   {
-
   public:
 
-    /**
+  /**
      * Camera constructor
      * @param fov camera field of view
      * @param ratio camera ratio
@@ -111,8 +110,6 @@ namespace reto
      */
     RETO_API
     bool Anim( void );
-
-    // GETTERS
 
     /**
      * Method to get the field of view of the camera
@@ -253,23 +250,18 @@ namespace reto
      */
     void AnimDuration( float animDuration_ );
 
-    private:
-    // TODO (Cristian): Harcoded
-    void _PositionVectorized( const std::vector<float>& positionVec_ )
-    {
-    	positionVec_.size();
-    }
-    void _Rotation( const Eigen::Matrix3f& rotation_ )
-    {
-    	rotation_.size();
-    }
-    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ )
-    {
-    	viewVec_.size();
-    }
+private:
+
+    void _PositionVectorized( const std::vector<float>& positionVec_ );
+
+    void _Rotation( const Eigen::Matrix3f& rotation_ );
+
+    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ );
 
     void _BuildProjectionMatrix( void );
+
     void _BuildViewMatrix( void );
+
     void _BuildViewProjectionMatrix( void );
 
 #ifdef RETO_USE_ZEROEQ
@@ -277,6 +269,7 @@ namespace reto
 #endif
 
     Eigen::Matrix3f _RotationFromPY( float yaw_, float pitch_ );
+
 
     //! Factor to calculate the camera projection matrix based on the camera
     //! far plane, near plane, field of view and ratio
@@ -367,8 +360,6 @@ namespace reto
     std::chrono::time_point< std::chrono::system_clock > _previusTime;
 
   };
-
-
 } //end namespace reto
 
 #endif // __RETO_CAMERA__
