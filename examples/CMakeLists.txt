@@ -14,10 +14,10 @@ set( RETOQTCAMERA_LINK_LIBRARIES ReTo )
 common_application( ReToQtCamera )
 
 set( RETOSHADERPROGRAM_HEADERS )
-set( RETOSHADERPROGRAM_SOURCES test.cpp )
+set( RETOSHADERPROGRAM_SOURCES progShader.cpp )
 set( RETOSHADERPROGRAM_LINK_LIBRARIES
 	ReTo
-#	${GLUT_LIBRARIES}
+	${GLUT_LIBRARIES}
 )
 #message(${OPENGL_LIBRARIES})
 common_application( ReToShaderProgram )

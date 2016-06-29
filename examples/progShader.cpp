@@ -42,7 +42,7 @@ using namespace reto;
 
 int main(int argc, char** argv) {
 
-  std::cout << "Starting...." << std
+  std::cout << "Starting...." << std::endl;
   glutInit(&argc, argv);
 
   glutInitContextVersion(4, 3);
@@ -80,7 +80,6 @@ int main(int argc, char** argv) {
     " gl_Position = MVP * vec4(position, 1.0);\n"
     "}"
   );
-  std::cout << vsShader << std::endl;
   std::string fsShader (
     "#version 430 core\n"
     "out vec4 fragColor;\n"
@@ -88,7 +87,6 @@ int main(int argc, char** argv) {
     " fragColor = vec4(1.0);\n"
     "}"
   );
-  std::cout << fsShader << std::endl;
   std::string gsShader (
     "#version 430 core\n"
     "layout (points) in;\n"
@@ -102,72 +100,62 @@ int main(int argc, char** argv) {
     "    EndPrimitive();\n"
     "}"
   );
-  std::cout << gsShader << std::endl;
 
-  /*reto::ShaderProgram prog;
+  reto::ShaderProgram prog;
   bool vsCreate = prog.loadVertexShaderFromText(vsShader);
-  std::cout << vsCreate << std::endl;
-  //BOOST_CHECK( vsCreate == true );
+  std::cout << std::boolalpha << vsCreate << std::endl;
 
   bool fsCreate = prog.loadFragmentShaderFromText(fsShader);
-  std::cout << fsCreate << std::endl;
-  //BOOST_CHECK( fsCreate == true );
+  std::cout << std::boolalpha << fsCreate << std::endl;
 
   bool compile = prog.compileAndLink();
-  std::cout << compile << std::endl;
-  //BOOST_CHECK( compile == true );
+  std::cout << std::boolalpha << compile << std::endl;
 
-  prog.addUniform("MVP");*/
-  //BOOST_CHECK(prog["MVP"] == 0);
-  //BOOST_CHECK(prog.uniform("MVP") == 0);
+  prog.addUniform("MVP");
+  std::cout << "[MVP] => " << prog["MVP"] << std::endl;
+  std::cout << "uniform(MVP) => " << prog.uniform("MVP") << std::endl;
+  std::cout << std::boolalpha << "[MVP] == uniform(MVP) => " << (prog["MVP"] == prog.uniform("MVP")) << std::endl;
 
 
-  /*reto::ShaderProgram prog2;
+  reto::ShaderProgram prog2;
   vsCreate = prog2.loadVertexShaderFromText(vsShader);
-  //BOOST_CHECK( vsCreate == true );
+  std::cout << std::boolalpha << vsCreate << std::endl;
 
   fsCreate = prog2.loadFragmentShaderFromText(fsShader);
-  //BOOST_CHECK( fsCreate == true );
+  std::cout << std::boolalpha << fsCreate << std::endl;
 
   bool gsCreate = prog2.loadGeometryShaderFromText(gsShader);
-  //BOOST_CHECK( gsCreate == true );
+  std::cout << std::boolalpha << gsCreate << std::endl;
 
-
-
-
+  /*prog2.create();
+  int temp;
+  glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_ARB,&temp);
+  std::cout << "MAX GEOMETRY OUTPUT VERTICES: " << temp << std::endl;
+  glProgramParameteri(prog2.program(), GL_GEOMETRY_VERTICES_OUT_ARB, temp);
+  prog2.link();
+  
+  compile = prog2.compileAndLink();
+  std::cout << std::boolalpha << compile << std::endl;
+  prog2.use();
+  std::cout << std::boolalpha << (prog2.getGeometryInputType() == GL_POINTS) << std::endl;
+  std::cout << std::boolalpha << (prog2.getGeometryOutputType() == GL_LINE_STRIP) << std::endl;
+  std::cout << (prog2.getGeometryMaxOutput()) << std::endl;*/
 
   prog2.create();
-  glProgramParameteriEXT(prog2.program(), GL_GEOMETRY_VERTICES_OUT, 2);
+  int programId = prog2.program();
+  int inputType = GL_TRIANGLES;
+  int outputType = GL_TRIANGLE_STRIP;
+  glProgramParameteri(programId, GL_GEOMETRY_INPUT_TYPE, inputType);
+  glProgramParameteri(programId, GL_GEOMETRY_OUTPUT_TYPE, outputType);
+
+  int maxVerts;
+  glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &maxVerts);
+  glProgramParameteri(programId, GL_GEOMETRY_VERTICES_OUT, 8);
+  std::cout << "GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT  count = " << maxVerts << std::endl;
+
   prog2.link();
-  //compile = prog2.compileAndLink();
-  ////BOOST_CHECK( compile == true );
+  std::cout << prog2.getGeometryInputType() << " " << inputType << std::endl;
+  std::cout << prog2.getGeometryOutputType() << " " << outputType << std::endl;
 
-  //BOOST_CHECK(prog2.getGeometryInputType() == GL_POINTS);
-  //BOOST_CHECK(prog2.getGeometryOutputType() == GL_LINE_STRIP);
-  //BOOST_CHECK(prog2.getGeometryMaxOutput() == 1024);
-    BOOST_TEST_MESSAGE( "xDDDDDDDDDDDDDD" );
-  //prog2.use();
-  //write
-  //glProgramParameteri(prog2.program(), GL_GEOMETRY_VERTICES_OUT, 8);
-  ////BOOST_CHECK(prog2.getGeometryMaxOutput() == 2);
-*/
-/*
-  //read 
-  int temp;
-  glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &temp);
-  //BOOST_CHECK( temp == 2 );*/
-
-
-  //prog2.setGeometryMaxOutput(8);
-  ////BOOST_CHECK(prog2.getGeometryMaxOutput() == 2);
-  //prog2.setGeometryInputType(GL_TRIANGLES);
-  //prog2.setGeometryOutputType(GL_TRIANGLE_STRIP);
-
-  ////BOOST_CHECK(prog2.getGeometryInputType() == GL_TRIANGLES);
-  ////BOOST_CHECK(prog2.getGeometryOutputType() == GL_TRIANGLE_STRIP);
-  ////BOOST_CHECK(prog2.getGeometryMaxOutput() == 8);
-  //glProgramParameteri( prog2.program(),GL_GEOMETRY_VERTICES_OUT, 101 );
-  //GLint maxOutput;
-  //glGetProgramiv( prog2.program(), GL_GEOMETRY_VERTICES_OUT, &maxOutput );
-  ////BOOST_CHECK( 101 == maxOutput );
+  return 0;
 }
