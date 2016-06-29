@@ -1,16 +1,20 @@
+file(GLOB NVIDIA_OPENGL_gl_LIBRARY_PATHS_HINT
+  /usr/lib/nvidia-* )
+
 find_library(NVIDIA_OPENGL_gl_LIBRARY
   GL
   PATHS
-  /usr/lib/nvidia-331
-  /usr/lib/nvidia-340  
-  /usr/lib/nvidia-346
-  /usr/lib/nvidia-352
-  /usr/lib/nvidia-361
+  ${NVIDIA_OPENGL_gl_LIBRARY_PATHS_HINT}
   NO_DEFAULT_PATH
   NO_SYSTEM_ENVIRONMENT_PATH
 )
 
+message("${NVIDIA_OPENGL_gl_LIBRARY}")
 
 get_filename_component(NVIDIA_OPENGL_gl_LIBRARY_PATH
 ${NVIDIA_OPENGL_gl_LIBRARY}
 DIRECTORY)
+
+if ( NVIDIA_OPENGL_gl_LIBRARY )
+  link_directories(${NVIDIA_OPENGL_gl_LIBRARY_PATH})
+endif( )
