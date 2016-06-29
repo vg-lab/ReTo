@@ -27,30 +27,30 @@
 
 namespace reto
 {
-	class Pickable
-	{
-	public:
-		Pickable( void );
-		virtual ~Pickable ( void ); 
+  class Pickable
+  {
+  public:
+    Pickable( void );
+    virtual ~Pickable ( void ); 
 
-	    /**
-	     * Method to update currentOffset
-	     * @param currentOffset: Current offset
-	     * @return Updated current offset
-	     */
-	    RETO_API
-		virtual unsigned int sendId ( unsigned int currentOffset );
+      /**
+       * Method to update currentOffset
+       * @param currentOffset: Current offset
+       * @return Updated current offset
+       */
+      RETO_API
+    virtual unsigned int sendId ( unsigned int currentOffset );
 
-	    /**
-	     * Method to render a Pickable object
-	     */
-	    RETO_API
-		virtual void render ( void ) = 0;
+      /**
+       * Method to render a Pickable object
+       */
+      RETO_API
+    virtual void render ( void ) = 0;
 
-	protected:
-		int _numIds = 1;
-		void setNumIDs ( int numIds );
-	};
+  protected:
+    int _numIds = 1;
+    void setNumIDs ( int numIds );
+  };
 };
 
 #endif // __RETO__PICKABLE__

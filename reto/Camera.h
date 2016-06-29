@@ -55,154 +55,154 @@
 namespace reto
 {
 
-  class Camera
-  {
+	class Camera
+	{
 
-  public:
+	public:
 
-    RETO_API
-    Camera( float fov_ = 45.0f, float ratio_ = ((float)16)/9,
-            float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
-            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
-            float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
-
-#ifdef RETO_USE_ZEROEQ
-    RETO_API
-    Camera( const std::string& session_, float fov_ = 45.0f,
-            float ratio_ = ((float)16)/9, float nearPlane_ = 0.1f,
-            float farPlane_ = 10000.0f,
-            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
-            float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
-#endif
-
-    RETO_API
-    ~Camera(void);
-
-    RETO_API
-    void LocalRotation( float yaw_, float pitch_ );
-
-    RETO_API
-    bool Anim( void );
-
-    // GETTERS
-
-    RETO_API
-    float Fov( void );
-
-    RETO_API
-    float& FarPlane( void )
-    {
-      return _farPlane;
-    }
-
-    RETO_API
-    Eigen::Vector3f Pivot( void );
-
-    RETO_API
-    float Radius( void );
-
-    RETO_API
-    float* ProjectionMatrix( void );
-
-    RETO_API
-    float* ViewMatrix( void );
-
-    RETO_API
-    float* ViewProjectionMatrix( void );
-
-    RETO_API
-    float* Position( void );
+		RETO_API
+		Camera( float fov_ = 45.0f, float ratio_ = ((float)16)/9,
+						float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
+						Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+						float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
 
 #ifdef RETO_USE_ZEROEQ
-    RETO_API
-    zeroeq::Subscriber* Subscriber( void );
+		RETO_API
+		Camera( const std::string& session_, float fov_ = 45.0f,
+						float ratio_ = ((float)16)/9, float nearPlane_ = 0.1f,
+						float farPlane_ = 10000.0f,
+						Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+						float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
 #endif
 
-      // SETTERS
-    RETO_API
-    void Ratio( float ratio_ );
+		RETO_API
+		~Camera(void);
 
-    RETO_API
-    void Pivot( Eigen::Vector3f pivot_ );
+		RETO_API
+		void LocalRotation( float yaw_, float pitch_ );
 
-    RETO_API
-    void Radius( float radius_ );
+		RETO_API
+		bool Anim( void );
 
-    RETO_API
-    void Rotation( float yaw_, float pitch_ );
+		// GETTERS
 
-    RETO_API
-    void TargetPivot( Eigen::Vector3f targetPivot_ );
+		RETO_API
+		float Fov( void );
 
-    RETO_API
-    void TargetRadius( float targetRadius_ );
+		RETO_API
+		float& FarPlane( void )
+		{
+			return _farPlane;
+		}
 
-    RETO_API
-    void TargetPivotRadius( Eigen::Vector3f targetPivot_,
-                            float targetRadius_ );
+		RETO_API
+		Eigen::Vector3f Pivot( void );
 
-    RETO_API
-    void AnimDuration( float animDuration_ );
+		RETO_API
+		float Radius( void );
 
-    private:
-    void _PositionVectorized( const std::vector<float>& positionVec_ );
-    void _Rotation( const Eigen::Matrix3f& rotation_ );
-    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ );
+		RETO_API
+		float* ProjectionMatrix( void );
 
-    void _BuildProjectionMatrix( void );
-    void _BuildViewMatrix( void );
-    void _BuildViewProjectionMatrix( void );
+		RETO_API
+		float* ViewMatrix( void );
+
+		RETO_API
+		float* ViewProjectionMatrix( void );
+
+		RETO_API
+		float* Position( void );
 
 #ifdef RETO_USE_ZEROEQ
-    void _OnCameraEvent( lexis::render::ConstLookOutPtr event_ );
+		RETO_API
+		zeroeq::Subscriber* Subscriber( void );
 #endif
 
-    Eigen::Matrix3f _RotationFromPY( float yaw_, float pitch_ );
+			// SETTERS
+		RETO_API
+		void Ratio( float ratio_ );
 
-    float _f;
-    float _fov;
-    float _ratio;
-    float _nearPlane;
-    float _farPlane;
+		RETO_API
+		void Pivot( Eigen::Vector3f pivot_ );
 
-    Eigen::Vector3f _pivot;
-    float _radius;
+		RETO_API
+		void Radius( float radius_ );
 
-    Eigen::Matrix3f _rotation;
+		RETO_API
+		void Rotation( float yaw_, float pitch_ );
 
-    std::vector<float> _positionVec;
-    std::vector<float> _projVec;
-    std::vector<float> _viewVec;
-    std::vector<float> _viewProjVec;
+		RETO_API
+		void TargetPivot( Eigen::Vector3f targetPivot_ );
 
-    Eigen::Vector3f _targetPivot;
-    float _targetRadius;
+		RETO_API
+		void TargetRadius( float targetRadius_ );
+
+		RETO_API
+		void TargetPivotRadius( Eigen::Vector3f targetPivot_,
+														float targetRadius_ );
+
+		RETO_API
+		void AnimDuration( float animDuration_ );
+
+		private:
+		void _PositionVectorized( const std::vector<float>& positionVec_ );
+		void _Rotation( const Eigen::Matrix3f& rotation_ );
+		void _ViewMatrixVectorized( const std::vector<float>& viewVec_ );
+
+		void _BuildProjectionMatrix( void );
+		void _BuildViewMatrix( void );
+		void _BuildViewProjectionMatrix( void );
+
+#ifdef RETO_USE_ZEROEQ
+		void _OnCameraEvent( lexis::render::ConstLookOutPtr event_ );
+#endif
+
+		Eigen::Matrix3f _RotationFromPY( float yaw_, float pitch_ );
+
+		float _f;
+		float _fov;
+		float _ratio;
+		float _nearPlane;
+		float _farPlane;
+
+		Eigen::Vector3f _pivot;
+		float _radius;
+
+		Eigen::Matrix3f _rotation;
+
+		std::vector<float> _positionVec;
+		std::vector<float> _projVec;
+		std::vector<float> _viewVec;
+		std::vector<float> _viewProjVec;
+
+		Eigen::Vector3f _targetPivot;
+		float _targetRadius;
 
 
 
 #ifdef RETO_USE_ZEROEQ
-    bool _zeqConnection;
+		bool _zeqConnection;
 
-    std::string _zeroeqSession;
-    zeroeq::Publisher* _publisher;
-    zeroeq::Subscriber* _subscriber;
+		std::string _zeroeqSession;
+		zeroeq::Publisher* _publisher;
+		zeroeq::Subscriber* _subscriber;
 
-    std::mutex _positionMutex;
-    std::mutex _rotationMutex;
-    std::mutex _viewMatrixMutex;
+		std::mutex _positionMutex;
+		std::mutex _rotationMutex;
+		std::mutex _viewMatrixMutex;
 
-    std::thread* _subscriberThread;
+		std::thread* _subscriberThread;
 #endif
 
-    bool _isAniming;
-    bool _firstStep;
-    float _speedPivot;
-    float _speedRadius;
-    float _animDuration;
+		bool _isAniming;
+		bool _firstStep;
+		float _speedPivot;
+		float _speedRadius;
+		float _animDuration;
 
-    std::chrono::time_point< std::chrono::system_clock > _previusTime;
+		std::chrono::time_point< std::chrono::system_clock > _previusTime;
 
-  };
+	};
 
 
 } //end namespace reto
