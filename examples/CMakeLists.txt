@@ -19,5 +19,12 @@ set( RETOSHADERPROGRAM_LINK_LIBRARIES
 	ReTo
 	${GLUT_LIBRARIES}
 )
-#message(${OPENGL_LIBRARIES})
 common_application( ReToShaderProgram )
+
+set( RETOGLUTEXAMPLE_HEADERS )
+set( RETOGLUTEXAMPLE_SOURCES glutExample.cpp )
+set( RETOGLUTEXAMPLE_LINK_LIBRARIES
+	ReTo
+	${GLUT_LIBRARIES}
+)
+common_application( ReToGlutExample )

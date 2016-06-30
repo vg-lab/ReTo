@@ -72,31 +72,31 @@ namespace reto
     ~ShaderProgram( void );
 
     /**
-     * Method to load and add a vertex and fragment shaders from string
-     * @param source: Vertex shader source
+     * Method to load and add a vertex and fragment shaders from file
+     * @param source: Vertex shader file source
      * @param source: Fragment shader source
      * @return Shader loaded
      */
     RETO_API
     bool load( const std::string& vsFile, const std::string& fsFile );
     /**
-     * Method to load and add a vertex shader from string
-     * @param source: Shader source
+     * Method to load and add a vertex shader from file
+     * @param source: Shader file source
      * @return Shader loaded
      */
     RETO_API
     bool loadVertexShader( const std::string& file );
     /**
-     * Method to load and add a fragment shader from string
-     * @param source: Shader source
+     * Method to load and add a fragment shader from file
+     * @param source: Shader file source
      * @return Shader loaded
      */
     RETO_API
     bool loadFragmentShader( const std::string& file );
   #ifdef RETO_GEOMETRY_SHADERS
     /**
-     * Method to load and add a geometry shader from string
-     * @param source: Shader source
+     * Method to load and add a geometry shader from file
+     * @param source: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -104,15 +104,15 @@ namespace reto
   #endif
   #ifdef RETO_TESSELATION_SHADERS
     /**
-     * Method to load and add a tesselation evaluation shader from string
-     * @param source: Shader source
+     * Method to load and add a tesselation evaluation shader from file
+     * @param source: Shader file source
      * @return Shader loaded
      */
     RETO_API
     bool loadTesselationEvaluationShader( const std::string& file );
     /**
-     * Method to load and add a tesselation control shader from string
-     * @param source: Shader source
+     * Method to load and add a tesselation control shader from file
+     * @param source: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -120,8 +120,8 @@ namespace reto
   #endif
   #ifdef RETO_COMPUTE_SHADERS
     /**
-     * Method to load and add a computer shader from string
-     * @param source: Shader source
+     * Method to load and add a computer shader from file
+     * @param source: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -356,6 +356,14 @@ namespace reto
     void sendUniform2v( const std::string& uniform,
                         const std::vector< float > & v );
     /**
+     * Method to send a vec2
+     * @param uniform: Uniform name
+     * @param v: Data
+     */
+    RETO_API
+    void sendUniform2v( const std::string& uniform,
+                        const float* v );
+    /**
      * Method to send a vec3
      * @param uniform: Uniform name
      * @param v: Data
@@ -363,6 +371,14 @@ namespace reto
     RETO_API
     void sendUniform3v( const std::string& uniform,
                         const std::vector< float > & v );
+    /**
+     * Method to send a vec3
+     * @param uniform: Uniform name
+     * @param v: Data
+     */
+    RETO_API
+    void sendUniform3v( const std::string& uniform,
+                        const float* v );
     /**
      * Method to send a vec4
      * @param uniform: Uniform name
@@ -372,6 +388,14 @@ namespace reto
     void sendUniform4v( const std::string& uniform,
                         const std::vector< float > & v );
     /**
+     * Method to send a vec4
+     * @param uniform: Uniform name
+     * @param v: Data
+     */
+    RETO_API
+    void sendUniform4v( const std::string& uniform,
+                        const float* v );
+    /**
      * Method to send a mat3
      * @param uniform: Uniform name
      * @param v: Data
@@ -379,6 +403,14 @@ namespace reto
     RETO_API
     void sendUniform3m( const std::string& uniform,
                         const std::vector< float > & m );
+    /**
+     * Method to send a mat3
+     * @param uniform: Uniform name
+     * @param v: Data
+     */
+    RETO_API
+    void sendUniform3m( const std::string& uniform,
+                        const float* m );
     /**
      * Method to send a mat4
      * @param uniform: Uniform name
@@ -389,6 +421,17 @@ namespace reto
     RETO_API
     void sendUniform4m( const std::string& uniform,
                         const std::vector< float > & m,
+                        GLboolean inverse = GL_FALSE );
+    /**
+     * Method to send a mat4
+     * @param uniform: Uniform name
+     * @param v: Data
+     * @param inverse: Specifies whether to transpose 
+     *    the matrix as the values are loaded into the uniform variable
+     */
+    RETO_API
+    void sendUniform4m( const std::string& uniform,
+                        const float* m,
                         GLboolean inverse = GL_FALSE );
 
     #ifdef RETO_SUBPROGRAMS

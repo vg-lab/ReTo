@@ -39,7 +39,8 @@ namespace reto
 
     #ifdef RETO_OCC_QUERY
       // Occlusion query object
-      glGenQueries(1, &_occQuery);
+      // TODO: You need to call this after OpenGL context creation
+      //glGenQueries(1, &_occQuery);
     #endif
   }
 
@@ -408,11 +409,25 @@ namespace reto
     glUniform2fv( loc, 1, v.data( ));
   }
 
+  void ShaderProgram::sendUniform2v( const std::string& uniformName,
+                                     const float* v )
+  {
+    GLint loc = uniform( uniformName );
+    glUniform2fv( loc, 1, v);
+  }
+
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
                                      const std::vector< float >& v)
   {
     GLint loc = uniform( uniformName );
     glUniform3fv( loc, 1, v.data( ));
+  }
+
+  void ShaderProgram::sendUniform3v( const std::string& uniformName,
+                                     const float* v)
+  {
+    GLint loc = uniform( uniformName );
+    glUniform3fv( loc, 1, v);
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
@@ -422,6 +437,13 @@ namespace reto
     glUniform4fv(loc, 1,v.data( ));
   }
 
+  void ShaderProgram::sendUniform4v( const std::string& uniformName,
+                                     const float* v )
+  {
+    GLint loc = uniform( uniformName );
+    glUniform4fv(loc, 1, v);
+  }
+
   void ShaderProgram::sendUniform4m(const std::string& uniformName,
     const std::vector< float > & m, GLboolean inverse)
   {
@@ -429,11 +451,25 @@ namespace reto
     glUniformMatrix4fv(loc, 1, inverse, m.data( ));
   }
 
+  void ShaderProgram::sendUniform4m(const std::string& uniformName,
+    const float* m, GLboolean inverse)
+  {
+    GLint loc = uniform( uniformName );
+    glUniformMatrix4fv(loc, 1, inverse, m);
+  }
+
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const std::vector< float > & m )
   {
     GLint loc = uniform( uniformName );
     glUniformMatrix3fv(loc, 1, GL_FALSE, m.data( ));
+  }
+
+  void ShaderProgram::sendUniform3m( const std::string& uniformName,
+                                     const float* m )
+  {
+    GLint loc = uniform( uniformName );
+    glUniformMatrix3fv(loc, 1, GL_FALSE, m);
   }
 
   void ShaderProgram::sendUniformf( const std::string& uniformName,
