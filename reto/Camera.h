@@ -65,7 +65,7 @@ namespace reto
   {
   public:
 
-  /**
+    /**
      * Camera constructor
      * @param fov camera field of view
      * @param ratio camera ratio
@@ -271,6 +271,26 @@ namespace reto
      */
     void AnimDuration( float animDuration_ );
 
+    RETO_API
+    /**
+     * Method to set window size
+     * @param w: Window width
+     * @param h: Window height
+     */
+    void SetWindowSize( int width_, int height_ );
+
+    /**
+     * Method to get window width size
+     * @return window width size
+     */
+    int Width( void );
+
+    /**
+     * Method to get window height size
+     * @return window height size
+     */
+    int Height( void );
+
 private:
 
     void _PositionVectorized( const std::vector<float>& positionVec_ );
@@ -379,6 +399,12 @@ private:
 
     //! Register of the previus time in the animation loop
     std::chrono::time_point< std::chrono::system_clock > _previusTime;
+
+    //! Window width
+    int _width;
+
+    //! Window height
+    int _height;
 
   };
 } //end namespace reto

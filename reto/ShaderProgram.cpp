@@ -356,7 +356,7 @@ namespace reto
     return _uniformList[uniformName];
   }
 
-  GLuint ShaderProgram::operator []( const std::string& attr )
+  GLuint ShaderProgram::operator[]( const std::string& attr )
   {
     return  uniform( attr );
   }

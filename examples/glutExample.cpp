@@ -179,45 +179,6 @@ const float cubeVertexTexCoord[] = {
 	0.0f, 1.0f,
 	1.0f, 0.0f,
 	1.0f, 1.0f,
- };
-
-
-const float cubeVertexTangent[] = { 
-	//Cara z = 1
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-
-	//Cara z = -1				
-	1.0f,	0.0f,	0.0f,		
-	1.0f,	0.0f,	0.0f,		
-	1.0f,	0.0f,	0.0f,		
-	1.0f,	0.0f,	0.0f,		
-
-	//Cara x = 1				
-	0.0f,	0.0f,	-1.0f,		
-	0.0f,	0.0f,	-1.0f,		
-	0.0f,	0.0f,	-1.0f,		
-	0.0f,	0.0f,	-1.0f,		
-
-	//Cara x = -1				
-	0.0f,	0.0f,	1.0f,		
-	0.0f,	0.0f,	1.0f,		
-	0.0f,	0.0f,	1.0f,		
-	0.0f,	0.0f,	1.0f,		
-
-	//Cara y = 1	   
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-					
-	//Cara y = -1					   
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
-	1.0f,	0.0f,	0.0f,
 };
 
 #include <reto/reto.h>
@@ -440,6 +401,8 @@ void renderFunc()
 	//Pintado del objeto!!!! 
 	prog.sendUniform4m("View", camera.ViewMatrix( ));
 	//prog.sendUniform4m("ViewProj", camera.ViewProjectionMatrix( ));
+	auto vp = camera.ViewProjectionMatrix( );
+	prog.sendUniform4m("ViewProj", vp);
 
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, cubeNTriangleIndex*3,GL_UNSIGNED_INT, (void*)0);

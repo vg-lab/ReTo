@@ -307,6 +307,7 @@ namespace reto
      * @param _unif: Uniform name
      * @return Uniform index
      */
+    RETO_API
     GLuint operator[]( const std::string& _unif );
 
     /**

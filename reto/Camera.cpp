@@ -492,5 +492,21 @@ namespace reto
   }
 
 #endif
+  void Camera::SetWindowSize( int width_, int height_ )
+  {
+    this->_width = width_;
+    this->_height = height_;
+  }
+
+  int Camera::Width( void ) 
+  {
+    return this->_width;
+  }
+
+  int Camera::Height( void ) 
+  {
+    return this->_height;
+  }
+
 
 } // end namespace reto
