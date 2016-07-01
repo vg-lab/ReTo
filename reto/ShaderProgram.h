@@ -554,9 +554,9 @@ namespace reto
     RETO_API
     bool link( void );
   protected:
-    void destroy( );
-    bool load( const std::string& file, GLenum type );
-    bool loadFromText( const std::string& source, GLenum type );
+    void _destroy( );
+    bool _load( const std::string& file, GLenum type );
+    bool _loadFromText( const std::string& source, GLenum type );
 
     GLuint _program;
     std::map<std::string, GLuint> _attrsList;

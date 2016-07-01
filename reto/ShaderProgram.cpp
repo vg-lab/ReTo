@@ -46,17 +46,17 @@ namespace reto
 
   ShaderProgram::~ShaderProgram(void)
   {
-    destroy( );
+    _destroy( );
   }
 
   bool ShaderProgram::loadFromText( const std::string& vsSource,
                                     const std::string& fsSource )
   {
-    return ( loadFromText( vsSource, GL_VERTEX_SHADER ) &&
-             loadFromText( fsSource, GL_FRAGMENT_SHADER ));
+    return ( _loadFromText( vsSource, GL_VERTEX_SHADER ) &&
+             _loadFromText( fsSource, GL_FRAGMENT_SHADER ));
   }
 
-  bool ShaderProgram::loadFromText( const std::string& source, GLenum type )
+  bool ShaderProgram::_loadFromText( const std::string& source, GLenum type )
   {
     // Create and compile shader
     GLuint shader;
@@ -85,41 +85,41 @@ namespace reto
 
   bool ShaderProgram::loadVertexShaderFromText( const std::string& source )
   {
-    return loadFromText( source, GL_VERTEX_SHADER );
+    return _loadFromText( source, GL_VERTEX_SHADER );
   }
 
   bool ShaderProgram::loadFragmentShaderFromText( const std::string& source )
   {
-    return loadFromText( source, GL_FRAGMENT_SHADER );
+    return _loadFromText( source, GL_FRAGMENT_SHADER );
   }
 
   #ifdef RETO_GEOMETRY_SHADERS
     bool ShaderProgram::loadGeometryShaderFromText( const std::string& source )
     {
-      return loadFromText( source, GL_GEOMETRY_SHADER );
+      return _loadFromText( source, GL_GEOMETRY_SHADER );
     }
   #endif
 
   #ifdef RETO_TESSELATION_SHADERS
     bool ShaderProgram::loadTesselationEvaluationShaderFromText( const std::string& source )
     {
-      return loadFromText( source, GL_TESS_EVALUATION_SHADER );
+      return _loadFromText( source, GL_TESS_EVALUATION_SHADER );
     }
 
     bool ShaderProgram::loadTesselationControlShaderFromText( const std::string& source )
     {
-      return loadFromText(source, GL_TESS_CONTROL_SHADER);
+      return _loadFromText(source, GL_TESS_CONTROL_SHADER);
     }
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
     bool ShaderProgram::loadComputeShaderFromText( const std::string& source )
     {
-      return loadFromText( source, GL_COMPUTE_SHADER );
+      return _loadFromText( source, GL_COMPUTE_SHADER );
     }
   #endif
 
-  bool ShaderProgram::load( const std::string& fileName, GLenum type )
+  bool ShaderProgram::_load( const std::string& fileName, GLenum type )
   {
     unsigned int fileLen;
 
@@ -178,47 +178,47 @@ namespace reto
 
   bool ShaderProgram::load(const std::string& vsFile, const std::string& fsFile)
   {
-    return ( load( vsFile, GL_VERTEX_SHADER) &&
-             load( fsFile, GL_FRAGMENT_SHADER ));
+    return ( _load( vsFile, GL_VERTEX_SHADER) &&
+             _load( fsFile, GL_FRAGMENT_SHADER ));
   }
 
   bool ShaderProgram::loadVertexShader( const std::string& file )
   {
-    return load( file, GL_VERTEX_SHADER );
+    return _load( file, GL_VERTEX_SHADER );
   }
 
   bool ShaderProgram::loadFragmentShader(const std::string& file)
   {
-    return load( file, GL_FRAGMENT_SHADER );
+    return _load( file, GL_FRAGMENT_SHADER );
   }
 
   #ifdef RETO_GEOMETRY_SHADERS
     bool ShaderProgram::loadGeometryShader( const std::string& file )
     {
-      return load( file, GL_GEOMETRY_SHADER );
+      return _load( file, GL_GEOMETRY_SHADER );
     }
   #endif
 
   #ifdef RETO_TESSELATION_SHADERS
     bool ShaderProgram::loadTesselationEvaluationShader( const std::string& file )
     {
-      return load( file, GL_TESS_EVALUATION_SHADER );
+      return _load( file, GL_TESS_EVALUATION_SHADER );
     }
 
     bool ShaderProgram::loadTesselationControlShader( const std::string& file )
     {
-      return load( file, GL_TESS_CONTROL_SHADER );
+      return _load( file, GL_TESS_CONTROL_SHADER );
     }
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
     bool ShaderProgram::loadComputeShader( const std::string& file )
     {
-      return load( file, GL_COMPUTE_SHADER );
+      return _load( file, GL_COMPUTE_SHADER );
     }
   #endif
 
-  void ShaderProgram::destroy( void )
+  void ShaderProgram::_destroy( void )
   {
     _program = -1;
     _attrsList.clear( );

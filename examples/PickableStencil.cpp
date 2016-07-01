@@ -14,14 +14,10 @@ int main()
 
   // Read pixel
   GLint index;
-  glReadPixels(posX, HEIGHT - posY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &indxx);
+  glReadPixels(posX, HEIGHT - posY, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
   if(index >= 0) 
   {
-    std::cout << "Clickado objeto" << index << std::end;
-  } 
-  else 
-  {
-    std::cout << "No se ha clickado" << std::endl;
+    std::cout << "Selected object: " << index << std::end;
   }
 
   glDisable(GL_SCISSORS_TEST);
