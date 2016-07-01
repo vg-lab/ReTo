@@ -38,7 +38,7 @@ include( Common )
 option(RETO_WITH_ZEROEQ "RETO_WITH_ZEROEQ" ON)
 option(RETO_WITH_GMRVLEX "RETO_WITH_GMRVLEX" ON)
 
-common_find_package(nvidiaOpenGL )
+#common_find_package(nvidiaOpenGL )
 common_find_package(OpenGL REQUIRED SYSTEM)
 common_find_package(GLEW REQUIRED SYSTEM)
 common_find_package(GLUT REQUIRED SYSTEM)
