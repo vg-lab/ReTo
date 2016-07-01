@@ -1,3 +1,8 @@
+if ( OPENGL_FOUND )
+  message(FATAL_ERROR
+    "FindnvidiaOpengL should be run before finding package OpenGL")
+endif( )
+
 file(GLOB NVIDIA_OPENGL_gl_LIBRARY_PATHS_HINT
   /usr/lib/nvidia-* )
 
@@ -9,12 +14,4 @@ find_library(NVIDIA_OPENGL_gl_LIBRARY
   NO_SYSTEM_ENVIRONMENT_PATH
 )
 
-message("${NVIDIA_OPENGL_gl_LIBRARY}")
-
-get_filename_component(NVIDIA_OPENGL_gl_LIBRARY_PATH
-${NVIDIA_OPENGL_gl_LIBRARY}
-DIRECTORY)
-
-if ( NVIDIA_OPENGL_gl_LIBRARY )
-  link_directories(${NVIDIA_OPENGL_gl_LIBRARY_PATH})
-endif( )
+set(OPENGL_gl_LIBRARY ${NVIDIA_OPENGL_gl_LIBRARY})
