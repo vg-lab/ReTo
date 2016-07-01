@@ -182,6 +182,7 @@ const float cubeVertexTexCoord[] = {
 };
 
 #include <reto/reto.h>
+#include <glutExampleShaders.h>
 
 using namespace reto;
 
@@ -239,7 +240,8 @@ int main(int argc, char** argv)
 {
 	initContext(argc, argv);
 	initOGL();
-	initShader("../examples/shader.v0.vert", "../examples/shader.v0.frag");
+	initShader( RETO_EXAMPLE_SHADERS_V0_VERT,
+              RETO_EXAMPLE_SHADERS_V0_FRAG );
 	initObj();
 
 	glutMainLoop(); //Escucha eventos y redirige

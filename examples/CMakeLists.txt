@@ -1,7 +1,12 @@
 include_directories(
   ${PROJECT_BINARY_DIR}/include
   ${PROJECT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/glutExampleShaders.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/glutExampleShaders.h )
 
 set( RETOGLUTCAMERA_HEADERS )
 set( RETOGLUTCAMERA_SOURCES glutCamera.cpp )
