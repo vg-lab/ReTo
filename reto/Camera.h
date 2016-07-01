@@ -124,7 +124,7 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    void LocalRotation( float yaw_, float pitch_ );
+    void LocalRotation( const float yaw_, const float pitch_ );
 
     /**
      * Method to if there is a target pivot move the camera to this target pivot
@@ -228,7 +228,7 @@ namespace reto
      * Method to set the distance between the camera and the pivot pin
      * @param radius distance between the camera and the pivot pin
      */
-    void Radius( float radius_ );
+    void Radius( const float radius_ );
 
     RETO_API
     /**
@@ -236,7 +236,7 @@ namespace reto
      * @param yaw camera rotation of y exe
      * @param pitch camera rotation of x exe
      */
-    void Rotation( float yaw_, float pitch_ );
+    void Rotation( const float yaw_, const float pitch_ );
 
     RETO_API
     /**
@@ -252,7 +252,7 @@ namespace reto
      * @param targetRadius taget camera distance between the camera and the
      * pivot pin
      */
-    void TargetRadius( float targetRadius_ );
+    void TargetRadius( const float targetRadius_ );
 
     RETO_API
     /**
@@ -263,14 +263,14 @@ namespace reto
      * pivot pin
      */
     void TargetPivotRadius( Eigen::Vector3f targetPivot_,
-                            float targetRadius_ );
+                            const float targetRadius_ );
 
     RETO_API
     /**
      * Method to set the anim duration of the camera movement from actual pivot
      * and radius to the target pivot and radius
      */
-    void AnimDuration( float animDuration_ );
+    void AnimDuration( const float animDuration_ );
 
     RETO_API
     /**
@@ -278,7 +278,7 @@ namespace reto
      * @param w: Window width
      * @param h: Window height
      */
-    void SetWindowSize( int width_, int height_ );
+    void SetWindowSize( const int width_, const int height_ );
 
     /**
      * Method to get window width size

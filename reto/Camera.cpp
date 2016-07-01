@@ -103,7 +103,7 @@ namespace reto
     _pivot += _rotation.transpose( ) * increment_;
     _BuildViewMatrix( );
   }
-  void Camera::LocalRotation( float yaw_, float pitch_ )
+  void Camera::LocalRotation( const float yaw_, const float pitch_ )
   {
     _Rotation( _RotationFromPY( yaw_, pitch_) * _rotation );
     _BuildViewMatrix( );
@@ -212,7 +212,7 @@ namespace reto
 
   // SETTERS
 
-  void Camera::Ratio( float ratio_ )
+  void Camera::Ratio( const float ratio_ )
   {
     _ratio = ratio_;
     _BuildProjectionMatrix( );
@@ -229,7 +229,7 @@ namespace reto
     }
   }
 
-  void Camera::Radius( float radius_ )
+  void Camera::Radius( const float radius_ )
   {
     if ( !_isAniming )
     {
@@ -239,7 +239,7 @@ namespace reto
     }
   }
 
-  void Camera::Rotation( float yaw_, float pitch_ )
+  void Camera::Rotation( const float yaw_, const float pitch_ )
   {
     if ( !_isAniming )
     {
@@ -256,7 +256,7 @@ namespace reto
     _targetPivot = targetPivot_;
   }
 
-  void Camera::TargetRadius( float targetRadius_ )
+  void Camera::TargetRadius( const float targetRadius_ )
   {
     _isAniming = true;
     _firstStep = true;
@@ -270,7 +270,7 @@ namespace reto
     TargetRadius( targetRadius_ );
   }
 
-  void Camera::AnimDuration( float animDuration_ )
+  void Camera::AnimDuration( const float animDuration_ )
   {
     _animDuration = animDuration_;
   }
@@ -424,7 +424,7 @@ namespace reto
 
 #endif
 
-  Eigen::Matrix3f Camera::_RotationFromPY( float yaw_, float pitch_ )
+  Eigen::Matrix3f Camera::_RotationFromPY( const float yaw_, const float pitch_ )
   {
     Eigen::Matrix3f rot;
     Eigen::Matrix3f rYaw;
@@ -492,7 +492,7 @@ namespace reto
   }
 
 #endif
-  void Camera::SetWindowSize( int width_, int height_ )
+  void Camera::SetWindowSize( const int width_, const int height_ )
   {
     this->_width = width_;
     this->_height = height_;
