@@ -34,7 +34,7 @@ namespace reto
     , _farPlane( farPlane_ )
     , _pivot( pivot_ )
     , _radius( radius_ )
-#ifdef RETO_USE_ZEQ
+#ifdef RETO_USE_ZEROEQ
     , _zeqConnection( false )
 #endif
     , _isAniming( false )
@@ -498,12 +498,12 @@ namespace reto
     this->_height = height_;
   }
 
-  int Camera::Width( void ) 
+  int Camera::Width( void )
   {
     return this->_width;
   }
 
-  int Camera::Height( void ) 
+  int Camera::Height( void )
   {
     return this->_height;
   }

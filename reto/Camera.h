@@ -20,10 +20,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
- 
+
 #ifndef __RETO_CAMERA__
 #define __RETO_CAMERA__
-
 
 // Eigen
 #include <Eigen/Dense>
@@ -44,10 +43,6 @@
 
 #ifdef RETO_USE_LEXIS
 #include <lexis/lexis.h>
-#endif
-
-#ifdef RETO_USE_GMRVLEX
-#include <gmrvlex/gmrvlex.h>
 #endif
 
 #include <thread>
@@ -109,7 +104,7 @@ namespace reto
      * Default destructor
      */
     RETO_API
-    ~Camera(void);
+    ~Camera( void );
 
     /**
      * Method to translate the camera from the actual position

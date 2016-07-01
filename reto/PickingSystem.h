@@ -87,8 +87,8 @@ namespace reto
       reto::ShaderProgram _program;
       std::set< reto::Pickable* > _objects;
       reto::Camera* _camera;
-      
-      virtual std::string VertexCode( );
+
+      virtual std::string _VertexCode( void );
   };
 };
 
