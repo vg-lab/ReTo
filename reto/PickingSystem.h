@@ -50,16 +50,16 @@ namespace reto
 
     /**
      * Method to add a Pickable object
-     * @param p: Pickable object
+     * @param pickSystem: Pickable object
      */
     RETO_API
-    void AddObject( reto::Pickable * p );
+    void AddObject( reto::Pickable * pickSystem );
     /**
      * Method to remove a Pickable object
-     * @param p: Pickable object
+     * @param pickSystem: Pickable object
      */
     RETO_API
-    void RemoveObject( reto::Pickable * p );
+    void RemoveObject( reto::Pickable * pickSystem );
     /**
      * Method to clear Pickable elements
      */

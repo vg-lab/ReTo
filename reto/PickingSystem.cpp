@@ -67,11 +67,11 @@ namespace reto
     GLubyte color[4];
     glReadPixels( point.x, WINDOW_HEIGHT - point.y, 1, 1,
                   GL_RGBA, GL_UNSIGNED_BYTE, color );
-    unsigned int v = ( unsigned int ) ( color[2] + color[1] * 256.0 +
+    unsigned int value = ( unsigned int ) ( color[2] + color[1] * 256.0 +
                                         color[0] * 256.0 * 256.0 );
-    if( v < _objects.size( ))
+    if( value < _objects.size( ))
     {
-      selected = v;
+      selected = value;
     }
 
     return selected;
@@ -91,7 +91,7 @@ namespace reto
     }
 
     GLubyte color[4];
-    unsigned int v;
+    unsigned int value;
 
     for( int x = minPoint.x; x < maxPoint.x; x++ )
     {
@@ -99,11 +99,11 @@ namespace reto
       {
         glReadPixels( x, WINDOW_HEIGHT - y, 1, 1, GL_RGBA,
                       GL_UNSIGNED_BYTE, color );
-        v = ( unsigned int )( color[2] + color[1] * 256 +
+        value = ( unsigned int )( color[2] + color[1] * 256 +
                               color[0] * 256 * 256 );
-        if( v < _objects.size( ))
+        if( value < _objects.size( ))
         {
-          ret.insert( v );
+          ret.insert( value );
         }
       }
     }
@@ -124,14 +124,14 @@ namespace reto
       "}");
   }
 
-  void PickingSystem::AddObject( Pickable* p )
+  void PickingSystem::AddObject( Pickable* pickSystem )
   {
-    _objects.insert( p );
+    _objects.insert( pickSystem );
   }
 
-  void PickingSystem::RemoveObject( Pickable* p )
+  void PickingSystem::RemoveObject( Pickable* pickSystem )
   {
-    _objects.erase( p );
+    _objects.erase( pickSystem );
   }
 
   void PickingSystem::Clear ( void )
