@@ -457,12 +457,16 @@ namespace reto
     #ifdef RETO_COMPUTE_SHADERS
       /**
        * Method to launch one or more compute work groups.
-       * @param numGroupX: The number of work groups to be launched in the X dimension.
-       * @param numGroupY: The number of work groups to be launched in the Y dimension.
-       * @param numGroupZ: The number of work groups to be launched in the Z dimension. 
+       * @param numGroupX: The number of work groups to be launched
+       *                   in the X dimension.
+       * @param numGroupY: The number of work groups to be launched
+       *                   in the Y dimension.
+       * @param numGroupZ: The number of work groups to be launched
+       *                   in the Z dimension.
        */
       RETO_API
-      void launchComputeWork( GLuint numGroupX, GLuint numGroupY, GLuint numGroupZ );
+      void launchComputeWork( GLuint numGroupX, GLuint numGroupY,
+                              GLuint numGroupZ );
     #endif
     #ifdef RETO_TESSELATION_SHADERS
       /**

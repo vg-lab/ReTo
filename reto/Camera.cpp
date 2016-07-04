@@ -34,7 +34,7 @@ namespace reto
     , _farPlane( farPlane_ )
     , _pivot( pivot_ )
     , _radius( radius_ )
-#ifdef RETO_USE_ZEQ
+#ifdef RETO_USE_ZEROEQ
     , _zeqConnection( false )
 #endif
     , _isAniming( false )
@@ -54,7 +54,7 @@ namespace reto
   }
 
 #ifdef RETO_USE_ZEROEQ
-  Camera::Camera( const std::string& uri_, float fov_, float ratio_,
+  Camera::Camera( const std::string& session_, float fov_, float ratio_,
                   float nearPlane_, float farPlane_, Eigen::Vector3f pivot_,
                   float radius_, float yaw_, float pitch_ )
     : _ratio( ratio_ )
@@ -72,19 +72,22 @@ namespace reto
     _fov = fov_ * ( M_PI / 360.0f );
     _f = 1.0f / tan( _fov );
 
-    _uri = servus::URI(uri_);
+    _zeroeqSession = session_.empty( ) ? zeroeq::DEFAULT_SESSION : session_;
 
     _previusTime = std::chrono::system_clock::now( );
 
     _Rotation( _RotationFromPY( pitch_, yaw_ ));
 
-    _publisher = new zeq::Publisher( _uri );
-    _subscriber = new zeq::Subscriber( _uri );
+    _publisher = new zeroeq::Publisher( _zeroeqSession );
+    _subscriber = new zeroeq::Subscriber( _zeroeqSession );
 
-    _subscriber->registerHandler( zeq::hbp::EVENT_CAMERA,
-      boost::bind( &Camera::_OnCameraEvent , this, _1 ));
+    _subscriber->subscribe(
+        lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
+        [ & ]( const void* data, size_t size )
+        { _OnCameraEvent( lexis::render::LookOut::create( data, size ));});
 
-    pthread_create( &_subscriberThread, nullptr, _Subscriber, this );
+    _subscriberThread =
+        new std::thread( [&]() { while( true ) _subscriber->receive( 10000 );});
 
     _BuildProjectionMatrix( );
     _BuildViewMatrix( );
@@ -102,7 +105,9 @@ namespace reto
   {
     _pivot += _rotation.transpose( ) * increment_;
     _BuildViewMatrix( );
+    _BuildViewProjectionMatrix( );
   }
+
   void Camera::LocalRotation( const float yaw_, const float pitch_ )
   {
     _Rotation( _RotationFromPY( yaw_, pitch_) * _rotation );
@@ -202,8 +207,8 @@ namespace reto
     return _positionVec.data( );
   }
 
-#ifdef RETO_USE_ZEQ
-  zeq::Subscriber* Camera::Subscriber( void )
+#ifdef RETO_USE_ZEROEQ
+  zeroeq::Subscriber* Camera::Subscriber( void )
   {
     return _subscriber;
   }
@@ -339,13 +344,20 @@ namespace reto
     viewVec[13] = - pivot.y( );
     viewVec[14] = - pivot.z( ) - _radius;
     viewVec[15] = 1.0f;
+
+    _ViewMatrixVectorized( viewVec );
+
 #ifdef RETO_USE_ZEROEQ
     if ( _zeqConnection )
     {
-      _publisher->publish( zeq::hbp::serializeCamera( viewVec ));
+      std::vector< double > viewm ( viewVec.begin( ), viewVec.end( ));
+
+      lexis::render::LookOut lookout;
+      lookout.setMatrix( viewm );
+      _publisher->publish( lookout );
     }
 #endif
-    _ViewMatrixVectorized( viewVec );
+
   }
 
   void Camera::_BuildViewProjectionMatrix( void )
@@ -388,9 +400,10 @@ namespace reto
   }
 
 #ifdef RETO_USE_ZEROEQ
-  void Camera::_OnCameraEvent( const zeq::Event& event_ )
+  void Camera::_OnCameraEvent( lexis::render::ConstLookOutPtr lookoutPtr_ )
   {
-    std::vector<float> viewMatrixVec = zeq::hbp::deserializeCamera( event_ );
+    std::vector< double > aux = std::move( lookoutPtr_->getMatrixVector( ));
+    std::vector<float> viewMatrixVec( aux.begin( ), aux.end( ));
     _ViewMatrixVectorized( viewMatrixVec );
 
     Eigen::Matrix3f rot;
@@ -400,26 +413,13 @@ namespace reto
 
     Eigen::Vector3f pos = - rot.inverse() * Eigen::Vector3f( viewMatrixVec[12],
                           viewMatrixVec[13], viewMatrixVec[14] );
-    std::vector<float> posVec;
-    posVec.resize( 3 );
+
+    std::vector< float > posVec( 3 );
     posVec[ 0 ] = pos.x( );
     posVec[ 1 ] = pos.y( );
     posVec[ 2 ] = pos.z( );
 
     _PositionVectorized( posVec );
-  }
-
-  void* Camera::_Subscriber( void* camera_ )
-  {
-    Camera* camera = ( Camera* )camera_;
-    zeq::Subscriber* subscriber = camera->Subscriber();
-    std::cout << "Waiting Camera Events..." << std::endl;
-    while ( true )
-    {
-      subscriber->receive( 10000 );
-    }
-
-    pthread_exit( nullptr );
   }
 
 #endif
@@ -498,12 +498,12 @@ namespace reto
     this->_height = height_;
   }
 
-  int Camera::Width( void ) 
+  int Camera::Width( void )
   {
     return this->_width;
   }
 
-  int Camera::Height( void ) 
+  int Camera::Height( void )
   {
     return this->_height;
   }

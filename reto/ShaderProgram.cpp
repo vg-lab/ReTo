@@ -26,7 +26,7 @@
 
 namespace reto
 {
-  ShaderProgram::ShaderProgram(void)
+  ShaderProgram::ShaderProgram( void )
   {
     _program = -1;
     _attrsList.clear( );
@@ -44,7 +44,7 @@ namespace reto
     #endif
   }
 
-  ShaderProgram::~ShaderProgram(void)
+  ShaderProgram::~ShaderProgram( void )
   {
     _destroy( );
   }
@@ -79,7 +79,7 @@ namespace reto
     }
 
     // Add to shaders in use
-    _shaders.push_back(shader);
+    _shaders.push_back( shader );
     return true;
   }
 
@@ -101,12 +101,14 @@ namespace reto
   #endif
 
   #ifdef RETO_TESSELATION_SHADERS
-    bool ShaderProgram::loadTesselationEvaluationShaderFromText( const std::string& source )
+    bool ShaderProgram::loadTesselationEvaluationShaderFromText(
+      const std::string& source )
     {
       return _loadFromText( source, GL_TESS_EVALUATION_SHADER );
     }
 
-    bool ShaderProgram::loadTesselationControlShaderFromText( const std::string& source )
+    bool ShaderProgram::loadTesselationControlShaderFromText(
+      const std::string& source )
     {
       return _loadFromText(source, GL_TESS_CONTROL_SHADER);
     }
@@ -200,7 +202,8 @@ namespace reto
   #endif
 
   #ifdef RETO_TESSELATION_SHADERS
-    bool ShaderProgram::loadTesselationEvaluationShader( const std::string& file )
+    bool ShaderProgram::loadTesselationEvaluationShader(
+      const std::string& file )
     {
       return _load( file, GL_TESS_EVALUATION_SHADER );
     }
@@ -370,10 +373,14 @@ namespace reto
     GLuint ShaderProgram::subprogram( const std::string& name,
                                       GLenum shaderType )
     {
-      std::pair<std::multimap<GLenum, SubProgram>::iterator, std::multimap<GLenum, SubProgram>::iterator> ret;
+      std::pair<std::multimap<GLenum, SubProgram>::iterator,
+                std::multimap<GLenum, SubProgram>::iterator> ret;
       ret = _subprograms.equal_range( shaderType );
-      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first; it != ret.second; it++ ) {
-        if(it->second.name == name) {
+      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first;
+           it != ret.second; it++ )
+      {
+        if( it->second.name == name )
+        {
           return it->second.index;
         }
       }
@@ -403,7 +410,7 @@ namespace reto
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
-                                     const std::vector< float > & v )
+                                     const std::vector< float >& v )
   {
     GLint loc = uniform( uniformName );
     glUniform2fv( loc, 1, v.data( ));
@@ -431,7 +438,7 @@ namespace reto
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
-                                     const std::vector< float > & v )
+                                     const std::vector< float >& v )
   {
     GLint loc = uniform( uniformName );
     glUniform4fv(loc, 1,v.data( ));
@@ -502,10 +509,14 @@ namespace reto
     void ShaderProgram::activeSubprogram( const std::string& name,
                                           GLenum shaderType )
     {
-      std::pair<std::multimap<GLenum, SubProgram>::iterator, std::multimap<GLenum, SubProgram>::iterator> ret;
+      std::pair<std::multimap<GLenum, SubProgram>::iterator,
+                std::multimap<GLenum, SubProgram>::iterator> ret;
       ret = _subprograms.equal_range( shaderType );
-      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first; it != ret.second; it++ ) {
-        if(it->second.name == name) {
+      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first;
+           it != ret.second; it++ )
+      {
+        if(it->second.name == name)
+        {
           glUniformSubroutinesuiv( shaderType, 1, &it->second.index );
           return;
         }
@@ -515,8 +526,8 @@ namespace reto
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
-    void ShaderProgram::launchComputeWork( GLuint numGroupX, GLuint numGroupY, 
-      GLuint numGroupZ )
+    void ShaderProgram::launchComputeWork( GLuint numGroupX, GLuint numGroupY,
+                                           GLuint numGroupZ )
     {
       glDispatchCompute( numGroupX, numGroupY, numGroupZ );
     }
