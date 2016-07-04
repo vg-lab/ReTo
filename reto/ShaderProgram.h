@@ -351,71 +351,71 @@ namespace reto
     /**
      * Method to send a vec2
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform2v( const std::string& uniform,
-                        const std::vector< float > & v );
+                        const std::vector< float > & data );
     /**
      * Method to send a vec2
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform2v( const std::string& uniform,
-                        const float* v );
+                        const float* data );
     /**
      * Method to send a vec3
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform3v( const std::string& uniform,
-                        const std::vector< float > & v );
+                        const std::vector< float > & data );
     /**
      * Method to send a vec3
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform3v( const std::string& uniform,
-                        const float* v );
+                        const float* data );
     /**
      * Method to send a vec4
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform4v( const std::string& uniform,
-                        const std::vector< float > & v );
+                        const std::vector< float > & data );
     /**
      * Method to send a vec4
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform4v( const std::string& uniform,
-                        const float* v );
+                        const float* data );
     /**
      * Method to send a mat3
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform3m( const std::string& uniform,
-                        const std::vector< float > & m );
+                        const std::vector< float > & data );
     /**
      * Method to send a mat3
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      */
     RETO_API
     void sendUniform3m( const std::string& uniform,
-                        const float* m );
+                        const float* data );
     /**
      * Method to send a mat4
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      * @param inverse: Specifies whether to transpose 
      *    the matrix as the values are loaded into the uniform variable
      */
@@ -426,7 +426,7 @@ namespace reto
     /**
      * Method to send a mat4
      * @param uniform: Uniform name
-     * @param v: Data
+     * @param data: Data
      * @param inverse: Specifies whether to transpose 
      *    the matrix as the values are loaded into the uniform variable
      */
@@ -490,22 +490,22 @@ namespace reto
 
       /**
        * Method to set patch vertices.
-       * @param n: Num of patches
+       * @param numPatches: Num of patches
        */
       RETO_API
-      void setPatchVertices( GLuint n );
+      void setPatchVertices( GLuint numPatches );
       /**
        * Method to set inner tesselation level.
-       * @param l: Inner level
+       * @param level: Inner level
        */
       RETO_API
-      void setInnerLevel( GLfloat l );
+      void setInnerLevel( GLfloat level );
       /**
        * Method to set outer tesselation level.
-       * @param l: Outer level
+       * @param level: Outer level
        */
       RETO_API
-      void setOuterLevel( GLfloat l );
+      void setOuterLevel( GLfloat level );
     #endif
     #ifdef RETO_GEOMETRY_SHADERS
       /**

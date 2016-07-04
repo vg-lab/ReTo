@@ -410,73 +410,73 @@ namespace reto
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
-                                     const std::vector< float >& v )
+                                     const std::vector< float >& data )
   {
     GLint loc = uniform( uniformName );
-    glUniform2fv( loc, 1, v.data( ));
+    glUniform2fv( loc, 1, data.data( ));
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
-                                     const float* v )
+                                     const float* data )
   {
     GLint loc = uniform( uniformName );
-    glUniform2fv( loc, 1, v);
+    glUniform2fv( loc, 1, data);
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
-                                     const std::vector< float >& v)
+                                     const std::vector< float >& data)
   {
     GLint loc = uniform( uniformName );
-    glUniform3fv( loc, 1, v.data( ));
+    glUniform3fv( loc, 1, data.data( ));
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
-                                     const float* v)
+                                     const float* data)
   {
     GLint loc = uniform( uniformName );
-    glUniform3fv( loc, 1, v);
+    glUniform3fv( loc, 1, data);
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
-                                     const std::vector< float >& v )
+                                     const std::vector< float >& data )
   {
     GLint loc = uniform( uniformName );
-    glUniform4fv(loc, 1,v.data( ));
+    glUniform4fv(loc, 1, data.data( ));
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
-                                     const float* v )
+                                     const float* data )
   {
     GLint loc = uniform( uniformName );
-    glUniform4fv(loc, 1, v);
+    glUniform4fv(loc, 1, data);
   }
 
   void ShaderProgram::sendUniform4m(const std::string& uniformName,
-    const std::vector< float > & m, GLboolean inverse)
+    const std::vector< float > & data, GLboolean inverse)
   {
     GLint loc = uniform( uniformName );
-    glUniformMatrix4fv(loc, 1, inverse, m.data( ));
+    glUniformMatrix4fv(loc, 1, inverse, data.data( ));
   }
 
   void ShaderProgram::sendUniform4m(const std::string& uniformName,
-    const float* m, GLboolean inverse)
+    const float* data, GLboolean inverse)
   {
     GLint loc = uniform( uniformName );
-    glUniformMatrix4fv(loc, 1, inverse, m);
+    glUniformMatrix4fv(loc, 1, inverse, data);
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
-                                     const std::vector< float > & m )
+                                     const std::vector< float > & data )
   {
     GLint loc = uniform( uniformName );
-    glUniformMatrix3fv(loc, 1, GL_FALSE, m.data( ));
+    glUniformMatrix3fv(loc, 1, GL_FALSE, data.data( ));
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
-                                     const float* m )
+                                     const float* data )
   {
     GLint loc = uniform( uniformName );
-    glUniformMatrix3fv(loc, 1, GL_FALSE, m);
+    glUniformMatrix3fv(loc, 1, GL_FALSE, data);
   }
 
   void ShaderProgram::sendUniformf( const std::string& uniformName,
@@ -558,13 +558,13 @@ namespace reto
     {
       glPatchParameteri( GL_PATCH_VERTICES, n );
     }
-    void ShaderProgram::setInnerLevel( GLfloat l )
+    void ShaderProgram::setInnerLevel( GLfloat level )
     {
-      glPatchParameterfv( GL_PATCH_DEFAULT_INNER_LEVEL, &l );
+      glPatchParameterfv( GL_PATCH_DEFAULT_INNER_LEVEL, &level );
     }
-    void ShaderProgram::setOuterLevel( GLfloat l )
+    void ShaderProgram::setOuterLevel( GLfloat level )
     {
-      glPatchParameterfv( GL_PATCH_DEFAULT_OUTER_LEVEL, &l );
+      glPatchParameterfv( GL_PATCH_DEFAULT_OUTER_LEVEL, &level );
     }
   #endif
 
