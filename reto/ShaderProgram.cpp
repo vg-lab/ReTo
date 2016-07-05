@@ -24,6 +24,20 @@
 #include <fstream>
 #include <iostream>
 
+
+//OpenGL
+#ifndef SKIP_GLEW_INCLUDE
+#include <GL/glew.h>
+#endif
+#ifdef Darwin
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
+
 namespace reto
 {
   ShaderProgram::ShaderProgram( void )
@@ -56,20 +70,20 @@ namespace reto
              _loadFromText( fsSource, GL_FRAGMENT_SHADER ));
   }
 
-  bool ShaderProgram::_loadFromText( const std::string& source, GLenum type )
+  bool ShaderProgram::_loadFromText( const std::string& source, int type )
   {
     // Create and compile shader
-    GLuint shader;
+    unsigned int shader;
     shader = glCreateShader( type );
     const char* cStr = source.c_str( );
     glShaderSource(shader, 1, &cStr, nullptr );
 
-    GLint status;
+    int status;
     glCompileShader( shader );
     glGetShaderiv( shader, GL_COMPILE_STATUS, &status );
     if (status == GL_FALSE )
     {
-      GLint infoLogLength;
+      int infoLogLength;
       glGetShaderiv ( shader, GL_INFO_LOG_LENGTH, &infoLogLength );
       GLchar* infoLog = new GLchar[infoLogLength];
       glGetShaderInfoLog( shader, infoLogLength, nullptr, infoLog );
@@ -121,7 +135,7 @@ namespace reto
     }
   #endif
 
-  bool ShaderProgram::_load( const std::string& fileName, GLenum type )
+  bool ShaderProgram::_load( const std::string& fileName, int type )
   {
     unsigned int fileLen;
 
@@ -153,17 +167,17 @@ namespace reto
     file.close( );
 
     // Create and compile shader
-    GLuint shader;
+    unsigned int shader;
     shader = glCreateShader( type );
     glShaderSource( shader, 1, ( const GLchar** ) &source,
-                    ( const GLint* ) &fileLen );
+                    ( const int* ) &fileLen );
 
-    GLint status;
+    int status;
     glCompileShader( shader );
     glGetShaderiv ( shader, GL_COMPILE_STATUS, &status );
     if ( status == GL_FALSE )
     {
-      GLint infoLogLength;
+      int infoLogLength;
       glGetShaderiv( shader, GL_INFO_LOG_LENGTH, &infoLogLength );
       GLchar *infoLog= new GLchar[infoLogLength];
       glGetShaderInfoLog( shader, infoLogLength, nullptr, infoLog );
@@ -259,12 +273,12 @@ namespace reto
   bool ShaderProgram::link( void )
   {
     // link and check whether the program links fine
-    GLint status;
+    int status;
     glLinkProgram( _program );
     glGetProgramiv( _program, GL_LINK_STATUS, &status );
     if ( status == GL_FALSE )
     {
-      GLint infoLogLength;
+      int infoLogLength;
 
       glGetProgramiv( _program, GL_INFO_LOG_LENGTH, &infoLogLength );
       GLchar* infoLog = new GLchar[infoLogLength];
@@ -292,7 +306,7 @@ namespace reto
     return link( );
   }
 
-  GLuint ShaderProgram::program( void )
+  unsigned int ShaderProgram::program( void )
   {
     return _program;
   }
@@ -331,52 +345,52 @@ namespace reto
 
   #ifdef RETO_SUBPROGRAMS
     void ShaderProgram::addSubroutine( const std::string& name,
-                                       GLenum shaderType )
+                                       int shaderType )
     {
-      GLuint idx = glGetSubroutineIndex( _program, shaderType, name.c_str( ));
+      unsigned int idx = glGetSubroutineIndex( _program, shaderType, name.c_str( ));
       auto sub = SubProgram( name.c_str( ), idx );
-      _subprograms.insert(std::pair<GLenum, SubProgram>(shaderType, sub));
+      _subprograms.insert(std::pair<int, SubProgram>(shaderType, sub));
     }
   #endif
 
-  void ShaderProgram::bindAttribute( const std::string& attr, GLuint index )
+  void ShaderProgram::bindAttribute( const std::string& attr, unsigned int index )
   {
     glBindAttribLocation( _program, index, attr.c_str( ));
   }
 
-  GLuint ShaderProgram::attribute( const std::string& attr )
+  unsigned int ShaderProgram::attribute( const std::string& attr )
   {
     return _attrsList[attr];
   }
 
-  GLuint ShaderProgram::operator( )(const std::string& attr )
+  unsigned int ShaderProgram::operator( )(const std::string& attr )
   {
     return  attribute(attr);
   }
 
-  GLuint ShaderProgram::uniform( const std::string& uniformName )
+  unsigned int ShaderProgram::uniform( const std::string& uniformName )
   {
     return _uniformList[uniformName];
   }
 
-  GLuint ShaderProgram::operator[]( const std::string& attr )
+  unsigned int ShaderProgram::operator[]( const std::string& attr )
   {
     return  uniform( attr );
   }
 
-  GLuint ShaderProgram::ubo(const std::string& _ubo)
+  unsigned int ShaderProgram::ubo(const std::string& _ubo)
   {
     return _uboList[_ubo];
   }
 
   #ifdef RETO_SUBPROGRAMS
-    GLuint ShaderProgram::subprogram( const std::string& name,
-                                      GLenum shaderType )
+    unsigned int ShaderProgram::subprogram( const std::string& name,
+                                      int shaderType )
     {
-      std::pair<std::multimap<GLenum, SubProgram>::iterator,
-                std::multimap<GLenum, SubProgram>::iterator> ret;
+      std::pair<std::multimap<int, SubProgram>::iterator,
+                std::multimap<int, SubProgram>::iterator> ret;
       ret = _subprograms.equal_range( shaderType );
-      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first;
+      for( std::multimap<int, SubProgram>::iterator it = ret.first;
            it != ret.second; it++ )
       {
         if( it->second.name == name )
@@ -390,7 +404,7 @@ namespace reto
   #endif
 
   void ShaderProgram::bindUniform( const std::string& unif,
-                                   GLuint idx )
+                                   unsigned int idx )
   {
     if( _uniformList.find(unif) == _uniformList.end( ))
     {
@@ -405,114 +419,114 @@ namespace reto
   void ShaderProgram::sendUniform( const std::string& uniformName,
                                    float x, float y, float z )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform3f(loc, x, y, z );
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform2fv( loc, 1, data.data( ));
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
                                      const float* data )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform2fv( loc, 1, data);
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
                                      const std::vector< float >& data)
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform3fv( loc, 1, data.data( ));
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
                                      const float* data)
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform3fv( loc, 1, data);
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform4fv(loc, 1, data.data( ));
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
                                      const float* data )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform4fv(loc, 1, data);
   }
 
   void ShaderProgram::sendUniform4m(const std::string& uniformName,
-    const std::vector< float > & data, GLboolean inverse)
+    const std::vector< float > & data, bool inverse)
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniformMatrix4fv(loc, 1, inverse, data.data( ));
   }
 
   void ShaderProgram::sendUniform4m(const std::string& uniformName,
-    const float* data, GLboolean inverse)
+    const float* data, bool inverse)
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniformMatrix4fv(loc, 1, inverse, data);
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const std::vector< float > & data )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniformMatrix3fv(loc, 1, GL_FALSE, data.data( ));
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const float* data )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniformMatrix3fv(loc, 1, GL_FALSE, data);
   }
 
   void ShaderProgram::sendUniformf( const std::string& uniformName,
-                                    GLfloat val )
+                                    float val )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform1f( loc, val );
   }
 
-  void ShaderProgram::sendUniformi( const std::string& uniformName, GLint val )
+  void ShaderProgram::sendUniformi( const std::string& uniformName, int val )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform1i( loc, val );
   }
 
   void ShaderProgram::sendUniformb( const std::string& uniformName,
-                                    GLboolean val)
+                                    bool val)
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform1i( loc, val );
   }
 
-  void ShaderProgram::sendUniformu( const std::string& uniformName, GLuint val )
+  void ShaderProgram::sendUniformu( const std::string& uniformName, unsigned int val )
   {
-    GLint loc = uniform( uniformName );
+    int loc = uniform( uniformName );
     glUniform1ui( loc, val );
   }
 
   #ifdef RETO_SUBPROGRAMS
     void ShaderProgram::activeSubprogram( const std::string& name,
-                                          GLenum shaderType )
+                                          int shaderType )
     {
-      std::pair<std::multimap<GLenum, SubProgram>::iterator,
-                std::multimap<GLenum, SubProgram>::iterator> ret;
+      std::pair<std::multimap<int, SubProgram>::iterator,
+                std::multimap<int, SubProgram>::iterator> ret;
       ret = _subprograms.equal_range( shaderType );
-      for( std::multimap<GLenum, SubProgram>::iterator it = ret.first;
+      for( std::multimap<int, SubProgram>::iterator it = ret.first;
            it != ret.second; it++ )
       {
         if(it->second.name == name)
@@ -526,8 +540,8 @@ namespace reto
   #endif
 
   #ifdef RETO_COMPUTE_SHADERS
-    void ShaderProgram::launchComputeWork( GLuint numGroupX, GLuint numGroupY,
-                                           GLuint numGroupZ )
+    void ShaderProgram::launchComputeWork( unsigned int numGroupX, unsigned int numGroupY,
+                                           unsigned int numGroupZ )
     {
       glDispatchCompute( numGroupX, numGroupY, numGroupZ );
     }
@@ -535,34 +549,34 @@ namespace reto
 
   #ifdef RETO_TESSELATION_SHADERS
 
-    GLuint ShaderProgram::getPatchVertices( void )
+    unsigned int ShaderProgram::getPatchVertices( void )
     {
-      GLint n;
+      int n;
       glGetIntegerv( GL_PATCH_VERTICES, &n );
       return n;
     }
-    GLfloat ShaderProgram::getInnerLevel( void )
+    float ShaderProgram::getInnerLevel( void )
     {
-      GLfloat l;
+      float l;
       glGetFloatv( GL_PATCH_DEFAULT_INNER_LEVEL, &l );
       return l;
     }
-    GLfloat ShaderProgram::getOuterLevel( void )
+    float ShaderProgram::getOuterLevel( void )
     {
-      GLfloat l;
+      float l;
       glGetFloatv( GL_PATCH_DEFAULT_OUTER_LEVEL, &l );
       return l;
     }
 
-    void ShaderProgram::setPatchVertices( GLuint n )
+    void ShaderProgram::setPatchVertices( unsigned int n )
     {
       glPatchParameteri( GL_PATCH_VERTICES, n );
     }
-    void ShaderProgram::setInnerLevel( GLfloat level )
+    void ShaderProgram::setInnerLevel( float level )
     {
       glPatchParameterfv( GL_PATCH_DEFAULT_INNER_LEVEL, &level );
     }
-    void ShaderProgram::setOuterLevel( GLfloat level )
+    void ShaderProgram::setOuterLevel( float level )
     {
       glPatchParameterfv( GL_PATCH_DEFAULT_OUTER_LEVEL, &level );
     }
@@ -578,7 +592,7 @@ namespace reto
       glBeginQuery( GL_SAMPLES_PASSED, _occQuery );
       renderFunc( );
       glEndQuery( GL_SAMPLES_PASSED );
-      GLint samplesPassed = 0;
+      int samplesPassed = 0;
       glGetQueryObjectiv( _occQuery, GL_QUERY_RESULT, &samplesPassed );
       // Re-enable writing to color buffer and depth buffer
       glColorMask( true, true, true, true );
@@ -588,36 +602,36 @@ namespace reto
   #endif
 
   #ifdef RETO_GEOMETRY_SHADERS
-    void ShaderProgram::setGeometryMaxOutput( GLuint maxOutput )
+    void ShaderProgram::setGeometryMaxOutput( unsigned int maxOutput )
     {
       glProgramParameteri( _program, GL_GEOMETRY_VERTICES_OUT, maxOutput );
     }
-    void ShaderProgram::setGeometryInputType( GLuint inputType )
+    void ShaderProgram::setGeometryInputType( unsigned int inputType )
     {
       glProgramParameteri( _program, GL_GEOMETRY_INPUT_TYPE, inputType );
     }
-    void ShaderProgram::setGeometryOutputType( GLuint outputType )
+    void ShaderProgram::setGeometryOutputType( unsigned int outputType )
     {
       glProgramParameteri( _program, GL_GEOMETRY_OUTPUT_TYPE, outputType );
     }
 
-    GLint ShaderProgram::getGeometryMaxOutput( void )
+    int ShaderProgram::getGeometryMaxOutput( void )
     {
-      GLint maxOutput;
+      int maxOutput;
       glGetProgramiv( _program, GL_GEOMETRY_VERTICES_OUT, &maxOutput );
       return maxOutput;
     }
 
-    GLint ShaderProgram::getGeometryInputType( void )
+    int ShaderProgram::getGeometryInputType( void )
     {
-      GLint inputType;
+      int inputType;
       glGetProgramiv( _program, GL_GEOMETRY_INPUT_TYPE, &inputType );
       return inputType;
     }
 
-    GLint ShaderProgram::getGeometryOutputType( void )
+    int ShaderProgram::getGeometryOutputType( void )
     {
-      GLint outputType;
+      int outputType;
       glGetProgramiv( _program, GL_GEOMETRY_OUTPUT_TYPE, &outputType );
       return outputType;
     }

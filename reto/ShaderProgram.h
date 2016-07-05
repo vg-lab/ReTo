@@ -22,7 +22,7 @@
 
 /***
  * TODO:
- *  -glDispatchComputeIndirect(GLintptr indirect);
+ *  -glDispatchComputeIndirect(intptr indirect);
  *  -TransformFeedback in vertex and geometry shaders
  *  -Check dont used uniforms
  *  -Geometry I/O don´t work now
@@ -35,19 +35,7 @@
 #include <map>
 #include <string>
 #include <vector>
-
-//OpenGL
-#ifndef SKIP_GLEW_INCLUDE
-#include <GL/glew.h>
-#endif
-#ifdef Darwin
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#else
-#include <GL/gl.h>
-#include <GL/glu.h>
-#endif
-
+ 
 #define RETO_GEOMETRY_SHADERS
 #define RETO_COMPUTE_SHADERS
 #define RETO_TESSELATION_SHADERS
@@ -196,7 +184,7 @@ namespace reto
      * @return program identifier.
      */
     RETO_API
-    GLuint program( void );
+    unsigned int program( void );
 
     /**
      * Method to enable a program
@@ -228,7 +216,7 @@ namespace reto
      * @param index: Attribute index
      */
     RETO_API
-    void bindAttribute( const std::string& attr, GLuint index );
+    void bindAttribute( const std::string& attr, unsigned int index );
     /**
      * Method to catching an uniform value.
      * @param uniform: Uniform name
@@ -247,7 +235,7 @@ namespace reto
      * @param index: Uniform index
      */
     RETO_API
-    void bindUniform( const std::string& uniform, GLuint index );
+    void bindUniform( const std::string& uniform, unsigned int index );
     /**
      * Method to catching an uniform buffer object
      * @param _ubo: Uniform Buffer Object name
@@ -262,7 +250,7 @@ namespace reto
      * @param shaderType: OpenGL Shader type
      */
       RETO_API
-      void addSubroutine( const std::string& name, GLenum shaderType );
+      void addSubroutine( const std::string& name, int shaderType );
     #endif
 
     /**
@@ -271,21 +259,21 @@ namespace reto
      * @return Attribute index
      */
     RETO_API
-    GLuint attribute( const std::string& _attr );
+    unsigned int attribute( const std::string& _attr );
     /**
      * Method to get a uniform index in cache
      * @param _unif: Uniform name
      * @return Uniform index
      */
     RETO_API
-    GLuint uniform( const std::string& _unif );
+    unsigned int uniform( const std::string& _unif );
     /**
      * Method to get a Uniform Buffer Object index in cache
      * @param _ubo: Uniform Buffer Object name
      * @return Uniform Buffer Object index
      */
     RETO_API
-    GLuint ubo( const std::string& _ubo );
+    unsigned int ubo( const std::string& _ubo );
     /**
      * Method to get a subprogram index of a specific kind of shader 
      *    in cache
@@ -294,21 +282,21 @@ namespace reto
      * @return Subprogram index
      */
     RETO_API
-    GLuint subprogram( const std::string& name, GLenum shaderType );
+    unsigned int subprogram( const std::string& name, int shaderType );
     /**
      * Method to get a attribute index in cache
      * @param _attr: Attribute name
      * @return Attribute index
      */
     RETO_API
-    GLuint operator( )( const std::string& _attr );
+    unsigned int operator( )( const std::string& _attr );
     /**
      * Method to get a uniform index in cache
      * @param _unif: Uniform name
      * @return Uniform index
      */
     RETO_API
-    GLuint operator[]( const std::string& _unif );
+    unsigned int operator[]( const std::string& _unif );
 
     /**
      * Method to send a boolean
@@ -316,28 +304,28 @@ namespace reto
      * @param val: Boolean data
      */
     RETO_API
-    void sendUniformb( const std::string& uniform, GLboolean val );
+    void sendUniformb( const std::string& uniform, bool val );
     /**
      * Method to send an integer
      * @param uniform: Uniform name
      * @param v: Int data
      */
     RETO_API
-    void sendUniformi( const std::string& uniform, GLint val );
+    void sendUniformi( const std::string& uniform, int val );
     /**
      * Method to send an unsigned integer
      * @param uniform: Uniform name
      * @param val: Unsigned integer data
      */
     RETO_API
-    void sendUniformu( const std::string& uniform, GLuint val );
+    void sendUniformu( const std::string& uniform, unsigned int val );
     /**
      * Method to send a float
      * @param uniform: Uniform name
      * @param val: Float data
      */
     RETO_API
-    void sendUniformf( const std::string& uniform, GLfloat val );
+    void sendUniformf( const std::string& uniform, float val );
 
     /**
      * Method to send a vec3 with separated data
@@ -422,7 +410,7 @@ namespace reto
     RETO_API
     void sendUniform4m( const std::string& uniform,
                         const std::vector< float > & m,
-                        GLboolean inverse = GL_FALSE );
+                        bool inverse = false );
     /**
      * Method to send a mat4
      * @param uniform: Uniform name
@@ -433,7 +421,7 @@ namespace reto
     RETO_API
     void sendUniform4m( const std::string& uniform,
                         const float* m,
-                        GLboolean inverse = GL_FALSE );
+                        bool inverse = false );
 
     #ifdef RETO_SUBPROGRAMS
       /**
@@ -442,7 +430,7 @@ namespace reto
        * @param shaderType: OpenGL Shader type 
        */
       RETO_API
-      void activeSubprogram( const std::string& name, GLenum shaderType );
+      void activeSubprogram( const std::string& name, int shaderType );
     #endif
 
     #ifdef RETO_OCC_QUERY
@@ -465,8 +453,8 @@ namespace reto
        *                   in the Z dimension.
        */
       RETO_API
-      void launchComputeWork( GLuint numGroupX, GLuint numGroupY,
-                              GLuint numGroupZ );
+      void launchComputeWork( unsigned int numGroupX, unsigned int numGroupY,
+                              unsigned int numGroupZ );
     #endif
     #ifdef RETO_TESSELATION_SHADERS
       /**
@@ -474,77 +462,77 @@ namespace reto
        * @return Num of patches
        */
      RETO_API
-      GLuint getPatchVertices( void );
+      unsigned int getPatchVertices( void );
       /**
        * Method to get inner tesselation level.
        * @return Inner level
        */
       RETO_API
-      GLfloat getInnerLevel( void );
+      float getInnerLevel( void );
       /**
        * Method to get outer tesselation level.
        * @return Outer level
        */
      RETO_API
-      GLfloat getOuterLevel( void );
+      float getOuterLevel( void );
 
       /**
        * Method to set patch vertices.
        * @param numPatches: Num of patches
        */
       RETO_API
-      void setPatchVertices( GLuint numPatches );
+      void setPatchVertices( unsigned int numPatches );
       /**
        * Method to set inner tesselation level.
        * @param level: Inner level
        */
       RETO_API
-      void setInnerLevel( GLfloat level );
+      void setInnerLevel( float level );
       /**
        * Method to set outer tesselation level.
        * @param level: Outer level
        */
       RETO_API
-      void setOuterLevel( GLfloat level );
+      void setOuterLevel( float level );
     #endif
     #ifdef RETO_GEOMETRY_SHADERS
       /**
        * Method to get max output vertices.
-       * @return GLint: Máx. num of vertices
+       * @return int: Máx. num of vertices
        */
       RETO_API
-      GLint getGeometryMaxOutput( void );
+      int getGeometryMaxOutput( void );
       /**
        * Method to get max input geometry type.
-       * @return GLint: Input geometry type
+       * @return int: Input geometry type
        */
       RETO_API
-      GLint getGeometryInputType( void );
+      int getGeometryInputType( void );
       /**
        * Method to get output geometry type.
-       * @return GLint: Output geometry type
+       * @return int: Output geometry type
        */
       RETO_API
-      GLint getGeometryOutputType( void );
+      int getGeometryOutputType( void );
 
       /**
        * Method to set max output vertices.
        * @param maxValue: Max. num of vertices
        */
       RETO_API
-      void setGeometryMaxOutput( GLuint maxValue );
+      void setGeometryMaxOutput( unsigned int maxValue );
       /**
        * Method to set input geometry type.
        * @param inputValue: Input geometry type
        */
       RETO_API
-      void setGeometryInputType( GLuint inputValue );
+      void setGeometryInputType( unsigned int inputValue );
       /**
        * Method to set output geometry type.
        * @param outputType: Output geometry type
        */
       RETO_API
-      void setGeometryOutputType( GLuint outputType );
+      void setGeometryOutputType( unsigned int outputType );
     #endif
 
     /**
@@ -559,31 +547,31 @@ namespace reto
     bool link( void );
   protected:
     void _destroy( );
-    bool _load( const std::string& file, GLenum type );
-    bool _loadFromText( const std::string& source, GLenum type );
+    bool _load( const std::string& file, int type );
+    bool _loadFromText( const std::string& source, int type );
 
-    GLuint _program;
-    std::map<std::string, GLuint> _attrsList;
-    std::map<std::string, GLuint> _uniformList;
-    std::map<std::string, GLuint> _uboList;
+    unsigned int _program;
+    std::map<std::string, unsigned int> _attrsList;
+    std::map<std::string, unsigned int> _uniformList;
+    std::map<std::string, unsigned int> _uboList;
 
     #ifdef RETO_SUBPROGRAMS
       typedef struct SubProgram
       {
         const char* name;
-        GLuint index;
-        SubProgram( const char* n, GLuint i )
+        unsigned int index;
+        SubProgram( const char* n, unsigned int i )
         {
           this->name = n;
           this->index = i;
         }
       } SubProgram;
-      std::multimap<GLenum, SubProgram> _subprograms;
+      std::multimap<int, SubProgram> _subprograms;
     #endif
-    std::vector<GLuint> _shaders;
+    std::vector<unsigned int> _shaders;
 
     #ifdef RETO_OCC_QUERY
-      GLuint _occQuery;
+      unsigned int _occQuery;
     #endif
   };
 }
