@@ -38,6 +38,11 @@
 #endif
 
 
+#include <limits>       // std::numeric_limits
+
+#define MACRO_SP_WARNING(name, type) std::cerr << "WARNING: '" << name << "' " << type << " doesn't exist or appears unused." << std::endl;
+
+
 namespace reto
 {
   ShaderProgram::ShaderProgram( void )
@@ -313,7 +318,12 @@ namespace reto
 
   void ShaderProgram::addAttribute( const std::string& attr )
   {
-    _attrsList[attr] = glGetAttribLocation(_program, attr.c_str( ));
+    unsigned int index = glGetAttribLocation( _program, attr.c_str( ));
+    if(index != std::numeric_limits<unsigned int>::max()) {
+      _attrsList[attr] = index;
+    } else {
+      MACRO_SP_WARNING(attr, "attribute")
+    }
   }
 
   void ShaderProgram::addAttributes( const std::vector<char*> attrs )
@@ -326,8 +336,12 @@ namespace reto
 
   void ShaderProgram::addUniform(const std::string& uniformName)
   {
-    _uniformList[uniformName] =
-      glGetUniformLocation( _program, uniformName.c_str( ));
+    unsigned int index = glGetUniformLocation( _program, uniformName.c_str( ));
+    if(index != std::numeric_limits<unsigned int>::max()) {
+      _uniformList[uniformName] = index;
+    } else {
+      MACRO_SP_WARNING(uniformName, "uniform");
+    }
   }
 
   void ShaderProgram::addUniforms(const std::vector<char*> uniforms)
@@ -340,7 +354,12 @@ namespace reto
 
   void ShaderProgram::addUbo( const std::string& uboName )
   {
-    _uboList[uboName] = glGetUniformBlockIndex( _program, uboName.c_str( ));
+    unsigned int index = glGetUniformBlockIndex( _program, uboName.c_str( ));
+    if(index != std::numeric_limits<unsigned int>::max()) {
+      _uboList[uboName] = index;
+    } else {
+      MACRO_SP_WARNING(uboName, "ubo");
+    }
   }
 
   #ifdef RETO_SUBPROGRAMS
@@ -348,8 +367,12 @@ namespace reto
                                        int shaderType )
     {
       unsigned int idx = glGetSubroutineIndex( _program, shaderType, name.c_str( ));
-      auto sub = SubProgram( name.c_str( ), idx );
-      _subprograms.insert(std::pair<int, SubProgram>(shaderType, sub));
+      if(idx != std::numeric_limits<unsigned int>::max()) {
+        auto sub = SubProgram( name.c_str( ), idx );
+        _subprograms.insert(std::pair<int, SubProgram>(shaderType, sub));
+      } else {
+        MACRO_SP_WARNING(name, "subprogram");
+      }
     }
   #endif
 
