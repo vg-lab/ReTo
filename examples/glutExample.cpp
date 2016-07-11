@@ -218,8 +218,8 @@ void renderFunc( void )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	prog.use( );
 
-	prog.sendUniform4m( "View", camera.ViewMatrix( ));
-	auto vp = camera.ViewProjectionMatrix( );
+	prog.sendUniform4m( "View", camera.viewMatrix( ));
+	auto vp = camera.viewProjectionMatrix( );
 	prog.sendUniform4m( "ViewProj", vp );
 
 	glBindVertexArray( vao );

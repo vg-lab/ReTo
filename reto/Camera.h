@@ -111,7 +111,7 @@ namespace reto
      * @param increment_ camera translation
      */
     RETO_API
-    void LocalTranslation( Eigen::Vector3f increment_ );
+    void localTranslation( Eigen::Vector3f increment_ );
 
     /**
      * Method to rotate the camera from the actual rotation
@@ -119,28 +119,28 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    void LocalRotation( const float yaw_, const float pitch_ );
+    void localRotation( const float yaw_, const float pitch_ );
 
     /**
      * Method to if there is a target pivot move the camera to this target pivot
      *@return boolean that is 1 if the camera is actually moving
      */
     RETO_API
-    bool Anim( void );
+    bool anim( void );
 
     /**
      * Method to get the field of view of the camera
      * @return float with the field of view of the camera
      */
     RETO_API
-    float Fov( void );
+    float fov( void );
 
     /**
      * Method to get and set the far plane of the camera
      * @return the reference to a float with the far plane attrib of the camera
      */
     RETO_API
-    float& FarPlane( void )
+    float& farPlane( void )
     {
       return _farPlane;
     }
@@ -150,7 +150,7 @@ namespace reto
      * @return Eige::Vector3f with the pivot pin of the camera
      */
     RETO_API
-    Eigen::Vector3f Pivot( void );
+    Eigen::Vector3f pivot( void );
 
     /**
      * Method to get the actual distance between the camera and the pivot pin
@@ -158,7 +158,7 @@ namespace reto
      * @return float with the distance between the camera and the pivot pin
      */
     RETO_API
-    float Radius( void );
+    float radius( void );
 
     /**
      * Method to get the pointer to projection matrix of the camera vectorized
@@ -167,7 +167,7 @@ namespace reto
      * the camera
      */
     RETO_API
-    float* ProjectionMatrix( void );
+    float* projectionMatrix( void );
 
     /**
      * Method to get the pointer to view matrix of the camera vectorized
@@ -176,7 +176,7 @@ namespace reto
      * the camera
      */
     RETO_API
-    float* ViewMatrix( void );
+    float* viewMatrix( void );
 
     /**
      * Method to get the pointer to projectionview matrix of the camera
@@ -185,14 +185,14 @@ namespace reto
      * matrix of the camera
      */
     RETO_API
-    float* ViewProjectionMatrix( void );
+    float* viewProjectionMatrix( void );
 
     /**
      * Method to get the pointer to the camera position vectorized
      * @return pointer to float whit the vectorized camera position
      */
     RETO_API
-    float* Position( void );
+    float* position( void );
 
 #ifdef RETO_USE_ZEROEQ
     /**
@@ -201,7 +201,7 @@ namespace reto
      * @return pointer to zeroeq::Subscriber
      */
     RETO_API
-    zeroeq::Subscriber* Subscriber( void );
+    zeroeq::Subscriber* subscriber( void );
 #endif
 
     /**
@@ -209,21 +209,21 @@ namespace reto
      * @param ratio camera projection ratio
      */
     RETO_API
-    void Ratio( float ratio_ );
+    void ratio( float ratio_ );
 
     RETO_API
     /**
      * Method to set the camera pivot pin
      * @param pivot new camera pivot pin
      */
-    void Pivot( Eigen::Vector3f pivot_ );
+    void pivot( Eigen::Vector3f pivot_ );
 
     RETO_API
     /**
      * Method to set the distance between the camera and the pivot pin
      * @param radius distance between the camera and the pivot pin
      */
-    void Radius( const float radius_ );
+    void radius( const float radius_ );
 
     RETO_API
     /**
@@ -231,14 +231,14 @@ namespace reto
      * @param yaw camera rotation of y exe
      * @param pitch camera rotation of x exe
      */
-    void Rotation( const float yaw_, const float pitch_ );
+    void rotation( const float yaw_, const float pitch_ );
 
     RETO_API
     /**
      * Method to set the target pivot of the camera
      * @param targetPivot camera target pivot pin
      */
-    void TargetPivot( Eigen::Vector3f targetPivot_ );
+    void targetPivot( Eigen::Vector3f targetPivot_ );
 
     RETO_API
     /**
@@ -247,7 +247,7 @@ namespace reto
      * @param targetRadius taget camera distance between the camera and the
      * pivot pin
      */
-    void TargetRadius( const float targetRadius_ );
+    void targetRadius( const float targetRadius_ );
 
     RETO_API
     /**
@@ -257,7 +257,7 @@ namespace reto
      * @param targetRadius target camera distance between the camera and the
      * pivot pin
      */
-    void TargetPivotRadius( Eigen::Vector3f targetPivot_,
+    void targetPivotRadius( Eigen::Vector3f targetPivot_,
                             const float targetRadius_ );
 
     RETO_API
@@ -265,7 +265,7 @@ namespace reto
      * Method to set the anim duration of the camera movement from actual pivot
      * and radius to the target pivot and radius
      */
-    void AnimDuration( const float animDuration_ );
+    void animDuration( const float animDuration_ );
 
     RETO_API
     /**
@@ -273,19 +273,19 @@ namespace reto
      * @param w: Window width
      * @param h: Window height
      */
-    void SetWindowSize( const int width_, const int height_ );
+    void setWindowSize( const int width_, const int height_ );
 
     /**
      * Method to get window width size
      * @return window width size
      */
-    int Width( void );
+    int width( void );
 
     /**
      * Method to get window height size
      * @return window height size
      */
-    int Height( void );
+    int height( void );
 
 private:
 

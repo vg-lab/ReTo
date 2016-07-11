@@ -101,21 +101,21 @@ namespace reto
 
   // PUBLIC
 
-  void Camera::LocalTranslation( Eigen::Vector3f increment_ )
+  void Camera::localTranslation( Eigen::Vector3f increment_ )
   {
     _pivot += _rotation.transpose( ) * increment_;
     _BuildViewMatrix( );
     _BuildViewProjectionMatrix( );
   }
 
-  void Camera::LocalRotation( const float yaw_, const float pitch_ )
+  void Camera::localRotation( const float yaw_, const float pitch_ )
   {
     _Rotation( _RotationFromPY( yaw_, pitch_) * _rotation );
     _BuildViewMatrix( );
     _BuildViewProjectionMatrix( );
   }
 
-  bool Camera::Anim( void )
+  bool Camera::anim( void )
   {
     std::chrono::time_point< std::chrono::system_clock > actualTime =
       std::chrono::system_clock::now( );
@@ -172,43 +172,43 @@ namespace reto
 
   // GETTERS
 
-  float Camera::Fov( void )
+  float Camera::fov( void )
   {
     return _fov;
   }
 
-  Eigen::Vector3f Camera::Pivot( void )
+  Eigen::Vector3f Camera::pivot( void )
   {
     return _pivot;
   }
 
-  float Camera::Radius( void )
+  float Camera::radius( void )
   {
     return _radius;
   }
 
-  float* Camera::ProjectionMatrix( void )
+  float* Camera::projectionMatrix( void )
   {
     return _projVec.data( );
   }
 
-  float* Camera::ViewMatrix( void )
+  float* Camera::viewMatrix( void )
   {
     return _viewVec.data( );
   }
 
-  float* Camera::ViewProjectionMatrix( void )
+  float* Camera::viewProjectionMatrix( void )
   {
     return _viewProjVec.data( );
   }
 
-  float* Camera::Position( void )
+  float* Camera::position( void )
   {
     return _positionVec.data( );
   }
 
 #ifdef RETO_USE_ZEROEQ
-  zeroeq::Subscriber* Camera::Subscriber( void )
+  zeroeq::Subscriber* Camera::subscriber( void )
   {
     return _subscriber;
   }
@@ -217,14 +217,14 @@ namespace reto
 
   // SETTERS
 
-  void Camera::Ratio( const float ratio_ )
+  void Camera::ratio( const float ratio_ )
   {
     _ratio = ratio_;
     _BuildProjectionMatrix( );
     _BuildViewProjectionMatrix( );
   }
 
-  void Camera::Pivot( Eigen::Vector3f pivot_ )
+  void Camera::pivot( Eigen::Vector3f pivot_ )
   {
     if ( !_isAniming )
     {
@@ -234,7 +234,7 @@ namespace reto
     }
   }
 
-  void Camera::Radius( const float radius_ )
+  void Camera::radius( const float radius_ )
   {
     if ( !_isAniming )
     {
@@ -244,7 +244,7 @@ namespace reto
     }
   }
 
-  void Camera::Rotation( const float yaw_, const float pitch_ )
+  void Camera::rotation( const float yaw_, const float pitch_ )
   {
     if ( !_isAniming )
     {
@@ -254,28 +254,28 @@ namespace reto
     }
   }
 
-  void Camera::TargetPivot( Eigen::Vector3f targetPivot_ )
+  void Camera::targetPivot( Eigen::Vector3f targetPivot_ )
   {
     _isAniming = true;
     _firstStep = true;
     _targetPivot = targetPivot_;
   }
 
-  void Camera::TargetRadius( const float targetRadius_ )
+  void Camera::targetRadius( const float targetRadius_ )
   {
     _isAniming = true;
     _firstStep = true;
     _targetRadius = targetRadius_;
   }
 
-  void Camera::TargetPivotRadius( Eigen::Vector3f targetPivot_,
+  void Camera::targetPivotRadius( Eigen::Vector3f targetPivot_,
       float targetRadius_ )
   {
-    TargetPivot( targetPivot_ );
-    TargetRadius( targetRadius_ );
+    targetPivot( targetPivot_ );
+    targetRadius( targetRadius_ );
   }
 
-  void Camera::AnimDuration( const float animDuration_ )
+  void Camera::animDuration( const float animDuration_ )
   {
     _animDuration = animDuration_;
   }
@@ -309,16 +309,16 @@ namespace reto
 
   void Camera::_BuildViewMatrix( void )
   {
-    Eigen::Vector3f position = _rotation.transpose( ) *
+    Eigen::Vector3f pos = _rotation.transpose( ) *
     Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) * _radius + _pivot;
 
-    Eigen::Vector3f pivot = _rotation * _pivot;
+    Eigen::Vector3f pv = _rotation * _pivot;
 
     std::vector<float> positionVec;
     positionVec.resize( 3 );
-    positionVec[ 0 ] =  position.x( );
-    positionVec[ 1 ] =  position.y( );
-    positionVec[ 2 ] =  position.z( );
+    positionVec[ 0 ] =  pos.x( );
+    positionVec[ 1 ] =  pos.y( );
+    positionVec[ 2 ] =  pos.z( );
 
     _PositionVectorized( positionVec );
 
@@ -340,9 +340,9 @@ namespace reto
     viewVec[10] = _rotation( 2, 2 );
     viewVec[11] = .0f;
     // row 4
-    viewVec[12] = - pivot.x( );
-    viewVec[13] = - pivot.y( );
-    viewVec[14] = - pivot.z( ) - _radius;
+    viewVec[12] = - pv.x( );
+    viewVec[13] = - pv.y( );
+    viewVec[14] = - pv.z( ) - _radius;
     viewVec[15] = 1.0f;
 
     _ViewMatrixVectorized( viewVec );
@@ -492,18 +492,18 @@ namespace reto
   }
 
 #endif
-  void Camera::SetWindowSize( const int width_, const int height_ )
+  void Camera::setWindowSize( const int width_, const int height_ )
   {
     this->_width = width_;
     this->_height = height_;
   }
 
-  int Camera::Width( void )
+  int Camera::width( void )
   {
     return this->_width;
   }
 
-  int Camera::Height( void )
+  int Camera::height( void )
   {
     return this->_height;
   }
