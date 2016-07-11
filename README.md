@@ -1,4 +1,4 @@
-# ReTo - Render tools
+# ReTo - Render auxiliary Tools
 (c) 2016. GMRV / URJC
 
 www.gmrv.es
@@ -14,7 +14,15 @@ ReTo provides the following tools:
 
 ## Dependencies
 
-TODO. Boost's Unit Test Framework are optional.
+As required dependencies ReTo needs:
+* OpenGL
+* GLEW
+* Eigen3
+
+The following dependencies are optional:
+* GLUT for some examples
+* ZeroEQ/Lexis for publishing camera
+* Boost's Unit Test Framework for unit testing.
 
 ## Building
 
