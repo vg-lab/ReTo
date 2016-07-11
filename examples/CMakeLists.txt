@@ -1,14 +1,29 @@
 include_directories(
   ${PROJECT_BINARY_DIR}/include
   ${PROJECT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-set( RETOGLUTCAMERA_HEADERS )
-set( RETOGLUTCAMERA_SOURCES glutCamera.cpp )
-set( RETOGLUTCAMERA_LINK_LIBRARIES ReTo )
-common_application( ReToGlutCamera )
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/glutExampleShaders.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/glutExampleShaders.h )
 
-set( RETOQTCAMERA_HEADERS )
-set( RETOQTCAMERA_SOURCES qtCamera.cpp )
-set( RETOQTCAMERA_LINK_LIBRARIES ReTo )
-common_application( ReToQtCamera )
+if ( GLUT_FOUND )
+
+  set( RETOSHADERPROGRAM_HEADERS )
+  set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
+  set( RETOSHADERPROGRAM_LINK_LIBRARIES
+	  ReTo
+	  ${GLUT_LIBRARIES}
+    )
+  common_application( ReToShaderProgram )
+
+  set( RETOGLUTEXAMPLE_HEADERS )
+  set( RETOGLUTEXAMPLE_SOURCES glutExample.cpp )
+  set( RETOGLUTEXAMPLE_LINK_LIBRARIES
+	  ReTo
+	  ${GLUT_LIBRARIES}
+    )
+  common_application( ReToGlutExample )
+
+endif( )

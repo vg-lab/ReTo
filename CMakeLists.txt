@@ -35,7 +35,31 @@ set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 include( Common )
 
-common_find_package( Boost COMPONENTS unit_test_framework )
+common_find_package(nvidiaOpenGL )
+common_find_package(OpenGL REQUIRED SYSTEM)
+common_find_package(GLEW REQUIRED SYSTEM)
+common_find_package(Eigen3 REQUIRED SYSTEM)
+common_find_package(GLUT SYSTEM)
+common_find_package(Boost COMPONENTS unit_test_framework)
+common_find_package(ZeroEQ)
+common_find_package(Lexis)
+
+list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3)
+
+if(GLUT_FOUND)
+  list(APPEND RETO_DEPENDENT_LIBRARIES GLUT)
+endif()
+
+if(ZEROEQ_FOUND)
+  list(APPEND RETO_DEPENDENT_LIBRARIES ZeroEQ)
+  common_find_package(Threads REQUIRED)
+  list(APPEND RETO_DEPENDENT_LIBRARIES Threads)
+endif()
+
+if(LEXIS_FOUND)
+  list(APPEND RETO_DEPENDENT_LIBRARIES Lexis)
+endif()
+
 common_find_package_post( )
 
 add_subdirectory( reto )

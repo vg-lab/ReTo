@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014-2016 GMRV/URJC.
  *
- * Authors: TBD
+ * Authors: Cristian Rodriguez Bernal (crodriguez)
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -19,11 +19,38 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
-#include <reto/reto.h>
 
-int main ( void )
+#ifndef __RETO__PICKABLE__
+#define __RETO__PICKABLE__
+
+#include <reto/api.h>
+
+namespace reto
 {
-  reto::Camera c;
+  class Pickable
+  {
+  public:
+    Pickable( void );
+    virtual ~Pickable ( void ); 
 
-  return 0;
-}
+      /**
+       * Method to update currentOffset
+       * @param currentOffset: Current offset
+       * @return Updated current offset
+       */
+      RETO_API
+    virtual unsigned int sendId ( unsigned int currentOffset );
+
+      /**
+       * Method to render a Pickable object
+       */
+      RETO_API
+    virtual void render ( void ) = 0;
+
+  protected:
+    int _numIds = 1;
+    void setNumIDs ( int numIds );
+  };
+};
+
+#endif // __RETO__PICKABLE__
