@@ -33,6 +33,30 @@ include(GitExternal)
 set( CMAKECOMMONTEMPLATE_DESCRIPTION "ReTo - Render Tools" )
 set( COMMON_PROJECT_DOMAIN gmrv.es )
 
+
+option( RETO_WITH_GEOMETRY_SHADERS "enabling/disabling geometry shaders" ON )
+option( RETO_WITH_TESSELATION_SHADERS
+  "enabling/disabling tesselation shaders" ON )
+option( RETO_WITH_SUBPROGRAMS "enabling/disabling subprograms" ON )
+option( RETO_WITH_OCC_QUERY "enabling/disabling occlusion query" ON )
+
+if ( RETO_WITH_GEOMETRY_SHADERS )
+  add_definitions( -DRETO_GEOMETRY_SHADERS )
+endif( )
+
+if ( RETO_WITH_TESSELATION_SHADERS )
+  add_definitions( -DRETO_TESSELATION_SHADERS )
+endif( )
+
+if ( RETO_WITH_SUBPROGRAMS )
+  add_definitions( -DRETO_SUBPROGRAMS )
+endif( )
+
+if ( RETO_WITH_OCC_QUERY )
+  add_definitions( -DRETO_OCC_QUERY )
+endif( )
+
+
 include( Common )
 
 common_find_package(nvidiaOpenGL )

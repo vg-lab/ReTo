@@ -39,7 +39,13 @@
 
 using namespace reto;
 
-int main(int argc, char** argv)
+#ifndef RETO_GEOMETRY_SHADERS
+int main( int, char** )
+{
+  std::cerr << "ReTo not built with geometry shaders" << std::endl;
+  return -1;
+#else
+int main( int argc, char** argv )
 {
 
   glutInit(&argc, argv);
@@ -141,5 +147,7 @@ int main(int argc, char** argv)
   std::cout << prog2.getGeometryOutputType( ) << " " << outputType << std::endl;
 
   return 0;
+
+#endif // RETO_GEOMETRY_SHADERS
 
 }
