@@ -35,12 +35,6 @@
 #include <map>
 #include <string>
 #include <vector>
- 
-#define RETO_GEOMETRY_SHADERS
-#define RETO_COMPUTE_SHADERS
-#define RETO_TESSELATION_SHADERS
-#define RETO_SUBPROGRAMS
-#define RETO_OCC_QUERY
 
 #ifdef RETO_OCC_QUERY
   #include <functional>

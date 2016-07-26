@@ -40,6 +40,8 @@ using namespace reto;
 
 #include <iostream>
 
+#ifdef RETO_GEOMETRY_SHADERS
+
 BOOST_AUTO_TEST_CASE( test_program_shader )
 {
   char fooParam[] = "foo";
@@ -64,7 +66,8 @@ BOOST_AUTO_TEST_CASE( test_program_shader )
     exit (-1);
   }
   const GLubyte *oglVersion = glGetString(GL_VERSION);
-  std::cout << "This system supports OpenGL Version: " << oglVersion << std::endl;
+  std::cout << "This system supports OpenGL Version: "
+            << oglVersion << std::endl;
 
 
   std::string vsShader = (
@@ -144,3 +147,5 @@ BOOST_AUTO_TEST_CASE( test_program_shader )
   BOOST_CHECK(prog2.getGeometryOutputType() == GL_LINE_STRIP);
   BOOST_CHECK(prog2.getGeometryMaxOutput() == 8);
 }
+
+#endif // RETO_GEOMETRY_SHADERS
