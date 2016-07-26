@@ -27,11 +27,15 @@ def rchop(str_, ending):
     return str_[:-len(ending)]
   return str_
 
+set_vars = set()
+
 def recreateFile( path ):
   list = []
   for root, subdirectory, files in os.walk( path ):
     for file in files:
       list += read_file( root, file, path, False )
+  del list[-1]
+  set_vars.clear( )
   return list
 
 def read_file( root, file, path, import_file ):
@@ -39,7 +43,7 @@ def read_file( root, file, path, import_file ):
   if not import_file and file[0] == "_":
     return []
   var_name = os.path.relpath( os.path.join( root, file ), path ).replace( "\\", "_" )       # Get parent directory name. "" if directory as path
-  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" )                                 # Remove ".glsl" and replace "." to "_"
+  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" ).replace( " ", "_ ")               # Remove ".glsl" and replace "." and " " to "_"
   content = []
 
   try:
@@ -50,14 +54,20 @@ def read_file( root, file, path, import_file ):
         content += read_file( root, v.group(1), path, True )
       else:
         content.append( line.rstrip( '\n' ) )
-    f.close()
+    f.close( )
   except IOError as e:
     print("'" + file + "' not found")
     return []
 
   content = '\\n"\n  "'.join( content )
   if not import_file:
-    list.append( "  static const char* " + first_lower( var_name ) + " = " )
+    var_name = first_lower( var_name )
+    if var_name in set_vars:
+      #raise ValueError("Var_name exist") 
+      print var_name + " repeated ..."
+      return []
+    set_vars.add( var_name )
+    list.append( "  static const char* " + var_name + " = " )
     list.append( '"' + content + '";' )
     list.append( "\n\n" )
   else:
