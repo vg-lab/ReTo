@@ -65,6 +65,7 @@ common_find_package_post( )
 add_subdirectory( reto )
 add_subdirectory( examples )
 add_subdirectory( tests )
+add_subdirectory( tools )
 
 include( CPackConfig )
 include( DoxygenRule )
