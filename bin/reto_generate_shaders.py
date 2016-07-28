@@ -42,8 +42,10 @@ def read_file( root, file, path, import_file ):
   list = []
   if not import_file and file[0] == "_":
     return []
-  var_name = os.path.relpath( os.path.join( root, file ), path ).replace( "\\", "_" )       # Get parent directory name. "" if directory as path
-  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" ).replace( " ", "_ ")               # Remove ".glsl" and replace "." and " " to "_"
+  # Get parent directory name. "" if directory as path
+  var_name = os.path.relpath( os.path.join( root, file ), path ).replace( "\\", "_" )       
+  # Remove ".glsl" and replace "." and " " to "_"
+  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" ).replace( " ", "_ ")              
   content = []
 
   try:

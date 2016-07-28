@@ -46,6 +46,13 @@ namespace reto
   public:
     RETO_API
     PickingSystem( reto::Camera* camera );
+    /**
+     * Reuse a ShaderProgram that lacks fragment shader
+     * @param camera: Camera
+     * @param prog: ProgramShader
+     **/
+    RETO_API
+    PickingSystem( reto::Camera* camera, reto::ShaderProgram& prog );
     virtual ~PickingSystem( );
 
     /**
@@ -68,7 +75,7 @@ namespace reto
 
     /**
      * Method to find front object in a specific point
-     * @param point: Point
+     * @param point: Point (in OpenGL coordinates)
      * @return int: Indice that is visible
      */
     RETO_API
@@ -76,8 +83,8 @@ namespace reto
 
     /**
      * Method to find front object in a specific area
-     * @param minPoint: minPoint
-     * @param maxPoint: maxPoint
+     * @param minPoint: minPoint (in OpenGL coordinates)
+     * @param maxPoint: maxPoint (in OpenGL coordinates)
      * @return std::set<unsigned int> Indices that objects are visibles
      */
     RETO_API
