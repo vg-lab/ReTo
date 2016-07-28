@@ -45,14 +45,13 @@ namespace reto
   {
   public:
     RETO_API
-    PickingSystem( reto::Camera* camera );
+    PickingSystem( );
     /**
      * Reuse a ShaderProgram that lacks fragment shader
-     * @param camera: Camera
      * @param prog: ProgramShader
      **/
     RETO_API
-    PickingSystem( reto::Camera* camera, reto::ShaderProgram& prog );
+    PickingSystem( const reto::ShaderProgram& prog );
     virtual ~PickingSystem( );
 
     /**
@@ -93,7 +92,6 @@ namespace reto
     protected:
       reto::ShaderProgram _program;
       std::set< reto::Pickable* > _objects;
-      reto::Camera* _camera;
 
       virtual std::string _VertexCode( void );
   };

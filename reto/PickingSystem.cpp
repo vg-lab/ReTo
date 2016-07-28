@@ -37,8 +37,7 @@
 
 namespace reto
 {
-  PickingSystem::PickingSystem( reto::Camera* camera )
-    : _camera(camera)
+  PickingSystem::PickingSystem( )
   {
     _program.loadFromText(
       _VertexCode( ),
@@ -61,9 +60,9 @@ namespace reto
     _program.addUniform("id");
   }
 
-  PickingSystem( reto::Camera* camera, reto::ShaderProgram& prog )
-    : _camera(camera)
+  PickingSystem::PickingSystem( const reto::ShaderProgram& prog )
   {
+    _program = prog;
     _program.loadFragmentShaderFromText(
       "#version 430\n"
       "out vec4 ourColor;\n"
