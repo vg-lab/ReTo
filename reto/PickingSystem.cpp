@@ -79,8 +79,8 @@ namespace reto
       "  ourColor = vec4(unpackColor3(pid), 1.0);\n"
       "}");
     _program.compileAndLink( );
-    _program.addUniform("modelViewProj");
-    _program.addUniform("id");
+    _program.addUniform( "modelViewProj" );
+    _program.addUniform( "id" );
   }
 
   PickingSystem::~PickingSystem( void )
