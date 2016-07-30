@@ -89,6 +89,15 @@ common_find_package_post( )
 add_subdirectory( reto )
 add_subdirectory( examples )
 add_subdirectory( tests )
+add_subdirectory( bin )
+
+configure_file(
+  CMake/reto_generate_shaders.cmake
+  ${PROJECT_BINARY_DIR}/${CMAKE_MODULE_INSTALL_PATH}/reto_generate_shaders.cmake
+  COPYONLY
+  )
+install( FILES CMake/reto_generate_shaders.cmake
+  DESTINATION ${CMAKE_MODULE_INSTALL_PATH} COMPONENT dev )
 
 include( CPackConfig )
 include( DoxygenRule )

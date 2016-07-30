@@ -38,6 +38,11 @@
 #endif
 
 
+#include <limits>       // std::numeric_limits
+
+#define MACRO_SP_WARNING(name, type) std::cerr << "WARNING: '" << name << "' " << type << " doesn't exist or appears unused." << std::endl;
+
+
 namespace reto
 {
   ShaderProgram::ShaderProgram( void )
@@ -76,7 +81,7 @@ namespace reto
     unsigned int shader;
     shader = glCreateShader( type );
     const char* cStr = source.c_str( );
-    glShaderSource(shader, 1, &cStr, nullptr );
+    glShaderSource( shader, 1, &cStr, nullptr );
 
     int status;
     glCompileShader( shader );
@@ -85,10 +90,10 @@ namespace reto
     {
       int infoLogLength;
       glGetShaderiv ( shader, GL_INFO_LOG_LENGTH, &infoLogLength );
-      GLchar* infoLog = new GLchar[infoLogLength];
+      GLchar* infoLog = new GLchar[ infoLogLength ];
       glGetShaderInfoLog( shader, infoLogLength, nullptr, infoLog );
       std::cerr << "Compile log: " << infoLog << std::endl;
-      delete [] infoLog;
+      delete [ ] infoLog;
       return false;
     }
 
@@ -159,7 +164,7 @@ namespace reto
     int i = 0;
     while (file.good( ))
     {
-      source[i] = char( file.get( ));
+      source[ i ] = char( file.get( ));
       if ( !file.eof( )) i++;
       else fileLen = i;
     }
@@ -182,7 +187,7 @@ namespace reto
       GLchar *infoLog= new GLchar[infoLogLength];
       glGetShaderInfoLog( shader, infoLogLength, nullptr, infoLog );
       std::cerr << "Compile log ("<< fileName << "): " << infoLog << std::endl;
-      delete [] infoLog;
+      delete [ ] infoLog;
       return false;
     }
     delete source;
@@ -249,9 +254,9 @@ namespace reto
     size_t size = _shaders.size( );
     for( size_t i = 0; i < size; ++i )
     {
-      if( _shaders[i] != 0 )
+      if( _shaders[ i ] != 0 )
       {
-        glDetachShader( _program, _shaders[i] );
+        glDetachShader( _program, _shaders[ i ] );
       }
     }
     glDeleteProgram( _program );
@@ -263,9 +268,9 @@ namespace reto
     size_t size = _shaders.size( );
     for( size_t i = 0; i < size; i++ )
     {
-      if( _shaders[i] != 0 )
+      if( _shaders[ i ] != 0 )
       {
-        glAttachShader( _program, _shaders[i] );
+        glAttachShader( _program, _shaders[ i ] );
       }
     }
   }
@@ -284,7 +289,7 @@ namespace reto
       GLchar* infoLog = new GLchar[infoLogLength];
       glGetProgramInfoLog( _program, infoLogLength, nullptr, infoLog );
       std::cerr << "Link log: " << infoLog << std::endl;
-      delete [] infoLog;
+      delete [ ] infoLog;
       return false;
     }
     return true;
@@ -292,7 +297,7 @@ namespace reto
 
   void ShaderProgram::use( void )
   {
-    glUseProgram(_program);
+    glUseProgram( _program );
   }
 
   void ShaderProgram::unuse( void )
@@ -313,74 +318,103 @@ namespace reto
 
   void ShaderProgram::addAttribute( const std::string& attr )
   {
-    _attrsList[attr] = glGetAttribLocation(_program, attr.c_str( ));
+    unsigned int index = glGetAttribLocation( _program, attr.c_str( ) );
+    if( index != std::numeric_limits< unsigned int >::max( ) )
+    {
+      _attrsList[ attr ] = index;
+    }
+    else
+    {
+      MACRO_SP_WARNING( attr, "attribute" )
+    }
   }
 
   void ShaderProgram::addAttributes( const std::vector<char*> attrs )
   {
     for( auto& a: attrs )
     {
-      addAttribute(a);
+      addAttribute( a );
     }
   }
 
-  void ShaderProgram::addUniform(const std::string& uniformName)
+  void ShaderProgram::addUniform( const std::string& uniformName )
   {
-    _uniformList[uniformName] =
-      glGetUniformLocation( _program, uniformName.c_str( ));
+    unsigned int index = glGetUniformLocation( _program, uniformName.c_str( ) );
+    if( index != std::numeric_limits<unsigned int>::max( ) ) 
+    {
+      _uniformList[ uniformName ] = index;
+    }
+    else
+    {
+      MACRO_SP_WARNING( uniformName, "uniform" );
+    }
   }
 
-  void ShaderProgram::addUniforms(const std::vector<char*> uniforms)
+  void ShaderProgram::addUniforms( const std::vector<char*> uniforms )
   {
     for( auto& u: uniforms )
     {
-      addUniform(u);
+      addUniform( u );
     }
   }
 
   void ShaderProgram::addUbo( const std::string& uboName )
   {
-    _uboList[uboName] = glGetUniformBlockIndex( _program, uboName.c_str( ));
+    unsigned int index = glGetUniformBlockIndex( _program, uboName.c_str( ) );
+    if( index != std::numeric_limits< unsigned int >::max( ) ) {
+      _uboList[ uboName ] = index;
+    }
+    else
+    {
+      MACRO_SP_WARNING( uboName, "ubo" );
+    }
   }
 
   #ifdef RETO_SUBPROGRAMS
     void ShaderProgram::addSubroutine( const std::string& name,
                                        int shaderType )
     {
-      unsigned int idx = glGetSubroutineIndex( _program, shaderType, name.c_str( ));
-      auto sub = SubProgram( name.c_str( ), idx );
-      _subprograms.insert(std::pair<int, SubProgram>(shaderType, sub));
+      unsigned int idx = glGetSubroutineIndex( _program, shaderType, name.c_str( ) );
+      if( idx != std::numeric_limits< unsigned int >::max( ) )
+      {
+        auto sub = SubProgram( name.c_str( ), idx );
+        _subprograms.insert( std::pair< int, SubProgram >( shaderType, sub ) );
+      }
+      else
+      {
+        MACRO_SP_WARNING( name, "subprogram" );
+      }
     }
   #endif
 
   void ShaderProgram::bindAttribute( const std::string& attr, unsigned int index )
   {
-    glBindAttribLocation( _program, index, attr.c_str( ));
+    glBindAttribLocation( _program, index, attr.c_str( ) );
   }
 
   unsigned int ShaderProgram::attribute( const std::string& attr )
   {
-    return _attrsList[attr];
+    return _attrsList[ attr ];
   }
 
-  unsigned int ShaderProgram::operator( )(const std::string& attr )
+  unsigned int ShaderProgram::operator( )( const std::string& attr )
   {
-    return  attribute(attr);
+    return  attribute( attr );
   }
 
   unsigned int ShaderProgram::uniform( const std::string& uniformName )
   {
-    return _uniformList[uniformName];
+    return _uniformList[ uniformName ];
   }
 
-  unsigned int ShaderProgram::operator[]( const std::string& attr )
+  unsigned int ShaderProgram::operator[ ]( const std::string& attr )
   {
     return  uniform( attr );
   }
 
-  unsigned int ShaderProgram::ubo(const std::string& _ubo)
+  unsigned int ShaderProgram::ubo( const std::string& _ubo )
   {
-    return _uboList[_ubo];
+    return _uboList[ _ubo] ;
   }
 
   #ifdef RETO_SUBPROGRAMS
@@ -406,9 +440,9 @@ namespace reto
   void ShaderProgram::bindUniform( const std::string& unif,
                                    unsigned int idx )
   {
-    if( _uniformList.find(unif) == _uniformList.end( ))
+    if( _uniformList.find( unif ) == _uniformList.end( ) )
     {
-      _uniformList[unif] = idx;
+      _uniformList[ unif ] = idx;
     }
     else
     {
@@ -420,77 +454,77 @@ namespace reto
                                    float x, float y, float z )
   {
     int loc = uniform( uniformName );
-    glUniform3f(loc, x, y, z );
+    glUniform3f( loc, x, y, z );
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
     int loc = uniform( uniformName );
-    glUniform2fv( loc, 1, data.data( ));
+    glUniform2fv( loc, 1, data.data( ) );
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniform2fv( loc, 1, data);
+    glUniform2fv( loc, 1, data );
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
-                                     const std::vector< float >& data)
+                                     const std::vector< float >& data )
   {
     int loc = uniform( uniformName );
-    glUniform3fv( loc, 1, data.data( ));
+    glUniform3fv( loc, 1, data.data( ) );
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
-                                     const float* data)
+                                     const float* data )
   {
     int loc = uniform( uniformName );
-    glUniform3fv( loc, 1, data);
+    glUniform3fv( loc, 1, data );
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
     int loc = uniform( uniformName );
-    glUniform4fv(loc, 1, data.data( ));
+    glUniform4fv( loc, 1, data.data( ) );
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniform4fv(loc, 1, data);
+    glUniform4fv( loc, 1, data );
   }
 
-  void ShaderProgram::sendUniform4m(const std::string& uniformName,
-    const std::vector< float > & data, bool inverse)
+  void ShaderProgram::sendUniform4m( const std::string& uniformName,
+    const std::vector< float > & data, bool inverse )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix4fv(loc, 1, inverse, data.data( ));
+    glUniformMatrix4fv( loc, 1, inverse, data.data( ) );
   }
 
-  void ShaderProgram::sendUniform4m(const std::string& uniformName,
-    const float* data, bool inverse)
+  void ShaderProgram::sendUniform4m( const std::string& uniformName,
+    const float* data, bool inverse )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix4fv(loc, 1, inverse, data);
+    glUniformMatrix4fv( loc, 1, inverse, data );
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const std::vector< float > & data )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix3fv(loc, 1, GL_FALSE, data.data( ));
+    glUniformMatrix3fv( loc, 1, GL_FALSE, data.data( ) );
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix3fv(loc, 1, GL_FALSE, data);
+    glUniformMatrix3fv( loc, 1, GL_FALSE, data );
   }
 
   void ShaderProgram::sendUniformf( const std::string& uniformName,

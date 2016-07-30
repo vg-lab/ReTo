@@ -37,8 +37,7 @@
 
 namespace reto
 {
-  PickingSystem::PickingSystem( reto::Camera* camera )
-    : _camera(camera)
+  PickingSystem::PickingSystem( )
   {
     _program.loadFromText(
       _VertexCode( ),
@@ -61,6 +60,29 @@ namespace reto
     _program.addUniform("id");
   }
 
+  PickingSystem::PickingSystem( const reto::ShaderProgram& prog )
+  {
+    _program = prog;
+    _program.loadFragmentShaderFromText(
+      "#version 430\n"
+      "out vec4 ourColor;\n"
+      "in float pid;\n"
+      "vec3 unpackColor3(float f) {\n"
+      "    vec3 color;\n"
+      "    color.r = floor(f / 256.0 / 256.0);\n"
+      "    color.g = floor((f - color.r * 256.0 * 256.0) / 256.0);\n"
+      "    color.b = floor(f - color.r * 256.0 * 256.0 - color.g * 256.0);\n"
+      "    // vec3 with the 3 components in range [0..256]. Normalizing it.\n"
+      "    return color / 255.0;\n"
+      "}\n"
+      "void main( ) {\n"
+      "  ourColor = vec4(unpackColor3(pid), 1.0);\n"
+      "}");
+    _program.compileAndLink( );
+    _program.addUniform( "modelViewProj" );
+    _program.addUniform( "id" );
+  }
+
   PickingSystem::~PickingSystem( void )
   {
     this->Clear( );
@@ -69,8 +91,7 @@ namespace reto
   int PickingSystem::click( Point point )
   {
     int selected = -1;
-    int WINDOW_HEIGHT = 500;  // TODO: Hardcoded
-
+    
     unsigned int currentId = 0;
     std::set< reto::Pickable* >::iterator it;
     for ( const auto& object : _objects )
@@ -80,7 +101,7 @@ namespace reto
     }
 
     GLubyte color[4];
-    glReadPixels( point.x, WINDOW_HEIGHT - point.y, 1, 1,
+    glReadPixels( point.x, point.y, 1, 1,
                   GL_RGBA, GL_UNSIGNED_BYTE, color );
     unsigned int value = ( unsigned int ) ( color[2] + color[1] * 256.0 +
                                         color[0] * 256.0 * 256.0 );
@@ -95,7 +116,6 @@ namespace reto
   std::set< unsigned int > PickingSystem::area( Point minPoint, Point maxPoint )
   {
     std::set<unsigned int> ret;
-    int WINDOW_HEIGHT = 500;  // TODO: Hardcoded
 
     unsigned int currentId = 0;
     std::set< reto::Pickable* >::iterator it;
@@ -112,7 +132,7 @@ namespace reto
     {
       for( int y = minPoint.y; y < maxPoint.y; y++ )
       {
-        glReadPixels( x, WINDOW_HEIGHT - y, 1, 1, GL_RGBA,
+        glReadPixels( x, y, 1, 1, GL_RGBA,
                       GL_UNSIGNED_BYTE, color );
         value = ( unsigned int )( color[2] + color[1] * 256 +
                               color[0] * 256 * 256 );
