@@ -48,7 +48,9 @@ namespace reto
     PickingSystem( );
     /**
      * Reuse a ShaderProgram that lacks fragment shader
-     * @param prog: ProgramShader
+     * @param prog: ProgramShader (not linked or compiled
+     *          and without fragment shader
+     *  (Constructor override this))
      **/
     RETO_API
     PickingSystem( const reto::ShaderProgram& prog );
