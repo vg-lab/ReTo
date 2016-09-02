@@ -56,6 +56,12 @@ namespace reto
       "  ourColor = vec4(unpackColor3(pid), 1.0);\n"
       "}");
     _program.compileAndLink( );
+
+    this->init();
+  }
+
+  void PickingSystem::init( )
+  {
     _program.addUniform("modelViewProj");
     _program.addUniform("id");
   }
@@ -79,8 +85,20 @@ namespace reto
       "  ourColor = vec4(unpackColor3(pid), 1.0);\n"
       "}");
     _program.compileAndLink( );
-    _program.addUniform( "modelViewProj" );
-    _program.addUniform( "id" );
+    this->init();
+  }
+
+  void PickingSystem::renderObjects( void )
+  {
+    unsigned int currentId = 0;
+    std::set< reto::Pickable* >::iterator it;
+    for ( const auto& object : _objects )
+    {
+      currentId = object->sendId( currentId );
+      // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
+      this->_program.sendUniformf("id", currentId);
+      object->render( );
+    }
   }
 
   PickingSystem::~PickingSystem( void )
@@ -92,13 +110,7 @@ namespace reto
   {
     int selected = -1;
     
-    unsigned int currentId = 0;
-    std::set< reto::Pickable* >::iterator it;
-    for ( const auto& object : _objects )
-    {
-      currentId = object->sendId( currentId );
-      object->render( );
-    }
+    this->renderObjects( );
 
     GLubyte color[4];
     glReadPixels( point.x, point.y, 1, 1,
@@ -117,13 +129,7 @@ namespace reto
   {
     std::set<unsigned int> ret;
 
-    unsigned int currentId = 0;
-    std::set< reto::Pickable* >::iterator it;
-    for ( const auto& object : _objects )
-    {
-      currentId = object->sendId( currentId );
-      object->render( );
-    }
+    this->renderObjects( );
 
     GLubyte color[4];
     unsigned int value;
@@ -172,5 +178,10 @@ namespace reto
   void PickingSystem::Clear ( void )
   {
     _objects.clear( );
+  }
+
+  reto::ShaderProgram const& PickingSystem::program( ) const
+  {
+    return this->_program;
   }
 }
