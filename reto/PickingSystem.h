@@ -98,14 +98,14 @@ namespace reto
        * Override thist just like you want it ( Default: Cache model, view, proj and id)
        */
       RETO_API
-      void init( void );
+      virtual void init( void );
 
       /**
        * This method is invoked to render objects.
        * Override thist just like you want it (Default: Send id uniform)
        */
       RETO_API
-      void renderObjects( void );
+      virtual void renderObjects( void );
 
     protected:
       reto::ShaderProgram _program;
