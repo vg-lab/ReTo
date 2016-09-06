@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2014-2016 GMRV/URJC.
  *
- * Authors: Juan Jose Garcia
  * Authors: Cristian Rodríguez Bernal
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
