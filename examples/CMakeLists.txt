@@ -11,6 +11,10 @@ configure_file(
 if ( GLUT_FOUND )
 
   set( RETOSHADERPROGRAM_HEADERS )
+  set( RETOSHADERPROGRAM_SOURCES fileReader.cpp )
+  common_application( ReToFileReader )
+
+  set( RETOSHADERPROGRAM_HEADERS )
   set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
   set( RETOSHADERPROGRAM_LINK_LIBRARIES
 	  ReTo
