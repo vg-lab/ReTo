@@ -44,7 +44,7 @@ namespace reto
       "#version 430\n"
       "out vec4 ourColor;\n"
       "in float pid;\n"
-      float packColor(vec3 color) {\n"
+      "float packColor(vec3 color) {\n"
       "  color *= 255.0;\n"
       "  return color.r + color.g * 256.0 + color.b * 256.0 * 256.0;\n"
       "}\n"
@@ -64,7 +64,7 @@ namespace reto
       " } else {\n"
       "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
       " }\n"
-	  " //ourColor = vec4(cc, 1.0);\n"
+	    " //ourColor = vec4(cc, 1.0);\n"
       "}");
     _program.compileAndLink( );
 
