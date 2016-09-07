@@ -32,6 +32,7 @@ namespace reto
   class Spline
   {
     public:
+      RETO_API
       Spline( const std::vector<Eigen::Vector3f>& points );
       // Time inside [0, 1]
       RETO_API
