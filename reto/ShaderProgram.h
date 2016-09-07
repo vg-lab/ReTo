@@ -230,6 +230,22 @@ namespace reto
      */
     RETO_API
     void bindUniform( const std::string& uniform, unsigned int index );
+
+    /**
+     * Method to check if uniform exist (only check in uniform cache)
+     * @param uniform: Uniform name
+     * @return bool
+     */
+    RETO_API
+    bool isUniformCached( const std::string& uniform );
+    /**
+     * Method to check if attribute exist (only check in attribute cache)
+     * @param attribute: Attribute name
+     * @return bool
+     */
+    RETO_API
+    bool isAttributeCached( const std::string& attribute );
+
     /**
      * Method to catching an uniform buffer object
      * @param _ubo: Uniform Buffer Object name
@@ -269,7 +285,7 @@ namespace reto
     RETO_API
     unsigned int ubo( const std::string& _ubo );
     /**
-     * Method to get a subprogram index of a specific kind of shader 
+     * Method to get a subprogram index of a specific kind of shader
      *    in cache
      * @param name: Subprogram name
      * @param shaderType: OpenGL Shader type
@@ -398,7 +414,7 @@ namespace reto
      * Method to send a mat4
      * @param uniform: Uniform name
      * @param data: Data
-     * @param inverse: Specifies whether to transpose 
+     * @param inverse: Specifies whether to transpose
      *    the matrix as the values are loaded into the uniform variable
      */
     RETO_API
@@ -409,7 +425,7 @@ namespace reto
      * Method to send a mat4
      * @param uniform: Uniform name
      * @param data: Data
-     * @param inverse: Specifies whether to transpose 
+     * @param inverse: Specifies whether to transpose
      *    the matrix as the values are loaded into the uniform variable
      */
     RETO_API
@@ -421,7 +437,7 @@ namespace reto
       /**
        * Method to active a subprogram in a specific shader
        * @param name: Subprogram name
-       * @param shaderType: OpenGL Shader type 
+       * @param shaderType: OpenGL Shader type
        */
       RETO_API
       void activeSubprogram( const std::string& name, int shaderType );
@@ -535,7 +551,7 @@ namespace reto
     RETO_API
     void create( void );
     /**
-     * Method to link program and check status 
+     * Method to link program and check status
      */
     RETO_API
     bool link( void );

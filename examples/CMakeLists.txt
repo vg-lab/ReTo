@@ -26,4 +26,12 @@ if ( GLUT_FOUND )
     )
   common_application( ReToGlutExample )
 
+  set( RETODEMOPICKING_HEADERS )
+  set( RETODEMOPICKING_SOURCES demoPicking.cpp )
+  set( RETODEMOPICKING_LINK_LIBRARIES
+	  ReTo
+	  ${GLUT_LIBRARIES}
+  )
+  common_application( ReToDemoPicking )
+
 endif( )

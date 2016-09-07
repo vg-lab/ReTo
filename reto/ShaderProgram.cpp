@@ -68,6 +68,16 @@ namespace reto
     _destroy( );
   }
 
+
+  bool ShaderProgram::isUniformCached( const std::string& uniform )
+  {
+    return this->_uniformList.find(uniform) != this->_uniformList.end( );
+  }
+  bool ShaderProgram::isAttributeCached( const std::string& attribute )
+  {
+    return this->_attrsList.find(attribute) != this->_attrsList.end( );
+  }
+
   bool ShaderProgram::loadFromText( const std::string& vsSource,
                                     const std::string& fsSource )
   {
@@ -340,7 +350,7 @@ namespace reto
   void ShaderProgram::addUniform( const std::string& uniformName )
   {
     unsigned int index = glGetUniformLocation( _program, uniformName.c_str( ) );
-    if( index != std::numeric_limits<unsigned int>::max( ) ) 
+    if( index != std::numeric_limits<unsigned int>::max( ) )
     {
       _uniformList[ uniformName ] = index;
     }
