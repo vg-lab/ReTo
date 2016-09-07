@@ -32,17 +32,20 @@
 #include <algorithm>
 
 namespace reto {
-	class ObjParser
-	{
-	public:
-		ObjParser(std::string filename)
-		{
-			this->loadObj(filename);
-		}
+	struct Model {
 		std::vector<float> vertices;
 		std::vector<float> normals;
 		std::vector<int> indices;
 		std::vector<float> texCoords;
+		std::vector<float> tangents;
+		std::vector<float> bitangents;
+	};
+	class ObjParser
+	{
+	public:
+		ObjParser( void );
+		Model loadObj(std::string filename, bool calculateTang = false,
+			bool calculateBitang = false);
 	protected:
 		/*
 			Load all file content
@@ -60,11 +63,9 @@ namespace reto {
 		bool isNumeric(const std::string& input);
 		bool isFloat(std::string& myString);
 		std::vector<float> splitLineToFloats(std::string& line);
-		std::string trim(std::string& str);
+		std::string trim(std::string str);
 		std::vector<int> splitFace(std::string& line);
-		void loadObj(std::string filename);
 	};
 }
 
 #endif /* __RETO_OBJPARSER__ */
-
