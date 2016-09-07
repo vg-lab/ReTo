@@ -10,6 +10,13 @@ configure_file(
 
 if ( GLUT_FOUND )
 
+  set( RETOSPLINEDEMO_HEADERS )
+  set( RETOSPLINEDEMO_SOURCES splineExample.cpp )
+  set( RETOSPLINEDEMO_LINK_LIBRARIES
+	  ReTo
+    )
+  common_application( ReToSplineDemo )
+
   set( RETOSHADERPROGRAM_HEADERS )
   set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
   set( RETOSHADERPROGRAM_LINK_LIBRARIES
