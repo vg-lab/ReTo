@@ -32,20 +32,22 @@ namespace reto
   class Spline
   {
     public:
-      Spline(const std::vector<Eigen::Vector3f>& points);
+      Spline( const std::vector<Eigen::Vector3f>& points );
       // Time inside [0, 1]
       RETO_API
-      Eigen::Vector3f evaluate(float dt);
+      Eigen::Vector3f evaluate( float dt );
 
       RETO_API
       Eigen::Vector3f getTangent();
+      RETO_API
+      Eigen::Vector3f getTangent( float dt0, float dt1 );
 
       RETO_API
       float angleBetweenPoints();
       RETO_API
-      float angleBetweenPoints(float dt0, float dt1);
+      float angleBetweenPoints( float dt0, float dt1 );
     protected:
-      float _catmullRom(float p0, float p1, float p2, float p3, float t);
+      float _catmullRom( float p0, float p1, float p2, float p3, float t );
       std::vector<Eigen::Vector3f> _points;
 
       float _currentdt;

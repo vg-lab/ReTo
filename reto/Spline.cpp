@@ -27,13 +27,13 @@
 
 namespace reto
 {
-  Spline::Spline(const std::vector<Eigen::Vector3f>& points)
+  Spline::Spline( const std::vector<Eigen::Vector3f>& points )
   {
     this->_points = points;
     this->_olddt = this->_currentdt = 0.0;
   }
 
-  Eigen::Vector3f Spline::evaluate(float dt)
+  Eigen::Vector3f Spline::evaluate( float dt )
   {
     // Code based on https://github.com/maldicion069/monkeybrush.js/blob/master/lib/library/maths/Spline.ts
     /*if (dt > 1.0f || dt < 0.0f)
@@ -70,8 +70,12 @@ namespace reto
 
   Eigen::Vector3f Spline::getTangent( void )
   {
-    Eigen::Vector3f p1 = this->evaluate(this->_olddt);
-    Eigen::Vector3f p2 = this->evaluate(this->_currentdt);
+    return this->getTangent(this->_olddt, this->_currentdt);
+  }
+  Eigen::Vector3f Spline::getTangent(float dt0, float dt1)
+  {
+    Eigen::Vector3f p1 = this->evaluate(dt0);
+    Eigen::Vector3f p2 = this->evaluate(dt1);
     Eigen::Vector3f rem = p2 - p1;
     rem.normalize( );
     return rem;
@@ -81,7 +85,7 @@ namespace reto
     return this->angleBetweenPoints(this->_olddt, this->_currentdt);
   }
 
-  float Spline::angleBetweenPoints(float dt0, float dt1)
+  float Spline::angleBetweenPoints( float dt0, float dt1 )
   {
     Eigen::Vector3f p1 = this->evaluate(dt0);
     Eigen::Vector3f p2 = this->evaluate(dt1);
@@ -89,7 +93,7 @@ namespace reto
     return angle * M_PI / 180.0;
   }
 
-  float Spline::_catmullRom(float p0, float p1, float p2, float p3, float t)
+  float Spline::_catmullRom( float p0, float p1, float p2, float p3, float t )
   {
       float
           v0 = (p2 - p0) * 0.5,
