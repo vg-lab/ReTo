@@ -66,10 +66,10 @@ int main( int argc, char** argv )
 	initOGL( );
 	initShader( RETO_EXAMPLE_SHADERS_V0_VERT,
               RETO_EXAMPLE_SHADERS_V0_FRAG );
-	initObj( );
+	//initObj( );
 
-	glutMainLoop( );
-	destroy( );
+	//glutMainLoop( );
+	//destroy( );
 
 	return 0;
 }
@@ -169,6 +169,8 @@ void initShader( const char *vname, const char *fname )
 	std::cout << "inColor: " << prog( "inColor" ) << std::endl;
 	std::cout << "inNormal: " << prog( "inNormal" ) << std::endl;
 	std::cout << "inTexCoord: " << prog( "inTexCoord" ) << std::endl;
+
+  prog.autocatching( );
 }
 
 void initObj( )

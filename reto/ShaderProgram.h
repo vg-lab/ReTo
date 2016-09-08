@@ -542,6 +542,8 @@ namespace reto
 
     /**
      * Autocatching attributes and uniforms
+     * @param attributes Autocatching attributes (default= true)
+     * @param uniforms Autocatching attributes (default= true)
      */
     RETO_API
     void autocatching( bool attributes = true, bool uniforms = true );
