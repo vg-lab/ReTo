@@ -40,6 +40,14 @@ namespace reto
     {
       throw std::invalid_argument( "received value not in range [0, 1]" );
     }*/
+    if ( dt <= 0 )
+    {
+		return this->_points.front( );
+	}
+	else if ( dt >= 1 )
+	{
+		return this->_points.back( );
+	}
 
     this->_olddt = this->_currentdt;
     this->_currentdt = dt;
