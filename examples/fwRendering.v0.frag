@@ -31,5 +31,6 @@ void main( ) {
 	}  else {
 		ourColor = vec4(1.0, 0.0, 0.0, 1.0);
 	}
-	ourColor = vec4(cc, 1.0);
+	if (pid >= 0)
+		ourColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

@@ -120,15 +120,18 @@ namespace reto
   int PickingSystem::click( Point point )
   {
     int selected = -1;
-    
+
     this->renderObjects( );
 
     GLubyte color[4];
-    glReadPixels( point.x, point.y, 1, 1,
-                  GL_RGBA, GL_UNSIGNED_BYTE, color );
-    unsigned int value = ( unsigned int ) ( color[2] + color[1] * 256.0 +
-                                        color[0] * 256.0 * 256.0 );
-    if( value < _objects.size( ))
+  	glReadPixels(point.x, point.y, 1, 1,
+  		GL_RGBA, GL_UNSIGNED_BYTE, color);
+  	int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
+    if (value < 3355443) {
+  	   std::cout << value << std::endl;
+    }
+  	std::cout << "R: " << (int)color[0] << ", G: " << (int)color[1] << ", B: " << (int)color[2] << std::endl;
+    if( value < (int)_objects.size( ))
     {
       selected = value;
     }

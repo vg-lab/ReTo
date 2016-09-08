@@ -131,8 +131,11 @@ int main(int argc, char** argv)
 	fwShader.load("../examples/fwRendering.v0.vert", "../examples/fwRendering.v0.frag");
 	fwShader.compileAndLink();
 	fwShader.addAttribute("inPos");
-	fwShader.addUniform("modelViewProj");
-	fwShader.addUniform("id");
+	// TODO fwShader.addUniform("modelViewProj");
+  fwShader.addUniform("id");
+  fwShader.addUniform("model");
+  fwShader.addUniform("view");
+	fwShader.addUniform("proj");
 
   std::cout << "SHADER LOADED!" << std::endl;
 	initObj();
@@ -155,7 +158,7 @@ void initContext(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitContextVersion(4, 3);
-	//glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
+	glutInitContextFlags(GLUT_FORWARD_COMPATIBLE);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
@@ -262,6 +265,20 @@ void draw(ShaderProgram& ss) {
 	for (int i = 0; i < 22; i++) {
 		for (int j = 0; j < 22; j++) {
 			for (int k = 0; k < 3; k++) {
+        //Eigen::Affine3f transform(Eigen::Scale3f(10.0f)/*Eigen::Translation3f(
+        //  i * 3.0 - offset,
+        //  j * 3.0 - offset,
+        //  k * 3.0 - offset
+        //)*/);
+        //Eigen::Matrix4f matrix = transform.matrix( );
+
+        Eigen::Matrix4f matrix;
+        matrix(0, 0) = 10.0;  matrix(1, 0) = 0.0;    matrix(2, 0) = 0.0;   matrix(3, 0) = 0.0;
+        matrix(0, 1) = 0.0;   matrix(1, 1) = 10.0;   matrix(2, 1) = 0.0;   matrix(3, 1) = 0.0;
+        matrix(0, 2) = 0.0;   matrix(1, 2) = 0.0;    matrix(2, 2) = 10.0;  matrix(3, 2) = 0.0;
+        matrix(0, 3) = 0.0;   matrix(1, 3) = 0.0;    matrix(2, 3) = 0.0;   matrix(3, 3) = 1.0;
+
+        ss.sendUniform4m("model", matrix.data( ));
 				//model = glm::translate(glm::mat4(), glm::vec3(i * 1.5 - offset, j * 1.5 - offset, k * 3.0 - offset));
 				//model = glm::scale(model, glm::vec3(0.5f));
 				//glStencilFunc(GL_ALWAYS, n, -1);
@@ -280,11 +297,22 @@ void draw(ShaderProgram& ss) {
 	glutSwapBuffers();
 }
 
-void renderCube(ShaderProgram&)
+void renderCube(ShaderProgram& ss)
 {
 	//glm::mat4 modelViewProj = proj * view * model;
 
 	//ss.sendUniform4m("modelViewProj", glm::value_ptr(modelViewProj));
+  //ss.sendUniform4m("view", cam.viewProjectionMatrix( ));
+  //ss.sendUniform4m("proj", cam.projectionMatrix( ));
+
+  view = Eigen::Matrix4f((Eigen::Matrix4f() <<
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0
+  ).finished());
+  view(3, 3) = -35.0f;
+  ss.sendUniform4m("view", view.data( ));
 
 	models[0]->render();
 }
