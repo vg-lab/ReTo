@@ -237,14 +237,14 @@ namespace reto
      * @return bool
      */
     RETO_API
-    bool isUniformCached( const std::string& uniform );
+    bool isUniformCached( const std::string& unif );
     /**
      * Method to check if attribute exist (only check in attribute cache)
      * @param attribute: Attribute name
      * @return bool
      */
     RETO_API
-    bool isAttributeCached( const std::string& attribute );
+    bool isAttributeCached( const std::string& attr );
 
     /**
      * Method to catching an uniform buffer object
