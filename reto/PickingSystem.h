@@ -31,16 +31,12 @@
 #include "Camera.h"
 #include "Pickable.h"
 
+#include <tuple>
 #include <reto/api.h>
 
 namespace reto
 {
-  typedef struct {
-    int x;
-    int y;
-  } Point;
-  // TODO: Usar eigen
-
+  typedef std::pair<unsigned int, unsigned int> Point;
   class PickingSystem
   {
     public:

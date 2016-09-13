@@ -124,7 +124,7 @@ namespace reto
     this->renderObjects( );
 
     GLubyte color[4];
-  	glReadPixels(point.x, point.y, 1, 1,
+  	glReadPixels(point.first, point.second, 1, 1,
   		GL_RGBA, GL_UNSIGNED_BYTE, color);
   	int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
     if (value < 3355443) {
@@ -148,9 +148,9 @@ namespace reto
     GLubyte color[4];
     unsigned int value;
 
-    for( int x = minPoint.x; x < maxPoint.x; x++ )
+    for( auto x = minPoint.first; x < maxPoint.first; x++ )
     {
-      for( int y = minPoint.y; y < maxPoint.y; y++ )
+      for( auto y = minPoint.second; y < maxPoint.second; y++ )
       {
         glReadPixels( x, y, 1, 1, GL_RGBA,
                       GL_UNSIGNED_BYTE, color );

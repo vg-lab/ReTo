@@ -38,7 +38,7 @@
 #endif
 
 
-class Model : public Pickable
+class Model : public reto::Pickable
 {
 public:
 	Model(unsigned int _vao) {

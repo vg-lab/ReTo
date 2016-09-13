@@ -33,6 +33,8 @@
   #include <GL/freeglut.h>
 #endif
 
+#include "Model.h"
+#include <Eigen/Dense>
 
 using namespace reto;
 
@@ -80,20 +82,20 @@ const float cubeVertexPos[] = {
 	1.0f,	-1.0f,	 1.0f
 };
 
-#include "Model.h"
-
 PickingSystem* ps;
 
-#include <Eigen/Dense>
 
-Eigen::Matrix4f proj, view, model;//, view, model;
+Eigen::Matrix4f proj;
+Eigen::Matrix4f view;
+Eigen::Matrix4f model;
 //glm::mat4	proj = glm::mat4(1.0f);
 //glm::mat4	view = glm::mat4(1.0f);
 //glm::mat4	model = glm::mat4(1.0f);
 
 std::vector<Model*> models(81);
 
-float w = 800, h = 800;
+float w = 800;
+float h = 800;
 
 float angle = 0.0f;
 
@@ -124,25 +126,25 @@ void destroy();
 int main(int argc, char** argv)
 {
   std::cout << "LOADING CONTEXT ..." << std::endl;
-	initContext(argc, argv);
+  initContext(argc, argv);
   std::cout << "LOADING OGL ..." << std::endl;
-	initOGL();
+  initOGL();
   std::cout << "LOADING SHADER ..." << std::endl;
-	fwShader.load("../examples/fwRendering.v0.vert", "../examples/fwRendering.v0.frag");
-	fwShader.compileAndLink();
-	fwShader.addAttribute("inPos");
-	// TODO fwShader.addUniform("modelViewProj");
+  fwShader.load("../examples/fwRendering.v0.vert", "../examples/fwRendering.v0.frag");
+  fwShader.compileAndLink();
+  fwShader.addAttribute("inPos");
+  // TODO fwShader.addUniform("modelViewProj");
   fwShader.addUniform("id");
   fwShader.addUniform("model");
   fwShader.addUniform("view");
-	fwShader.addUniform("proj");
+  fwShader.addUniform("proj");
 
   std::cout << "SHADER LOADED!" << std::endl;
-	initObj();
+  initObj();
 
 	ps = new PickingSystem();
 
-	for (int i = 0; i < 81; i++) {
+	for ( auto i = 0; i < 81; ++i ) {
 		models[i] = new Model(vao);
 		ps->AddObject(models[i]);
 	}
@@ -262,9 +264,9 @@ void draw(ShaderProgram& ss) {
 
 	int n = 0;
 	//int offset = 16;
-	for (int i = 0; i < 22; i++) {
-		for (int j = 0; j < 22; j++) {
-			for (int k = 0; k < 3; k++) {
+	for ( auto i = 0; i < 22; ++i ) {
+		for ( auto j = 0; j < 22; ++j ) {
+			for ( auto k = 0; k < 3; ++k ) {
         //Eigen::Affine3f transform(Eigen::Scale3f(10.0f)/*Eigen::Translation3f(
         //  i * 3.0 - offset,
         //  j * 3.0 - offset,
