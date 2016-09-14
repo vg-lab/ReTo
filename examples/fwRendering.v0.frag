@@ -15,11 +15,11 @@ float packColor(vec3 color) {
 }
 
 vec3 unpackColor(float f) {
-    vec3 color;
-    color.b = floor(f / (256 * 256));
-    color.g = floor((f - color.b * 256 * 256) / 256);
-    color.r = floor(mod(f, 256.0));
-    return color / 255.0;
+  vec3 color;
+  color.b = floor(f / (256 * 256));
+  color.g = floor((f - color.b * 256 * 256) / 256);
+  color.r = floor(mod(f, 256.0));
+  return color / 255.0;
 }
 
 void main( ) {
