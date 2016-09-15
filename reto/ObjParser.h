@@ -23,6 +23,8 @@
 #ifndef __RETO_OBJPARSER__
 #define __RETO_OBJPARSER__
 
+#include <reto/api.h>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -45,7 +47,9 @@ namespace reto
   class ObjParser
   {
   public:
+    RETO_API
     ObjParser( void );
+    RETO_API
     Model loadObj( std::string filename /*, bool calculateTang = false,
       bool calculateBitang = false*/ );
   protected:
