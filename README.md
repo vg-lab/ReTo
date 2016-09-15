@@ -11,6 +11,8 @@ ReTo provides the following tools:
 * Camera
 * Shader manager
 * Picking functionality
+* Obj Loader (triangle/quad mode)
+* Spline navigation
 
 ## Dependencies
 
