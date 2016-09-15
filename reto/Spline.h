@@ -50,13 +50,13 @@ namespace reto
       RETO_API
       Eigen::Vector3f evaluate( float dt );
       /**
-       * Get tangent vector in last time evaluate called.
+       * Returns tangent vector in last time evaluate called.
        * @return Intepolated tangent in dt time.
        */
       RETO_API
       Eigen::Vector3f getTangent( void );
       /**
-       * Get tangent vector between between two times given.
+       * Returns tangent vector between between two times given.
        * @param dt0 Last time
        * @param dt1 Current time
        * @return Interpolated tangent in position.
@@ -64,13 +64,13 @@ namespace reto
       RETO_API
       Eigen::Vector3f getTangent( float dt0, float dt1 );
       /**
-       * Get interpolated angle between last and current time.
+       * Returns interpolated angle between last and current time.
        * @return angle (in radians).
        */
       RETO_API
       float angleBetweenPoints( void );
       /**
-       * Get interpolated angle between last and current time.
+       * Returns interpolated angle between last and current time.
        * @param dt0 Last time
        * @param dt1 Current time
        * @return angle (in radians).
@@ -79,7 +79,7 @@ namespace reto
       float angleBetweenPoints( float dt0, float dt1 );
     protected:
       /**
-       * Evalate callmull rom spline with 4 given values and time
+       * Evalate catmull rom spline with 4 given values and time
        * @param p0 First value
        * @param p1 Second value
        * @param p2 Third value

@@ -30,7 +30,7 @@ namespace reto
   Spline::Spline( const std::vector<Eigen::Vector3f>& points )
   {
     this->_points = points;
-    this->_olddt = this->_currentdt = 0.0;
+    this->_olddt = this->_currentdt = 0.0f;
   }
 
   Eigen::Vector3f Spline::evaluate( float dt )
@@ -64,7 +64,8 @@ namespace reto
     Eigen::Vector3f p3 = this->_points[ iniPoint > this->_points.size( ) - 3 ?
                                     this->_points.size( ) - 1 : iniPoint + 2 ];
 
-    return Eigen::Vector3f {
+    return Eigen::Vector3f
+    {
       this->_catmullRom(
         p0( 0 ), p1( 0 ), p2( 0 ), p3( 0 ), w
       ),
@@ -99,17 +100,17 @@ namespace reto
     Eigen::Vector3f p1 = this->evaluate( dt0 );
     Eigen::Vector3f p2 = this->evaluate( dt1 );
     float angle = atan2( p2( 2 ) - p1( 2 ), p2( 0 ) - p1( 0 ) );
-    return angle * M_PI / 180.0;
+    return angle * M_PI / 180.0f;
   }
 
   float Spline::_catmullRom( float p0, float p1, float p2, float p3, float t )
   {
       float
-          v0 = ( p2 - p0 ) * 0.5,
-          v1 = ( p3 - p1 ) * 0.5,
+          v0 = ( p2 - p0 ) * 0.5f,
+          v1 = ( p3 - p1 ) * 0.5f,
           t2 = t * t,
           t3 = t * t2;
-      return ( 2.0 * p1 - 2.0 * p2 + v0 + v1 ) * t3 +
-          ( -3.0 * p1 + 3.0 * p2 - 2.0 * v0 - v1 ) * t2 + v0 * t + p1;
+      return ( 2.0f * p1 - 2.0f * p2 + v0 + v1 ) * t3 +
+          ( -3.0f * p1 + 3.0f * p2 - 2.0f * v0 - v1 ) * t2 + v0 * t + p1;
   };
 }
