@@ -33,18 +33,18 @@ namespace reto
     Pickable( void );
     virtual ~Pickable ( void ); 
 
-      /**
-       * Method to update currentOffset
-       * @param currentOffset: Current offset
-       * @return Updated current offset
-       */
-      RETO_API
+    /**
+     * Method to update currentOffset
+     * @param currentOffset: Current offset
+     * @return Updated current offset
+     */
+    RETO_API
     virtual unsigned int sendId ( unsigned int currentOffset );
 
-      /**
-       * Method to render a Pickable object
-       */
-      RETO_API
+    /**
+     * Method to render a Pickable object
+     */
+    RETO_API
     virtual void render ( void ) = 0;
 
   protected:

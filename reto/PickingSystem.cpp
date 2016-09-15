@@ -91,7 +91,7 @@ namespace reto
   int PickingSystem::click( Point point )
   {
     int selected = -1;
-    
+
     unsigned int currentId = 0;
     std::set< reto::Pickable* >::iterator it;
     for ( const auto& object : _objects )

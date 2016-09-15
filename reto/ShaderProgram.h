@@ -213,10 +213,10 @@ namespace reto
     void bindAttribute( const std::string& attr, unsigned int index );
     /**
      * Method to catching an uniform value.
-     * @param uniform: Uniform name
+     * @param unifs: Uniform name
      */
     RETO_API
-    void addUniform( const std::string& uniform );
+    void addUniform( const std::string& unifs );
     /**
      * Method to catching an array of uniform values.
      * @param uniforms: Uniform vector names
@@ -225,11 +225,11 @@ namespace reto
     void addUniforms( const std::vector<char*> uniforms );
     /**
      * Method to bind a specific index to a uniform value
-     * @param uniform: Uniform name
+     * @param unif: Uniform name
      * @param index: Uniform index
      */
     RETO_API
-    void bindUniform( const std::string& uniform, unsigned int index );
+    void bindUniform( const std::string& unifs, unsigned int index );
     /**
      * Method to catching an uniform buffer object
      * @param _ubo: Uniform Buffer Object name
