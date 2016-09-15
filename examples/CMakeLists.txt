@@ -10,8 +10,11 @@ configure_file(
 
 if ( GLUT_FOUND )
 
-  set( RETOSHADERPROGRAM_HEADERS )
-  set( RETOSHADERPROGRAM_SOURCES fileReader.cpp )
+  set( RETOFILEREADER_HEADERS )
+  set( RETOFILEREADER_SOURCES fileReader.cpp )
+  set( RETOFILEREADER_LINK_LIBRARIES
+    ReTo
+    )
   common_application( ReToFileReader )
 
   set( RETOSHADERPROGRAM_HEADERS )

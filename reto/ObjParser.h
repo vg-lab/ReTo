@@ -31,41 +31,43 @@
 #include <iterator>
 #include <algorithm>
 
-namespace reto {
-	struct Model {
-		std::vector<float> vertices;
-		std::vector<float> normals;
-		std::vector<int> indices;
-		std::vector<float> texCoords;
-		std::vector<float> tangents;
-		std::vector<float> bitangents;
-	};
-	class ObjParser
-	{
-	public:
-		ObjParser( void );
-		Model loadObj(std::string filename, bool calculateTang = false,
-			bool calculateBitang = false);
-	protected:
-		/*
-			Load all file content
-			@param std::string filename
-			@return std::string
-		*/
-		std::string loadFile(std::string filename);
-		/*
-			Split string by character separator
-			@param string line
-			@param char c
-			@return std::vector<std::string>
-		*/
-		std::vector<std::string> split(const std::string& s, char c);
-		bool isNumeric(const std::string& input);
-		bool isFloat(std::string& myString);
-		std::vector<float> splitLineToFloats(std::string& line);
-		std::string trim(std::string str);
-		std::vector<int> splitFace(std::string& line);
-	};
+namespace reto
+{
+  struct Model
+  {
+    std::vector< float > vertices;
+    std::vector< float > normals;
+    std::vector< int > indices;
+    std::vector< float > texCoords;
+    std::vector< float > tangents;
+    std::vector< float > bitangents;
+  };
+  class ObjParser
+  {
+  public:
+    ObjParser( void );
+    Model loadObj( std::string filename /*, bool calculateTang = false,
+      bool calculateBitang = false*/ );
+  protected:
+    /*
+      Load all file content
+      @param std::string filename
+      @return std::string
+    */
+    std::string loadFile( std::string filename );
+    /*
+      Split string by character separator
+      @param string line
+      @param char c
+      @return std::vector<std::string>
+    */
+    std::vector< std::string > split( const std::string& s, char c );
+    bool isNumeric( const std::string& input );
+    bool isFloat( std::string& myString );
+    std::vector< float > splitLineToFloats( std::string& line );
+    std::string trim( std::string str );
+    std::vector< int > splitFace( std::string& line );
+  };
 }
 
 #endif /* __RETO_OBJPARSER__ */
