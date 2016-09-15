@@ -149,7 +149,7 @@ namespace reto
       else if ( type == "f" )
       {
         bool quad = false;
-        for ( int j = 0, size = elems.size(); j < size; ++j )
+        for ( size_t j = 0, size = elems.size( ); j < size; ++j )
         {
           if ( j == 3 && !quad )
           {
