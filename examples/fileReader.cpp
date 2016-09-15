@@ -24,7 +24,11 @@
 #include <reto/reto.h>
 
 int main(int argc, char** argv) {
-  if ( argc != 3 ) return -1;
+  if ( argc != 3 )
+  {
+    std::cout << "ReToFileReader <objfile.obj> <output>";
+    return -1;
+  }
   std::string filename = argv[ 1 ];
   reto::ObjParser loader;
   auto model = loader.loadObj( filename /*, true, true*/ );
@@ -83,36 +87,10 @@ int main(int argc, char** argv) {
     oss4 << model.indices.back( );
   }
   fout << oss4.str( ) << std::endl;
-  fout << "\tindices: [" << oss4.str( ) << "]," << std::endl;
-
+  fout << "\tindices: [" << oss4.str( ) << "]" << std::endl;
 
   std::ostringstream oss5;
-  if ( !model.tangents.empty( ) )
-  {
-    // Convert all but the last element to avoid a trailing ","
-    std::copy(model.tangents.begin( ), model.tangents.end( ) - 1,
-      std::ostream_iterator< float >( oss5, "," ) );
-
-    // Now add the last element with no delimiter
-    oss4 << model.tangents.back( );
-  }
-  fout << oss5.str( ) << std::endl;
-  fout << "\ttangents: [" << oss5.str( ) << "]," << std::endl;
-
-
-  std::ostringstream oss6;
-  if ( !model.bitangents.empty( ) )
-  {
-    // Convert all but the last element to avoid a trailing ","
-    std::copy(model.bitangents.begin( ), model.bitangents.end( ) - 1,
-      std::ostream_iterator< float >( oss6, "," ) );
-
-    // Now add the last element with no delimiter
-    oss4 << model.bitangents.back( );
-  }
-  fout << oss6.str( ) << std::endl;
-  fout << "\tbitangents: [" << oss6.str( ) << "]," << std::endl;
-
+  
   fout << "}" << std::endl;
   fout.close( );
 

@@ -50,7 +50,7 @@ namespace reto
     RETO_API
     ObjParser( void );
     RETO_API
-    Model loadObj( std::string filename /*, bool calculateTang = false,
+    Model loadObj( std::string& filename /*, bool calculateTang = false,
       bool calculateBitang = false*/ );
   protected:
     /*
@@ -58,7 +58,7 @@ namespace reto
       @param std::string filename
       @return std::string
     */
-    std::string loadFile( std::string filename );
+    std::string loadFile( std::string& filename );
     /*
       Split string by character separator
       @param string line

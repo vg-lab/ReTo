@@ -29,7 +29,7 @@ namespace reto
   {
   }
 
-  std::string ObjParser::loadFile( std::string filename )
+  std::string ObjParser::loadFile( std::string& filename )
   {
     std::ifstream file( filename.c_str( ) );
     std::stringstream buffer;
@@ -74,7 +74,7 @@ namespace reto
   {
     std::vector< float > values;
     std::vector< std::string > split_ = split( line, ' ' );
-    for ( auto str : split_ )
+    for ( auto& str : split_ )
     {
       if ( isFloat( str ) )
       {
@@ -96,7 +96,7 @@ namespace reto
     std::vector< int > values;
     std::vector< std::string > _splitFace = split( line, '/' );
 
-    for ( std::string face : _splitFace )
+    for ( std::string& face : _splitFace )
     {
       if ( isNumeric( face ) )
         values.push_back( std::stoi( face ) );
@@ -104,7 +104,7 @@ namespace reto
     return values;
   }
 
-  Model ObjParser::loadObj( std::string filename /*, bool calculateTang = false,
+  Model ObjParser::loadObj( std::string& filename /*, bool calculateTang = false,
       bool calculateBitang = false*/ )
   {
     Model m;
