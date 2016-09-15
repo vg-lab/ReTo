@@ -21,19 +21,20 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <reto/reto.h>
 
 int main(int argc, char** argv) {
-  if ( argc != 3 )
+  if ( argc != 2 )
   {
-    std::cout << "ReToFileReader <objfile.obj> <output>";
+    std::cout << "ReToFileReader <objfile.obj>";
     return -1;
   }
   std::string filename = argv[ 1 ];
   reto::ObjParser loader;
   auto model = loader.loadObj( filename /*, true, true*/ );
 
-  std::ofstream fout( argv[ 2 ] );
+  std::stringstream fout;
   std::ostringstream oss;
 
   fout << "{" << std::endl;
@@ -88,11 +89,9 @@ int main(int argc, char** argv) {
   }
   fout << oss4.str( ) << std::endl;
   fout << "\tindices: [" << oss4.str( ) << "]" << std::endl;
-
-  std::ostringstream oss5;
   
   fout << "}" << std::endl;
-  fout.close( );
+  std::cout << fout.str() << std::endl;
 
   return 0;
 }
