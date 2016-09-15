@@ -27,7 +27,7 @@
 
 namespace reto
 {
-  Spline::Spline( const std::vector<Eigen::Vector3f>& points )
+  Spline::Spline( const std::vector< Eigen::Vector3f >& points )
   {
     this->_points = points;
     this->_olddt = this->_currentdt = 0.0f;
@@ -43,12 +43,12 @@ namespace reto
     }*/
     if ( dt <= 0 )
     {
-	    return this->_points.front( );
-  	}
-  	else if ( dt >= 1 )
-  	{
+      return this->_points.front( );
+    }
+    else if ( dt >= 1 )
+    {
       return this->_points.back( );
-  	}
+    }
 
     this->_olddt = this->_currentdt;
     this->_currentdt = dt;
@@ -105,12 +105,12 @@ namespace reto
 
   float Spline::_catmullRom( float p0, float p1, float p2, float p3, float t )
   {
-      float
-          v0 = ( p2 - p0 ) * 0.5f,
-          v1 = ( p3 - p1 ) * 0.5f,
-          t2 = t * t,
-          t3 = t * t2;
-      return ( 2.0f * p1 - 2.0f * p2 + v0 + v1 ) * t3 +
-          ( -3.0f * p1 + 3.0f * p2 - 2.0f * v0 - v1 ) * t2 + v0 * t + p1;
+    float
+      v0 = ( p2 - p0 ) * 0.5f,
+      v1 = ( p3 - p1 ) * 0.5f,
+      t2 = t * t,
+      t3 = t * t2;
+    return ( 2.0f * p1 - 2.0f * p2 + v0 + v1 ) * t3 +
+      ( -3.0f * p1 + 3.0f * p2 - 2.0f * v0 - v1 ) * t2 + v0 * t + p1;
   };
 }

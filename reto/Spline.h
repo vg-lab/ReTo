@@ -41,7 +41,7 @@ namespace reto
        * @param points Point list who define the spline.
        */
       RETO_API
-      Spline( const std::vector<Eigen::Vector3f>& points );
+      Spline( const std::vector< Eigen::Vector3f >& points );
       /**
        * Evaluate the spline in a specific time.
        * @param dt Time to evaluate. Must be in [0, 1] interval.
@@ -90,7 +90,7 @@ namespace reto
       float _catmullRom( float p0, float p1, float p2, float p3, float t );
 
       //! List of points who defineds the spline
-      std::vector<Eigen::Vector3f> _points;
+      std::vector< Eigen::Vector3f > _points;
       //!Current time used (default = 0)
       float _currentdt;
       //! Last time used (default = 0)
