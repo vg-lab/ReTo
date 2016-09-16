@@ -47,11 +47,20 @@ namespace reto
   class ObjParser
   {
   public:
+    /**
+     * ObjParser constructor
+     */
     RETO_API
     ObjParser( void );
+    /**
+     * Load new obj file
+     * @param filename: Wavefront OBJ file route.
+     * @param calculateTangAndBi: Calculate tangents and 
+     *   bitangents for object.
+     * @return Model object with parsed values.
+     */
     RETO_API
-    Model loadObj( std::string& filename /*, bool calculateTang = false,
-      bool calculateBitang = false*/ );
+    Model loadObj( std::string& filename, bool calculateTangAndBi = false );
   protected:
     /*
       Load all file content

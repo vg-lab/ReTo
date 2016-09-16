@@ -104,8 +104,7 @@ namespace reto
     return values;
   }
 
-  Model ObjParser::loadObj( std::string& filename /*, bool calculateTang = false,
-      bool calculateBitang = false*/ )
+  Model ObjParser::loadObj( std::string& filename, bool calculateTangAndBi = false )
   {
     Model m;
     m.vertices.clear( );
@@ -120,7 +119,6 @@ namespace reto
     std::vector< std::string > lines = split( loadFile( filename ), '\n' );
     for ( auto line : lines )
     {
-      //std::cout << line << std::endl;
       auto elems = split( line, ' ' );
       if ( elems.empty( ) ) continue;
       elems.erase( elems.begin( ) );
@@ -189,126 +187,127 @@ namespace reto
       }
     }
 
-    /**
-    std::vector<std::vector<float>> tangents(m.vertices.size( ) / 3);
-    std::vector<std::vector<float>> bitangents(m.vertices.size( ) / 3);
-
-    for (int j = 0; j < tangents.size( ); ++j)
+    if ( calculateTangAndBi )
     {
-      tangents[j] = std::vector<float>(3, 0.0);
-      bitangents[j] = std::vector<float>(3, 0.0);
-    }
+      std::vector<std::vector<float>> tangents(m.vertices.size( ) / 3);
+      std::vector<std::vector<float>> bitangents(m.vertices.size( ) / 3);
 
-    // Calculate tangents
-    for (int i = 0; i < m.indices.size( ); i+=3)
-    {
-      int index = m.indices[i];
-
-      std::vector<float> v0;
-      v0.push_back(m.vertices[index*3]);
-      v0.push_back(m.vertices[index*3+1]);
-      v0.push_back(m.vertices[index*3+2]);
-      std::vector<float> uv0;
-      uv0.push_back(m.texCoords[index*3]);
-      uv0.push_back(m.texCoords[index*3+1]);
-
-
-      index = m.indices[i+1];
-
-      std::vector<float> v1;
-      v1.push_back(m.vertices[index*3]);
-      v1.push_back(m.vertices[index*3+1]);
-      v1.push_back(m.vertices[index*3+2]);
-      std::vector<float> uv1;
-      uv1.push_back(m.texCoords[index*3]);
-      uv1.push_back(m.texCoords[index*3+1]);
-
-
-      index = m.indices[i+2];
-
-      std::vector<float> v2;
-      v2.push_back(m.vertices[index*3]);
-      v2.push_back(m.vertices[index*3+1]);
-      v2.push_back(m.vertices[index*3+2]);
-      std::vector<float> uv2;
-      uv2.push_back(m.texCoords[index*3]);
-      uv2.push_back(m.texCoords[index*3+1]);
-
-      std::vector<float> deltaPos1(3);
-      std::vector<float> deltaPos2(3);
-      for (int j = 0; j < 3; ++j)
+      for (int j = 0; j < tangents.size( ); ++j)
       {
-        deltaPos1[j] = v1[j] - v0[j];
-        deltaPos2[j] = v2[j] - v0[j];
+        tangents[j] = std::vector<float>(3, 0.0);
+        bitangents[j] = std::vector<float>(3, 0.0);
       }
 
-      std::vector<float> deltaUV1(2);
-      std::vector<float> deltaUV2(2);
-      for (int j = 0; j < 2; ++j)
+      // Calculate tangents
+      for (int i = 0; i < m.indices.size( ); i+=3)
       {
-        deltaUV1[j] = uv1[j] - uv0[j];
-        deltaUV2[j] = uv2[j] - uv0[j];
-        //std::cout << deltaUV1[j] << " - " << deltaUV2[j] << std::endl;
-      }
+        int index = m.indices[i];
 
-      float f = 0.0;
-      float aux = ((deltaUV1[0] * deltaUV2[1]) - (deltaUV1[1] * deltaUV2[0]));
-      if (aux != 0) f = 1.0 / aux;
+        std::vector<float> v0;
+        v0.push_back(m.vertices[index*3]);
+        v0.push_back(m.vertices[index*3+1]);
+        v0.push_back(m.vertices[index*3+2]);
+        std::vector<float> uv0;
+        uv0.push_back(m.texCoords[index*3]);
+        uv0.push_back(m.texCoords[index*3+1]);
 
-      //std::cout << ((deltaUV1[0] * deltaUV2[1]) - (deltaUV1[1] * deltaUV2[0])) << std::endl;
+        index = m.indices[i+1];
 
-      std::vector<float> tangent(3);
-      tangent[0] = f * (deltaUV2[1] * deltaPos1[0] - deltaUV1[1] * deltaPos2[0]);
-      tangent[1] = f * (deltaUV2[1] * deltaPos1[1] - deltaUV1[1] * deltaPos2[1]);
-      tangent[2] = f * (deltaUV2[1] * deltaPos1[2] - deltaUV1[1] * deltaPos2[2]);
+        std::vector<float> v1;
+        v1.push_back(m.vertices[index*3]);
+        v1.push_back(m.vertices[index*3+1]);
+        v1.push_back(m.vertices[index*3+2]);
+        std::vector<float> uv1;
+        uv1.push_back(m.texCoords[index*3]);
+        uv1.push_back(m.texCoords[index*3+1]);
 
-      float normalize = sqrt((tangent[0] * tangent[0]) +
-          (tangent[1] * tangent[1]) + (tangent[2] * tangent[2]));
+        index = m.indices[i+2];
 
+        std::vector<float> v2;
+        v2.push_back(m.vertices[index*3]);
+        v2.push_back(m.vertices[index*3+1]);
+        v2.push_back(m.vertices[index*3+2]);
+        std::vector<float> uv2;
+        uv2.push_back(m.texCoords[index*3]);
+        uv2.push_back(m.texCoords[index*3+1]);
 
-      for (int j = 0; j < 3; ++j)
-      {
-        tangent[j] /= normalize;
-      }
-
-      std::vector<float> bitangent(3);
-      bitangent[0] = f * (-deltaUV2[0] * deltaPos1[0] + deltaUV1[0] * deltaPos2[0]);
-      bitangent[1] = f * (-deltaUV2[0] * deltaPos1[1] + deltaUV1[0] * deltaPos2[1]);
-      bitangent[2] = f * (-deltaUV2[0] * deltaPos1[2] + deltaUV1[0] * deltaPos2[2]);
-
-      normalize = sqrt((bitangent[0] * bitangent[0]) +
-          (bitangent[1] * bitangent[1]) + (bitangent[2] * bitangent[2]));
-
-      for (int j = 0; j < 3; ++j)
-      {
-        bitangent[j] /= normalize;
-      }
-
-      // Average the value of the vector outs
-      for (int v = 0; v < 3; ++v)
-      {
-        int addTo = m.indices[i+v];
+        std::vector<float> deltaPos1(3);
+        std::vector<float> deltaPos2(3);
         for (int j = 0; j < 3; ++j)
         {
-          tangents[addTo][j] += tangent[j];
-          bitangents[addTo][j] += bitangent[j];
+          deltaPos1[j] = v1[j] - v0[j];
+          deltaPos2[j] = v2[j] - v0[j];
+        }
+
+        std::vector<float> deltaUV1(2);
+        std::vector<float> deltaUV2(2);
+        for (int j = 0; j < 2; ++j)
+        {
+          deltaUV1[j] = uv1[j] - uv0[j];
+          deltaUV2[j] = uv2[j] - uv0[j];
+        }
+
+        float f = 0.0;
+        float aux = ((deltaUV1[0] * deltaUV2[1]) - (deltaUV1[1] * deltaUV2[0]));
+        if (aux != 0) f = 1.0 / aux;
+
+        std::vector<float> tangent(3);
+        tangent[0] = f * (deltaUV2[1] * deltaPos1[0] - deltaUV1[1] * deltaPos2[0]);
+        tangent[1] = f * (deltaUV2[1] * deltaPos1[1] - deltaUV1[1] * deltaPos2[1]);
+        tangent[2] = f * (deltaUV2[1] * deltaPos1[2] - deltaUV1[1] * deltaPos2[2]);
+
+        float normalize = sqrt((tangent[0] * tangent[0]) +
+            (tangent[1] * tangent[1]) + (tangent[2] * tangent[2]));
+
+        if (normalize != 0)
+        {
+          for (int j = 0; j < 3; ++j)
+          {
+            tangent[j] /= normalize;
+          }
+        }
+
+        std::vector<float> bitangent(3);
+        bitangent[0] = f * (-deltaUV2[0] * deltaPos1[0] + deltaUV1[0] * deltaPos2[0]);
+        bitangent[1] = f * (-deltaUV2[0] * deltaPos1[1] + deltaUV1[0] * deltaPos2[1]);
+        bitangent[2] = f * (-deltaUV2[0] * deltaPos1[2] + deltaUV1[0] * deltaPos2[2]);
+
+        normalize = sqrt((bitangent[0] * bitangent[0]) +
+            (bitangent[1] * bitangent[1]) + (bitangent[2] * bitangent[2]));
+
+        if (normalize != 0)
+          {
+          for (int j = 0; j < 3; ++j)
+          {
+            bitangent[j] /= normalize;
+          }
+        }
+
+        // Average the value of the vector outs
+        for (int v = 0; v < 3; ++v)
+        {
+          int addTo = m.indices[i+v];
+          for (int j = 0; j < 3; ++j)
+          {
+            tangents[addTo][j] += tangent[j];
+            bitangents[addTo][j] += bitangent[j];
+          }
         }
       }
-    }
 
-    for (int j = 0; j < tangents.size( ); ++j)
-    {
-      for (int k = 0; k < 3; ++k)
+      for (int j = 0; j < tangents.size( ); ++j)
       {
-        m.tangents.push_back(tangents[j][k]);
-        m.bitangents.push_back(bitangents[j][k]);
+        for (int k = 0; k < 3; ++k)
+        {
+          m.tangents.push_back(tangents[j][k]);
+          m.bitangents.push_back(bitangents[j][k]);
+        }
       }
+
+      tangents.clear( );
+      bitangents.clear( );
     }
-
-    tangents.clear( );
-    bitangents.clear( );
-    */
-
+    
     return m;
   }
 };
