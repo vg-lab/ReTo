@@ -21,6 +21,7 @@
  */
 
 #include "ObjParser.h"
+#include <math.h>
 
 namespace reto
 {
