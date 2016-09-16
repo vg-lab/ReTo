@@ -38,7 +38,3 @@ mkdir ReTo/build && cd ReTo/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
-
-## Changelog
-- (2016/09/15) Added Spline navigation.
-- (2016/09/16) Added OBJ Loader.
