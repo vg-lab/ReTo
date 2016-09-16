@@ -104,7 +104,7 @@ namespace reto
     return values;
   }
 
-  Model ObjParser::loadObj( std::string& filename, bool calculateTangAndBi = false )
+  Model ObjParser::loadObj( std::string& filename, bool calculateTangAndBi )
   {
     Model m;
     m.vertices.clear( );
@@ -192,14 +192,14 @@ namespace reto
       std::vector<std::vector<float>> tangents(m.vertices.size( ) / 3);
       std::vector<std::vector<float>> bitangents(m.vertices.size( ) / 3);
 
-      for (int j = 0; j < tangents.size( ); ++j)
+      for (size_t j = 0; j < tangents.size( ); ++j)
       {
         tangents[j] = std::vector<float>(3, 0.0);
         bitangents[j] = std::vector<float>(3, 0.0);
       }
 
       // Calculate tangents
-      for (int i = 0; i < m.indices.size( ); i+=3)
+      for (size_t i = 0; i < m.indices.size( ); i+=3)
       {
         int index = m.indices[i];
 
@@ -233,7 +233,7 @@ namespace reto
 
         std::vector<float> deltaPos1(3);
         std::vector<float> deltaPos2(3);
-        for (int j = 0; j < 3; ++j)
+        for (auto j = 0; j < 3; ++j)
         {
           deltaPos1[j] = v1[j] - v0[j];
           deltaPos2[j] = v2[j] - v0[j];
@@ -241,7 +241,7 @@ namespace reto
 
         std::vector<float> deltaUV1(2);
         std::vector<float> deltaUV2(2);
-        for (int j = 0; j < 2; ++j)
+        for (auto j = 0; j < 2; ++j)
         {
           deltaUV1[j] = uv1[j] - uv0[j];
           deltaUV2[j] = uv2[j] - uv0[j];
@@ -261,7 +261,7 @@ namespace reto
 
         if (normalize != 0)
         {
-          for (int j = 0; j < 3; ++j)
+          for (auto j = 0; j < 3; ++j)
           {
             tangent[j] /= normalize;
           }
@@ -277,17 +277,17 @@ namespace reto
 
         if (normalize != 0)
           {
-          for (int j = 0; j < 3; ++j)
+          for (auto j = 0; j < 3; ++j)
           {
             bitangent[j] /= normalize;
           }
         }
 
         // Average the value of the vector outs
-        for (int v = 0; v < 3; ++v)
+        for (auto v = 0; v < 3; ++v)
         {
           int addTo = m.indices[i+v];
-          for (int j = 0; j < 3; ++j)
+          for (auto j = 0; j < 3; ++j)
           {
             tangents[addTo][j] += tangent[j];
             bitangents[addTo][j] += bitangent[j];
@@ -295,9 +295,9 @@ namespace reto
         }
       }
 
-      for (int j = 0; j < tangents.size( ); ++j)
+      for (size_t j = 0; j < tangents.size( ); ++j)
       {
-        for (int k = 0; k < 3; ++k)
+        for (auto k = 0; k < 3; ++k)
         {
           m.tangents.push_back(tangents[j][k]);
           m.bitangents.push_back(bitangents[j][k]);
