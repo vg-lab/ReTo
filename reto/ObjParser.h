@@ -76,7 +76,7 @@ namespace reto
     */
     std::vector< std::string > split( const std::string& s, char c );
     bool isNumeric( const std::string& input );
-    bool isFloat( std::string& myString );
+    bool isFloat( const std::string& myString );
     std::vector< float > splitLineToFloats( std::string& line );
     std::string trim( const std::string& str );
     std::vector< int > splitFace( std::string& line );

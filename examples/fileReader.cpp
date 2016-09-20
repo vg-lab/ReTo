@@ -87,7 +87,6 @@ int main(int argc, char** argv) {
     // Now add the last element with no delimiter
     oss4 << model.indices.back( );
   }
-  fout << oss4.str( ) << std::endl;
   fout << "\tindices: [" << oss4.str( ) << "]" << std::endl;
   
   fout << "}" << std::endl;

@@ -63,7 +63,7 @@ namespace reto
     return std::all_of( input.begin( ), input.end( ), ::isdigit );
   }
 
-  bool ObjParser::isFloat( std::string& myString )
+  bool ObjParser::isFloat( const std::string& myString )
   {
     std::istringstream iss( myString );
     float f;
