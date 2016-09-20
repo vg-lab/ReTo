@@ -6,6 +6,7 @@ set(RETO_PUBLIC_HEADERS
   ShaderProgram.h
   Pickable.h
   PickingSystem.h
+  Spline.h
 )
 
 set(RETO_HEADERS )
@@ -16,6 +17,7 @@ set(RETO_SOURCES
   ShaderProgram.cpp
   Pickable.cpp
   PickingSystem.cpp
+  Spline.cpp
 )
 
 set(RETO_LINK_LIBRARIES
