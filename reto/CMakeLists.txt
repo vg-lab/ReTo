@@ -1,6 +1,7 @@
 source_group(\\ FILES CMakeLists.txt)
 
 set(RETO_PUBLIC_HEADERS
+  ObjParser.h
   Camera.h
   ShaderProgram.h
   Pickable.h
@@ -11,6 +12,7 @@ set(RETO_PUBLIC_HEADERS
 set(RETO_HEADERS )
 
 set(RETO_SOURCES
+  ObjParser.cpp
   Camera.cpp
   ShaderProgram.cpp
   Pickable.cpp
