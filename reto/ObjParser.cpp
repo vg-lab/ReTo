@@ -75,7 +75,7 @@ namespace reto
   {
     std::vector< float > values;
     std::vector< std::string > split_ = split( line, ' ' );
-    for ( auto& str : split_ )
+    for ( const auto& str : split_ )
     {
       if ( isFloat( str ) )
       {
@@ -85,7 +85,7 @@ namespace reto
     return values;
   }
 
-  std::string ObjParser::trim( std::string str )
+  std::string ObjParser::trim( const std::string& str )
   {
     size_t first = str.find_first_not_of( ' ' );
     size_t last = str.find_last_not_of( ' ' );
