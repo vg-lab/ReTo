@@ -78,7 +78,7 @@ namespace reto
     bool isNumeric( const std::string& input );
     bool isFloat( std::string& myString );
     std::vector< float > splitLineToFloats( std::string& line );
-    std::string trim( std::string str );
+    std::string trim( const std::string& str );
     std::vector< int > splitFace( std::string& line );
   };
 }
