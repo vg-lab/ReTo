@@ -27,3 +27,17 @@ if ( GLUT_FOUND )
   common_application( ReToGlutExample )
 
 endif( )
+
+set( RETOFILEREADER_HEADERS )
+set( RETOFILEREADER_SOURCES fileReader.cpp )
+set( RETOFILEREADER_LINK_LIBRARIES
+  ReTo
+  )
+common_application( ReToFileReader )
+
+set( RETOSPLINEDEMO_HEADERS )
+set( RETOSPLINEDEMO_SOURCES splineExample.cpp )
+set( RETOSPLINEDEMO_LINK_LIBRARIES
+  ReTo
+  )
+common_application( ReToSplineDemo )

@@ -30,8 +30,10 @@ namespace reto
   class Pickable
   {
   public:
+    RETO_API
     Pickable( void );
-    virtual ~Pickable ( void ); 
+    RETO_API
+    virtual ~Pickable ( void );
 
     /**
      * Method to update currentOffset
