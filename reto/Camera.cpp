@@ -51,6 +51,7 @@ namespace reto
     _Rotation( _RotationFromPY( pitch_, yaw_ ));
     _BuildProjectionMatrix( );
     _BuildViewMatrix( );
+    _BuildViewProjectionMatrix( );
   }
 
 #ifdef RETO_USE_ZEROEQ

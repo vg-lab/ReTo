@@ -230,6 +230,21 @@ namespace reto
      */
     RETO_API
     void bindUniform( const std::string& unifs, unsigned int index );
+
+    /**
+     * Method to check if uniform exist (only check in uniform cache)
+     * @param uniform: Uniform name
+     * @return bool
+     */
+    RETO_API
+    bool isUniformCached( const std::string& unif );
+    /**
+     * Method to check if attribute exist (only check in attribute cache)
+     * @param attribute: Attribute name
+     * @return bool
+     */
+    RETO_API
+    bool isAttributeCached( const std::string& attr );
     /**
      * Method to catching an uniform buffer object
      * @param _ubo: Uniform Buffer Object name

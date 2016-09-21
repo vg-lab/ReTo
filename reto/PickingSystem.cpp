@@ -44,18 +44,35 @@ namespace reto
       "#version 430\n"
       "out vec4 ourColor;\n"
       "in float pid;\n"
-      "vec3 unpackColor3(float f) {\n"
-      "    vec3 color;\n"
-      "    color.r = floor(f / 256.0 / 256.0);\n"
-      "    color.g = floor((f - color.r * 256.0 * 256.0) / 256.0);\n"
-      "    color.b = floor(f - color.r * 256.0 * 256.0 - color.g * 256.0);\n"
-      "    // vec3 with the 3 components in range [0..256]. Normalizing it.\n"
-      "    return color / 255.0;\n"
+      "float packColor(vec3 color) {\n"
+      "  color *= 255.0;\n"
+      "  return color.r + color.g * 256.0 + color.b * 256.0 * 256.0;\n"
+      "}\n"
+      "vec3 unpackColor(float f) {\n"
+      "  vec3 color;\n"
+      "  color.b = floor(f / (256 * 256));\n"
+      "  color.g = floor((f - color.b * 256 * 256) / 256);\n"
+      "  color.r = floor(mod(f, 256.0));\n"
+      "  return color / 255.0;\n"
       "}\n"
       "void main( ) {\n"
-      "  ourColor = vec4(unpackColor3(pid), 1.0);\n"
+      " vec3 cc = unpackColor(pid);\n"
+      " float cid = packColor(cc);\n"
+      " cid = round(cid);\n"
+      " if (cid == pid) {\n"
+      "  ourColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+      " } else {\n"
+      "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+      " }\n"
+      " //ourColor = vec4(cc, 1.0);\n"
       "}");
     _program.compileAndLink( );
+
+    this->init();
+  }
+
+  void PickingSystem::init( )
+  {
     _program.addUniform("modelViewProj");
     _program.addUniform("id");
   }
@@ -67,20 +84,43 @@ namespace reto
       "#version 430\n"
       "out vec4 ourColor;\n"
       "in float pid;\n"
-      "vec3 unpackColor3(float f) {\n"
-      "    vec3 color;\n"
-      "    color.r = floor(f / 256.0 / 256.0);\n"
-      "    color.g = floor((f - color.r * 256.0 * 256.0) / 256.0);\n"
-      "    color.b = floor(f - color.r * 256.0 * 256.0 - color.g * 256.0);\n"
-      "    // vec3 with the 3 components in range [0..256]. Normalizing it.\n"
-      "    return color / 255.0;\n"
+      "float packColor(vec3 color) {\n"
+      "  color *= 255.0;\n"
+      "  return color.r + color.g * 256.0 + color.b * 256.0 * 256.0;\n"
+      "}\n"
+      "vec3 unpackColor(float f) {\n"
+      "  vec3 color;\n"
+      "  color.b = floor(f / (256 * 256));\n"
+      "  color.g = floor((f - color.b * 256 * 256) / 256);\n"
+      "  color.r = floor(mod(f, 256.0));\n"
+      "  return color / 255.0;\n"
       "}\n"
       "void main( ) {\n"
-      "  ourColor = vec4(unpackColor3(pid), 1.0);\n"
+      " vec3 cc = unpackColor(pid);\n"
+      " float cid = packColor(cc);\n"
+      " cid = round(cid);\n"
+      " if (cid == pid) {\n"
+      "  ourColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+      " } else {\n"
+      "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
+      " }\n"
+      " //ourColor = vec4(cc, 1.0);\n"
       "}");
     _program.compileAndLink( );
-    _program.addUniform( "modelViewProj" );
-    _program.addUniform( "id" );
+    this->init();
+  }
+
+  void PickingSystem::renderObjects( void )
+  {
+    unsigned int currentId = 0;
+    std::set< reto::Pickable* >::iterator it;
+    for ( const auto& object : _objects )
+    {
+      currentId = object->sendId( currentId );
+      // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
+      this->_program.sendUniformf("id", currentId);
+      object->render( );
+    }
   }
 
   PickingSystem::~PickingSystem( void )
@@ -91,21 +131,20 @@ namespace reto
   int PickingSystem::click( Point point )
   {
     int selected = -1;
-
-    unsigned int currentId = 0;
-    std::set< reto::Pickable* >::iterator it;
-    for ( const auto& object : _objects )
-    {
-      currentId = object->sendId( currentId );
-      object->render( );
-    }
+    glScissor( point.first, point.second, 1, 1 );
+    glEnable(GL_SCISSOR_TEST);
+    this->renderObjects( );
+    glDisable(GL_SCISSOR_TEST);
 
     GLubyte color[4];
-    glReadPixels( point.x, point.y, 1, 1,
-                  GL_RGBA, GL_UNSIGNED_BYTE, color );
-    unsigned int value = ( unsigned int ) ( color[2] + color[1] * 256.0 +
-                                        color[0] * 256.0 * 256.0 );
-    if( value < _objects.size( ))
+    glReadPixels(point.first, point.second, 1, 1,
+      GL_RGBA, GL_UNSIGNED_BYTE, color);
+    int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
+    if (value < 3355443) {
+       std::cout << value << std::endl;
+    }
+    std::cout << "R: " << (int)color[0] << ", G: " << (int)color[1] << ", B: " << (int)color[2] << std::endl;
+    if( value < (int)_objects.size( ))
     {
       selected = value;
     }
@@ -117,20 +156,17 @@ namespace reto
   {
     std::set<unsigned int> ret;
 
-    unsigned int currentId = 0;
-    std::set< reto::Pickable* >::iterator it;
-    for ( const auto& object : _objects )
-    {
-      currentId = object->sendId( currentId );
-      object->render( );
-    }
+    glScissor( minPoint.first, minPoint.second, maxPoint.first, maxPoint.second );
+    glEnable(GL_SCISSOR_TEST);
+    this->renderObjects( );
+    glDisable(GL_SCISSOR_TEST);
 
     GLubyte color[4];
     unsigned int value;
 
-    for( int x = minPoint.x; x < maxPoint.x; x++ )
+    for( auto x = minPoint.first; x < maxPoint.first; x++ )
     {
-      for( int y = minPoint.y; y < maxPoint.y; y++ )
+      for( auto y = minPoint.second; y < maxPoint.second; y++ )
       {
         glReadPixels( x, y, 1, 1, GL_RGBA,
                       GL_UNSIGNED_BYTE, color );
@@ -172,5 +208,10 @@ namespace reto
   void PickingSystem::Clear ( void )
   {
     _objects.clear( );
+  }
+
+  reto::ShaderProgram const& PickingSystem::program( ) const
+  {
+    return this->_program;
   }
 }

@@ -68,6 +68,16 @@ namespace reto
     _destroy( );
   }
 
+
+  bool ShaderProgram::isUniformCached( const std::string& unif )
+  {
+    return this->_uniformList.find(unif) != this->_uniformList.end( );
+  }
+  bool ShaderProgram::isAttributeCached( const std::string& attr )
+  {
+    return this->_attrsList.find(attr) != this->_attrsList.end( );
+  }
+
   bool ShaderProgram::loadFromText( const std::string& vsSource,
                                     const std::string& fsSource )
   {
