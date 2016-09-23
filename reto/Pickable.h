@@ -24,6 +24,7 @@
 #define __RETO__PICKABLE__
 
 #include <reto/api.h>
+#include "ShaderProgram.h"
 
 namespace reto
 {
@@ -47,7 +48,7 @@ namespace reto
      * Method to render a Pickable object
      */
     RETO_API
-    virtual void render ( void ) = 0;
+    virtual void render ( reto::ShaderProgram* ) = 0;
 
   protected:
     int _numIds = 1;

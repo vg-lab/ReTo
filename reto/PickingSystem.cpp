@@ -119,7 +119,7 @@ namespace reto
       currentId = object->sendId( currentId );
       // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
       this->_program.sendUniformf("id", currentId);
-      object->render( );
+      object->render( &this->_program );
     }
   }
 

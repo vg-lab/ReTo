@@ -10,24 +10,34 @@ configure_file(
 
 if ( GLUT_FOUND )
 
+  set( RETODEMOCUBES_HEADERS
+    MyCube.h
+  )
+  set( RETODEMOCUBES_SOURCES
+    MyCube.cpp
+    demoCubes.cpp
+  )
+  set( RETODEMOCUBES_LINK_LIBRARIES
+    ReTo
+    ${GLUT_LIBRARIES}
+  )
+  common_application( ReToDemoCubes )
+
   set( RETOSHADERPROGRAM_HEADERS )
   set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
   set( RETOSHADERPROGRAM_LINK_LIBRARIES
 	  ReTo
 	  ${GLUT_LIBRARIES}
-    )
+  )
   common_application( ReToShaderProgram )
 
-  set( RETOGLUTEXAMPLE_HEADERS )
-  set( RETOGLUTEXAMPLE_SOURCES glutExample.cpp )
-  set( RETOGLUTEXAMPLE_LINK_LIBRARIES
-	  ReTo
-	  ${GLUT_LIBRARIES}
-    )
-  common_application( ReToGlutExample )
-
-  set( RETODEMOPICKING_HEADERS )
-  set( RETODEMOPICKING_SOURCES demoPicking.cpp )
+  set( RETODEMOPICKING_HEADERS
+    MyCube.h
+  )
+  set( RETODEMOPICKING_SOURCES
+    MyCube.cpp
+    pickDemo.cpp
+  )
   set( RETODEMOPICKING_LINK_LIBRARIES
 	  ReTo
 	  ${GLUT_LIBRARIES}
@@ -40,12 +50,12 @@ set( RETOFILEREADER_HEADERS )
 set( RETOFILEREADER_SOURCES fileReader.cpp )
 set( RETOFILEREADER_LINK_LIBRARIES
   ReTo
-  )
+)
 common_application( ReToFileReader )
 
 set( RETOSPLINEDEMO_HEADERS )
 set( RETOSPLINEDEMO_SOURCES splineExample.cpp )
 set( RETOSPLINEDEMO_LINK_LIBRARIES
   ReTo
-  )
+)
 common_application( ReToSplineDemo )
