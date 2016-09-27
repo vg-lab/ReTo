@@ -39,10 +39,24 @@ if ( GLUT_FOUND )
     pickDemo.cpp
   )
   set( RETODEMOPICKING_LINK_LIBRARIES
-	  ReTo
-	  ${GLUT_LIBRARIES}
+    ReTo
+    ${GLUT_LIBRARIES}
   )
   common_application( ReToDemoPicking )
+
+
+  set( RETODEMOPICKING2_HEADERS
+    MyCube.h
+  )
+  set( RETODEMOPICKING2_SOURCES
+    MyCube.cpp
+    pickDemo2.cpp
+  )
+  set( RETODEMOPICKING2_LINK_LIBRARIES
+    ReTo
+    ${GLUT_LIBRARIES}
+  )
+  common_application( ReToDemoPicking2 )
 
 endif( )
 

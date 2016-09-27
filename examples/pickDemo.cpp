@@ -73,7 +73,7 @@ int main( int argc, char** argv )
   initContext( argc, argv );
   initOGL( );
 
-  mycube = new MyCube( 4.5f );
+  mycube = new MyCube( 4.0f );
 
   camera = new reto::Camera( );
 
@@ -123,30 +123,46 @@ void initOGL( void )
 
   prog.load( RETO_EXAMPLE_SHADERS_V0_VERT,
               RETO_EXAMPLE_SHADERS_V0_FRAG );
-  prog.create( );
-  prog.link( );
+  prog.compileAndLink( );
   prog.autocatching( );
 
   glFrontFace( GL_CCW );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+  glEnable( GL_CULL_FACE );
 }
 
 void destroy( void )
 {
 }
 
+int pickX, pickY;
+bool comprobar = false;
+
 void renderFunc( void )
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+
+  if ( comprobar )
+  {
+    glScissor( pickX, pickY, 1, 1 );
+    glEnable(GL_SCISSOR_TEST);
+  }
 
   // std::cout << "DRAW" << std::endl;
   prog.use( );
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
   // TODO: SEND MODEL
-  for (auto i = -5; i <= 5; i+= 5) {
-    for (auto j = -5; j <= 5; j+= 5) {
-      for (auto k = -5; k <= 5; k+= 5) {
+  float id = 0.0f;
+  int MAX = 5;
+  for (auto i = -MAX; i <= MAX; i+= 5)
+  {
+    for (auto j = -MAX; j <= MAX; j+= 5)
+    {
+      for (auto k = -MAX; k <= MAX; k+= 5)
+      {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);
@@ -172,13 +188,36 @@ void renderFunc( void )
         _modelVecMat[15] = modelMat_( 3, 3 );
 
         prog.sendUniform4m("model", _modelVecMat.data( ));
+        prog.sendUniformf("id", id);
+        id += 1.0f;
         mycube->render( );
       }
     }
   }
 
-  glFlush();
-  glutSwapBuffers( );
+  if ( comprobar )
+  {
+    int selected = -1;
+    glDisable(GL_SCISSOR_TEST);
+
+    GLubyte color[4];
+    glReadPixels(pickX, pickY, 1, 1,
+      GL_RGBA, GL_UNSIGNED_BYTE, color);
+    int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
+    if (value < 3355443) {
+       std::cout << value << std::endl;
+    }
+    std::cout << "R: " << (int)color[0] << ", G: " << (int)color[1] << ", B: " << (int)color[2] << std::endl;
+    if( value < (int) id)
+    {
+      selected = value;
+    }
+    std::cout << selected << std::endl;
+    comprobar = false;
+  } else {
+    glFlush();
+    glutSwapBuffers( );
+  }
 }
 
 void resizeFunc( int w, int h )
@@ -240,6 +279,9 @@ void mouseFunc( int button, int state, int x, int y )
     if( button == 1 ) traslation = true;
     if( button == 2 ) {
       printf("Click at %d, %d\n", x, height - y);
+      comprobar = true;
+      pickX = x;
+      pickY = height - y;
     }
     if ( (button == 3) || (button == 4) )
     {

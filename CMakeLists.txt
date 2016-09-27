@@ -39,6 +39,7 @@ option( RETO_WITH_TESSELATION_SHADERS
   "enabling/disabling tesselation shaders" ON )
 option( RETO_WITH_SUBPROGRAMS "enabling/disabling subprograms" ON )
 option( RETO_WITH_OCC_QUERY "enabling/disabling occlusion query" ON )
+option( RETO_WITH_TRANSFORM_FEEDBACK "enabling/disabling transform feedback" ON )
 
 if ( RETO_WITH_GEOMETRY_SHADERS )
   list(APPEND COMMON_FIND_PACKAGE_DEFINES RETO_GEOMETRY_SHADERS)
@@ -54,6 +55,10 @@ endif( )
 
 if ( RETO_WITH_OCC_QUERY )
   add_definitions( -DRETO_OCC_QUERY )
+endif( )
+
+if ( RETO_WITH_TRANSFORM_FEEDBACK )
+  add_definitions( -DRETO_TRANSFORM_FEEDBACK )
 endif( )
 
 

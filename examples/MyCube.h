@@ -9,6 +9,7 @@ public:
   MyCube( float side );
   void render( );
   virtual void render( reto::ShaderProgram* );
+  float* model;
 protected:
   unsigned int _vao;
   unsigned int _size;

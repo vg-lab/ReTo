@@ -167,6 +167,11 @@ namespace reto
     bool loadComputeShaderFromText( const std::string& source );
   #endif
 
+  #ifdef RETO_TRANSFORM_FEEDBACK
+    RETO_API
+    void feedbackVarying( const char** varyings, int num, int mode );
+  #endif
+
     /**
      * Method to compile a program
      * @return If program compile and link OK
@@ -555,6 +560,9 @@ namespace reto
     RETO_API
     bool link( void );
 
+    RETO_API
+    bool isLinked( void );
+
     /**
      * Autocatching attributes and uniforms
      * @param attributes Autocatching attributes (default= true)
@@ -590,6 +598,8 @@ namespace reto
     #ifdef RETO_OCC_QUERY
       unsigned int _occQuery;
     #endif
+
+    bool _isLinked;
   };
 }
 #endif // __RETO__PROGRAM_SHADER__

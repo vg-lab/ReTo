@@ -56,6 +56,8 @@ namespace reto
     #endif
     _shaders.clear( );
 
+    _isLinked = false;
+
     #ifdef RETO_OCC_QUERY
       // Occlusion query object
       // TODO: You need to call this after OpenGL context creation
@@ -68,6 +70,10 @@ namespace reto
     _destroy( );
   }
 
+  bool ShaderProgram::isLinked( void )
+  {
+    return this->_isLinked;
+  }
 
   bool ShaderProgram::isUniformCached( const std::string& unif )
   {
@@ -147,6 +153,17 @@ namespace reto
     bool ShaderProgram::loadComputeShaderFromText( const std::string& source )
     {
       return _loadFromText( source, GL_COMPUTE_SHADER );
+    }
+  #endif
+
+  #ifdef RETO_TRANSFORM_FEEDBACK
+    void ShaderProgram::feedbackVarying( const char** varyings, int num, int mode )
+    {
+      if (_isLinked)
+      {
+        throw "Call this function just before linked.";
+      }
+      glTransformFeedbackVaryings( _program, num, varyings, mode );
     }
   #endif
 
@@ -302,6 +319,7 @@ namespace reto
       delete [ ] infoLog;
       return false;
     }
+    this->_isLinked = true;
     return true;
   }
 

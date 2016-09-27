@@ -73,7 +73,7 @@ int main( int argc, char** argv )
   initContext( argc, argv );
   initOGL( );
 
-  mycube = new MyCube( 4.5f );
+  mycube = new MyCube( 4.0f );
 
   camera = new reto::Camera( );
 
@@ -83,13 +83,16 @@ int main( int argc, char** argv )
   return 0;
 }
 
+int width = 500;
+int height = 500;
+
 void initContext( int argc, char** argv )
 {
   glutInit( &argc,argv );
   glutInitContextVersion( 4,4 );
 
   glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
-  glutInitWindowSize( 500, 500 );
+  glutInitWindowSize( width, height );
   glutInitWindowPosition( 0, 0 );
   glutCreateWindow( "GLUT example" );
 
@@ -112,7 +115,11 @@ void initContext( int argc, char** argv )
 }
 
 reto::ShaderProgram prog;
+reto::PickingSystem *ps;
 
+std::vector<MyCube*> cubes;
+
+int MAX = 5;
 void initOGL( void )
 {
   glEnable( GL_DEPTH_TEST );
@@ -123,25 +130,14 @@ void initOGL( void )
   prog.compileAndLink( );
   prog.autocatching( );
 
-  glFrontFace( GL_CCW );
-  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-}
+  ps = new reto::PickingSystem( );
 
-void destroy( void )
-{
-}
-
-void renderFunc( void )
-{
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-  // std::cout << "DRAW" << std::endl;
-  prog.use( );
-  prog.sendUniform4m("proj", camera->projectionMatrix( ));
-  prog.sendUniform4m("view", camera->viewMatrix( ));
-  for (auto i = -5; i <= 5; i+= 5) {
-    for (auto j = -5; j <= 5; j+= 5) {
-      for (auto k = -5; k <= 5; k+= 5) {
+  for (auto i = -MAX; i <= MAX; i+= 5)
+  {
+    for (auto j = -MAX; j <= MAX; j+= 5)
+    {
+      for (auto k = -MAX; k <= MAX; k+= 5)
+      {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);
@@ -166,18 +162,118 @@ void renderFunc( void )
         _modelVecMat[14] = k;
         _modelVecMat[15] = modelMat_( 3, 3 );
 
-        prog.sendUniform4m("model", _modelVecMat.data( ));
-        mycube->render( );
+        MyCube* q = new MyCube( 4.0f );
+        q->model = _modelVecMat.data( );
+        cubes.push_back(q);
       }
     }
   }
 
-  glFlush();
-  glutSwapBuffers( );
+  glFrontFace( GL_CCW );
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+  glEnable( GL_CULL_FACE );
+
 }
 
-void resizeFunc( int width, int height )
+void destroy( void )
 {
+}
+
+int pickX, pickY;
+bool comprobar = false;
+
+void renderFunc( void )
+{
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+
+  if ( comprobar )
+  {
+    glScissor( pickX, pickY, 1, 1 );
+    glEnable(GL_SCISSOR_TEST);
+  }
+
+  // std::cout << "DRAW" << std::endl;
+  prog.use( );
+  prog.sendUniform4m("proj", camera->projectionMatrix( ));
+  prog.sendUniform4m("view", camera->viewMatrix( ));
+  // TODO: SEND MODEL
+  float id = 0.0f;
+
+  /*for(auto q: cubes) {
+    prog.sendUniformf("id", id);
+    q->render( &prog );
+  }*/
+  int n = 0;
+  for (auto i = -MAX; i <= MAX; i+= 5)
+  {
+    for (auto j = -MAX; j <= MAX; j+= 5)
+    {
+      for (auto k = -MAX; k <= MAX; k+= 5)
+      {
+        auto modelMat_ = Eigen::Matrix4f::Identity( );
+        std::vector<float> _modelVecMat;
+        _modelVecMat.resize(16);
+
+        _modelVecMat[0] = modelMat_( 0, 0 );
+        _modelVecMat[1] = modelMat_( 1, 0 );
+        _modelVecMat[2] = modelMat_( 2, 0 );
+        _modelVecMat[3] = modelMat_( 3, 0 );
+
+        _modelVecMat[4] = modelMat_( 0, 1 );
+        _modelVecMat[5] = modelMat_( 1, 1 );
+        _modelVecMat[6] = modelMat_( 2, 1 );
+        _modelVecMat[7] = modelMat_( 3, 1 );
+
+        _modelVecMat[8] = modelMat_( 0, 2 );
+        _modelVecMat[9] = modelMat_( 1, 2 );
+        _modelVecMat[10] = modelMat_( 2, 2 );
+        _modelVecMat[11] = modelMat_( 3, 2 );
+
+        _modelVecMat[12] = i;
+        _modelVecMat[13] = j;
+        _modelVecMat[14] = k;
+        _modelVecMat[15] = modelMat_( 3, 3 );
+
+        cubes[n]->model = _modelVecMat.data( );
+        prog.sendUniformf("id", id);
+        id += 1.0f;
+        cubes[n++]->render( &prog );
+      }
+    }
+  }
+  //std::cout << n << std::endl;
+
+  if ( comprobar )
+  {
+    int selected = -1;
+    glDisable(GL_SCISSOR_TEST);
+
+    GLubyte color[4];
+    glReadPixels(pickX, pickY, 1, 1,
+      GL_RGBA, GL_UNSIGNED_BYTE, color);
+    int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
+    if (value < 3355443) {
+       std::cout << value << std::endl;
+    }
+    std::cout << "R: " << (int)color[0] << ", G: " << (int)color[1] << ", B: " << (int)color[2] << std::endl;
+    if( value < (int) id)
+    {
+      selected = value;
+    }
+    std::cout << selected << std::endl;
+    comprobar = false;
+  } else {
+    glFlush();
+    glutSwapBuffers( );
+  }
+}
+
+void resizeFunc( int w, int h )
+{
+  width = w;
+  height = h;
   camera->ratio((( double ) width ) / height );
   glViewport( 0, 0, width, height );
 }
@@ -220,6 +316,7 @@ void keyboardFunc( unsigned char key, int, int )
 
 void mouseFunc( int button, int state, int x, int y )
 {
+  // TODO: ps->click(Point{ mouseX, mouseY });
   /**
    * GLUT
    * button: 0 (left), 1 (central), 2 (right), 3 (wheel up), 4 (wheel down).
@@ -230,6 +327,12 @@ void mouseFunc( int button, int state, int x, int y )
     mouseDown = true;
     if( button == 0 ) rotation = true;
     if( button == 1 ) traslation = true;
+    if( button == 2 ) {
+      printf("Click at %d, %d\n", x, height - y);
+      comprobar = true;
+      pickX = x;
+      pickY = height - y;
+    }
     if ( (button == 3) || (button == 4) )
     {
       //std::cout << "Scrolling." << std::endl;

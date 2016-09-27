@@ -64,7 +64,7 @@ namespace reto
       " } else {\n"
       "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
       " }\n"
-      " //ourColor = vec4(cc, 1.0);\n"
+      " ourColor = vec4(cc, 1.0);\n"
       "}");
     _program.compileAndLink( );
 
@@ -104,7 +104,7 @@ namespace reto
       " } else {\n"
       "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
       " }\n"
-      " //ourColor = vec4(cc, 1.0);\n"
+      " ourColor = vec4(cc, 1.0);\n"
       "}");
     _program.compileAndLink( );
     this->init();
@@ -114,12 +114,16 @@ namespace reto
   {
     unsigned int currentId = 0;
     std::set< reto::Pickable* >::iterator it;
+    float id = 0.0;
     for ( const auto& object : _objects )
     {
+      printf("Pintando con id = %f", id);
       currentId = object->sendId( currentId );
       // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
-      this->_program.sendUniformf("id", currentId);
+      this->_program.sendUniformf("id", id); //currentId);
       object->render( &this->_program );
+
+      id += 1.0f;
     }
   }
 
@@ -133,6 +137,7 @@ namespace reto
     int selected = -1;
     glScissor( point.first, point.second, 1, 1 );
     glEnable(GL_SCISSOR_TEST);
+    std::cout << _objects.size( ) << std::endl;
     this->renderObjects( );
     glDisable(GL_SCISSOR_TEST);
 
