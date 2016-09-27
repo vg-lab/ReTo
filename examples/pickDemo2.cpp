@@ -287,17 +287,19 @@ void idleFunc( void )
 
 void keyboardFunc( unsigned char key, int, int )
 {
-  switch( std::tolower(key) )
+  switch( key )
   {
     // Camera control.
     case 'c':
+    case 'C':
       camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
       camera->radius( 1000.0f );
       camera->rotation( 0.0f, 0.0f );
       std::cout << "Centering." << std::endl;
       glutPostRedisplay( );
       break;
-    case 'm' :
+    case 'm':
+    case 'M':
       wireframe = !wireframe;
       if ( wireframe )
       {
