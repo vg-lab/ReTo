@@ -9,7 +9,10 @@ public:
   MyCube( float side );
   void render( );
   virtual void render( reto::ShaderProgram* );
-  float* model;
+  void setModel(const std::vector<float> value) {
+    this->model = value;
+  }
+  std::vector<float> model;
 protected:
   unsigned int _vao;
   unsigned int _size;

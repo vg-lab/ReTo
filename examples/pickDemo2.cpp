@@ -114,7 +114,7 @@ void initContext( int argc, char** argv )
   glutMotionFunc( mouseMotionFunc );
 }
 
-reto::ShaderProgram prog;
+reto::ShaderProgram prog, progPick;
 reto::PickingSystem *ps;
 
 std::vector<MyCube*> cubes;
@@ -130,7 +130,8 @@ void initOGL( void )
   prog.compileAndLink( );
   prog.autocatching( );
 
-  ps = new reto::PickingSystem( );
+  progPick.loadVertexShader( RETO_EXAMPLE_SHADERS_V0_VERT );
+  ps = new reto::PickingSystem( progPick );
 
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
@@ -163,8 +164,10 @@ void initOGL( void )
         _modelVecMat[15] = modelMat_( 3, 3 );
 
         MyCube* q = new MyCube( 4.0f );
-        q->model = _modelVecMat.data( );
+        q->setModel(_modelVecMat);
         cubes.push_back(q);
+
+        ps->AddObject( q );
       }
     }
   }
@@ -190,8 +193,11 @@ void renderFunc( void )
 
   if ( comprobar )
   {
-    glScissor( pickX, pickY, 1, 1 );
-    glEnable(GL_SCISSOR_TEST);
+    //glScissor( pickX, pickY, 1, 1 );
+    //glEnable(GL_SCISSOR_TEST);
+    progPick.use( );
+    progPick.sendUniform4m("proj", camera->projectionMatrix( ));
+    progPick.sendUniform4m("view", camera->viewMatrix( ));
   }
 
   // std::cout << "DRAW" << std::endl;
@@ -199,70 +205,24 @@ void renderFunc( void )
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
   // TODO: SEND MODEL
-  float id = 0.0f;
-
   /*for(auto q: cubes) {
     prog.sendUniformf("id", id);
     q->render( &prog );
   }*/
-  int n = 0;
-  for (auto i = -MAX; i <= MAX; i+= 5)
+  if (!comprobar)
   {
-    for (auto j = -MAX; j <= MAX; j+= 5)
+    for (auto cube: cubes)
     {
-      for (auto k = -MAX; k <= MAX; k+= 5)
-      {
-        auto modelMat_ = Eigen::Matrix4f::Identity( );
-        std::vector<float> _modelVecMat;
-        _modelVecMat.resize(16);
-
-        _modelVecMat[0] = modelMat_( 0, 0 );
-        _modelVecMat[1] = modelMat_( 1, 0 );
-        _modelVecMat[2] = modelMat_( 2, 0 );
-        _modelVecMat[3] = modelMat_( 3, 0 );
-
-        _modelVecMat[4] = modelMat_( 0, 1 );
-        _modelVecMat[5] = modelMat_( 1, 1 );
-        _modelVecMat[6] = modelMat_( 2, 1 );
-        _modelVecMat[7] = modelMat_( 3, 1 );
-
-        _modelVecMat[8] = modelMat_( 0, 2 );
-        _modelVecMat[9] = modelMat_( 1, 2 );
-        _modelVecMat[10] = modelMat_( 2, 2 );
-        _modelVecMat[11] = modelMat_( 3, 2 );
-
-        _modelVecMat[12] = i;
-        _modelVecMat[13] = j;
-        _modelVecMat[14] = k;
-        _modelVecMat[15] = modelMat_( 3, 3 );
-
-        cubes[n]->model = _modelVecMat.data( );
-        prog.sendUniformf("id", id);
-        id += 1.0f;
-        cubes[n++]->render( &prog );
-      }
+      cube->render( &prog );
     }
   }
   //std::cout << n << std::endl;
 
   if ( comprobar )
   {
-    int selected = -1;
-    glDisable(GL_SCISSOR_TEST);
-
-    GLubyte color[4];
-    glReadPixels(pickX, pickY, 1, 1,
-      GL_RGBA, GL_UNSIGNED_BYTE, color);
-    int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
-    if (value < 3355443) {
-       std::cout << value << std::endl;
-    }
-    std::cout << "R: " << (int)color[0] << ", G: " << (int)color[1] << ", B: " << (int)color[2] << std::endl;
-    if( value < (int) id)
-    {
-      selected = value;
-    }
+    int selected = ps->click(reto::Point{x: pickX, x: pickY});
     std::cout << selected << std::endl;
+
     comprobar = false;
   } else {
     glFlush();

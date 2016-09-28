@@ -42,39 +42,35 @@ namespace reto
     _program.loadFromText(
       _VertexCode( ),
       "#version 430\n"
-      "out vec4 ourColor;\n"
-      "in float pid;\n"
-      "float packColor(vec3 color) {\n"
-      "  color *= 255.0;\n"
-      "  return color.r + color.g * 256.0 + color.b * 256.0 * 256.0;\n"
+      "layout(location = 0) out vec4 ourColor;\n"
+      "uniform float id;\n"
+
+      "float module(float x, float y) {\n"
+      "  return x - y * floor(x / y);\n"
       "}\n"
+
       "vec3 unpackColor(float f) {\n"
       "  vec3 color;\n"
       "  color.b = floor(f / (256 * 256));\n"
       "  color.g = floor((f - color.b * 256 * 256) / 256);\n"
-      "  color.r = floor(mod(f, 256.0));\n"
+      "  color.r = floor(module(f, 256.0));\n"
       "  return color / 255.0;\n"
       "}\n"
+
       "void main( ) {\n"
-      " vec3 cc = unpackColor(pid);\n"
-      " float cid = packColor(cc);\n"
-      " cid = round(cid);\n"
-      " if (cid == pid) {\n"
-      "  ourColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-      " } else {\n"
-      "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
-      " }\n"
-      " ourColor = vec4(cc, 1.0);\n"
-      "}");
+      "  vec3 cc = unpackColor(id);\n"
+      "  ourColor = vec4(cc, 1.0);\n"
+      "}\n");
     _program.compileAndLink( );
 
-    this->init();
+    _program.autocatching( );
+    //this->init();
   }
 
   void PickingSystem::init( )
   {
-    _program.addUniform("modelViewProj");
-    _program.addUniform("id");
+    //_program.addUniform("modelViewProj");
+    //_program.addUniform("id");
   }
 
   PickingSystem::PickingSystem( const reto::ShaderProgram& prog )
@@ -82,42 +78,37 @@ namespace reto
     _program = prog;
     _program.loadFragmentShaderFromText(
       "#version 430\n"
-      "out vec4 ourColor;\n"
-      "in float pid;\n"
-      "float packColor(vec3 color) {\n"
-      "  color *= 255.0;\n"
-      "  return color.r + color.g * 256.0 + color.b * 256.0 * 256.0;\n"
+      "layout(location = 0) out vec4 ourColor;\n"
+      "uniform float id;\n"
+
+      "float module(float x, float y) {\n"
+      "  return x - y * floor(x / y);\n"
       "}\n"
+
       "vec3 unpackColor(float f) {\n"
       "  vec3 color;\n"
       "  color.b = floor(f / (256 * 256));\n"
       "  color.g = floor((f - color.b * 256 * 256) / 256);\n"
-      "  color.r = floor(mod(f, 256.0));\n"
+      "  color.r = floor(module(f, 256.0));\n"
       "  return color / 255.0;\n"
       "}\n"
+
       "void main( ) {\n"
-      " vec3 cc = unpackColor(pid);\n"
-      " float cid = packColor(cc);\n"
-      " cid = round(cid);\n"
-      " if (cid == pid) {\n"
-      "  ourColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-      " } else {\n"
-      "  ourColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
-      " }\n"
-      " ourColor = vec4(cc, 1.0);\n"
-      "}");
+      "  vec3 cc = unpackColor(id);\n"
+      "  ourColor = vec4(cc, 1.0);\n"
+      "}\n");
     _program.compileAndLink( );
-    this->init();
+    _program.autocatching( );
   }
 
   void PickingSystem::renderObjects( void )
   {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     unsigned int currentId = 0;
     std::set< reto::Pickable* >::iterator it;
     float id = 0.0;
     for ( const auto& object : _objects )
     {
-      printf("Pintando con id = %f", id);
       currentId = object->sendId( currentId );
       // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
       this->_program.sendUniformf("id", id); //currentId);
