@@ -104,12 +104,12 @@ namespace reto
   void PickingSystem::renderObjects( void )
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    unsigned int currentId = 0;
-    std::set< reto::Pickable* >::iterator it;
-    float id = 0.0;
+    //unsigned int currentId = 0;
+    //std::set< reto::Pickable* >::iterator it;
+    float id = 0.0f;
     for ( const auto& object : _objects )
     {
-      currentId = object->sendId( currentId );
+      //currentId = object->sendId( currentId );
       // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
       this->_program.sendUniformf("id", id); //currentId);
       object->render( &this->_program );
@@ -145,6 +145,7 @@ namespace reto
       selected = value;
     }
 
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     return selected;
   }
 

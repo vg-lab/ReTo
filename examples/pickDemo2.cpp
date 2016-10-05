@@ -193,41 +193,27 @@ void renderFunc( void )
 
   if ( comprobar )
   {
-    //glScissor( pickX, pickY, 1, 1 );
-    //glEnable(GL_SCISSOR_TEST);
+    std::cout << "PICK" << std::endl;
     progPick.use( );
     progPick.sendUniform4m("proj", camera->projectionMatrix( ));
     progPick.sendUniform4m("view", camera->viewMatrix( ));
-  }
 
-  // std::cout << "DRAW" << std::endl;
-  prog.use( );
-  prog.sendUniform4m("proj", camera->projectionMatrix( ));
-  prog.sendUniform4m("view", camera->viewMatrix( ));
-  // TODO: SEND MODEL
-  /*for(auto q: cubes) {
-    prog.sendUniformf("id", id);
-    q->render( &prog );
-  }*/
-  if (!comprobar)
-  {
-    for (auto cube: cubes)
-    {
-      cube->render( &prog );
-    }
-  }
-  //std::cout << n << std::endl;
-
-  if ( comprobar )
-  {
-    int selected = ps->click(reto::Point{x: pickX, x: pickY});
+    int selected = ps->click( reto::Point( { pickX, pickY } ) );
     std::cout << selected << std::endl;
 
     comprobar = false;
-  } else {
-    glFlush();
-    glutSwapBuffers( );
   }
+  else
+  {
+    /*prog.use( );
+    prog.sendUniform4m("proj", camera->projectionMatrix( ));
+    prog.sendUniform4m("view", camera->viewMatrix( ));
+    for (auto cube: cubes)
+    {
+      cube->render( &prog );
+    }*/
+  }
+  glutSwapBuffers( );
 }
 
 void resizeFunc( int w, int h )
