@@ -1,4 +1,25 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+'''
+Copyright (c) 2014-2016 GMRV/URJC.
+
+Authors: Cristian Rodríguez Bernal
+
+This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
+
+This library is free software; you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License version 3.0 as published
+by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+'''
 
 from optparse import OptionParser
 import sys, getopt
@@ -43,9 +64,9 @@ def read_file( root, file, path, import_file ):
   if not import_file and file[0] == "_":
     return []
   # Get parent directory name. "" if directory as path
-  var_name = os.path.relpath( os.path.join( root, file ), path ).replace( "\\", "_" )       
+  var_name = os.path.relpath( os.path.join( root, file ), path ).replace( "\\", "_" )
   # Remove ".glsl" and replace "." and " " to "_"
-  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" ).replace( " ", "_ ")              
+  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" ).replace( " ", "_ ")
   content = []
 
   try:
@@ -105,9 +126,9 @@ def parse_cli( ):
   return optionsdict
 
 if __name__ == "__main__":
-  reload(sys)  
+  reload(sys)
   sys.setdefaultencoding('utf8')
-  
+
   opts = parse_cli( )
   src = Template( tmpl )
 
