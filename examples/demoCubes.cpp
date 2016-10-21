@@ -118,8 +118,8 @@ void initOGL( void )
   glEnable( GL_DEPTH_TEST );
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
-  prog.load( RETO_EXAMPLE_SHADERS_V0_VERT,
-              RETO_EXAMPLE_SHADERS_V0_FRAG );
+  prog.load( RETO_EXAMPLE_SHADER_COLOR_VERT,
+              RETO_EXAMPLE_SHADER_COLOR_FRAG );
   prog.compileAndLink( );
   prog.autocatching( );
 
@@ -130,7 +130,7 @@ void initOGL( void )
 void destroy( void )
 {
 }
-
+#define MAX 25
 void renderFunc( void )
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -139,9 +139,9 @@ void renderFunc( void )
   prog.use( );
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
-  for (auto i = -5; i <= 5; i+= 5) {
-    for (auto j = -5; j <= 5; j+= 5) {
-      for (auto k = -5; k <= 5; k+= 5) {
+  for (auto i = -MAX; i <= MAX; i+= 5) {
+    for (auto j = -MAX; j <= MAX; j+= 5) {
+      for (auto k = -MAX; k <= MAX; k+= 5) {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);

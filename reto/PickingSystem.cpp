@@ -39,11 +39,11 @@ namespace reto
 {
   PickingSystem::PickingSystem( )
   {
-    _program.loadFromText(
+    _program->loadFromText(
       _VertexCode( ),
       "#version 430\n"
       "layout(location = 0) out vec4 ourColor;\n"
-      "uniform float id;\n"
+      "in float pid;\n"
 
       "float module(float x, float y) {\n"
       "  return x - y * floor(x / y);\n"
@@ -58,12 +58,12 @@ namespace reto
       "}\n"
 
       "void main( ) {\n"
-      "  vec3 cc = unpackColor(id);\n"
+      "  vec3 cc = unpackColor(pid);\n"
       "  ourColor = vec4(cc, 1.0);\n"
       "}\n");
-    _program.compileAndLink( );
+    _program->compileAndLink( );
 
-    _program.autocatching( );
+    _program->autocatching( );
     //this->init();
   }
 
@@ -73,13 +73,13 @@ namespace reto
     //_program.addUniform("id");
   }
 
-  PickingSystem::PickingSystem( const reto::ShaderProgram& prog )
+  PickingSystem::PickingSystem( reto::ShaderProgram* prog )
   {
     _program = prog;
-    _program.loadFragmentShaderFromText(
+    _program->loadFragmentShaderFromText(
       "#version 430\n"
       "layout(location = 0) out vec4 ourColor;\n"
-      "uniform float id;\n"
+      "in float pid;\n"
 
       "float module(float x, float y) {\n"
       "  return x - y * floor(x / y);\n"
@@ -94,27 +94,24 @@ namespace reto
       "}\n"
 
       "void main( ) {\n"
-      "  vec3 cc = unpackColor(id);\n"
+      "  vec3 cc = unpackColor(pid);\n"
       "  ourColor = vec4(cc, 1.0);\n"
       "}\n");
-    _program.compileAndLink( );
-    _program.autocatching( );
+    _program->compileAndLink( );
+    _program->autocatching( );
   }
 
   void PickingSystem::renderObjects( void )
   {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //unsigned int currentId = 0;
+    unsigned int currentId = 0;
     //std::set< reto::Pickable* >::iterator it;
-    float id = 0.0f;
     for ( const auto& object : _objects )
     {
-      //currentId = object->sendId( currentId );
+      currentId = object->sendId( currentId );
       // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
-      this->_program.sendUniformf("id", id); //currentId);
-      object->render( &this->_program );
-
-      id += 1.0f;
+      this->_program->sendUniformf("id", currentId);
+      object->render( this->_program );
     }
   }
 
@@ -156,7 +153,7 @@ namespace reto
     glScissor( minPoint.first, minPoint.second, maxPoint.first, maxPoint.second );
     glEnable(GL_SCISSOR_TEST);
     this->renderObjects( );
-    glDisable(GL_SCISSOR_TEST);
+    //glDisable(GL_SCISSOR_TEST);
 
     GLubyte color[4];
     unsigned int value;
@@ -207,7 +204,7 @@ namespace reto
     _objects.clear( );
   }
 
-  reto::ShaderProgram const& PickingSystem::program( ) const
+  reto::ShaderProgram* const& PickingSystem::program( ) const
   {
     return this->_program;
   }

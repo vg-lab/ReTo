@@ -114,49 +114,31 @@ void initContext( int argc, char** argv )
   glutMotionFunc( mouseMotionFunc );
 }
 
-reto::ShaderProgram prog;
+reto::ShaderProgram prog, progPick;
 
+std::vector<MyCube*> cubes;
+
+int MAX = 25;
 void initOGL( void )
 {
   glEnable( GL_DEPTH_TEST );
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
-  prog.load( RETO_EXAMPLE_SHADERS_V0_VERT,
-              RETO_EXAMPLE_SHADERS_V0_FRAG );
+  prog.load( RETO_EXAMPLE_SHADER_COLOR_VERT,
+              RETO_EXAMPLE_SHADER_COLOR_FRAG );
   prog.compileAndLink( );
   prog.autocatching( );
+
+  progPick.load( RETO_EXAMPLE_SHADERS_PICK_VERT,
+              RETO_EXAMPLE_SHADERS_PICK_FRAG );
+  progPick.compileAndLink( );
+  progPick.autocatching( );
 
   glFrontFace( GL_CCW );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
   glEnable( GL_CULL_FACE );
-}
 
-void destroy( void )
-{
-}
-
-int pickX, pickY;
-bool comprobar = false;
-
-void renderFunc( void )
-{
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
-
-  if ( comprobar )
-  {
-    glScissor( pickX, pickY, 1, 1 );
-    glEnable(GL_SCISSOR_TEST);
-  }
-
-  // std::cout << "DRAW" << std::endl;
-  prog.use( );
-  prog.sendUniform4m("proj", camera->projectionMatrix( ));
-  prog.sendUniform4m("view", camera->viewMatrix( ));
-  // TODO: SEND MODEL
-  float id = 0.0f;
-  int MAX = 5;
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
     for (auto j = -MAX; j <= MAX; j+= 5)
@@ -187,12 +169,60 @@ void renderFunc( void )
         _modelVecMat[14] = k;
         _modelVecMat[15] = modelMat_( 3, 3 );
 
-        prog.sendUniform4m("model", _modelVecMat.data( ));
-        prog.sendUniformf("id", id);
-        id += 1.0f;
-        mycube->render( );
+        MyCube* q = new MyCube( 4.0f );
+        q->setModel(_modelVecMat);
+        cubes.push_back(q);
       }
     }
+  }
+}
+
+void destroy( void )
+{
+}
+
+int pickX, pickY;
+bool comprobar = false;
+
+void renderFunc( void )
+{
+  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+
+  if ( comprobar )
+  {
+    glScissor( pickX, pickY, 1, 1 );
+    glEnable(GL_SCISSOR_TEST);
+  }
+
+  if (comprobar)
+  {
+    progPick.use( );
+    progPick.sendUniform4m("proj", camera->projectionMatrix( ));
+    progPick.sendUniform4m("view", camera->viewMatrix( ));
+  } else
+  {
+    prog.use( );
+    prog.sendUniform4m("proj", camera->projectionMatrix( ));
+    prog.sendUniform4m("view", camera->viewMatrix( ));
+  }
+  // std::cout << "DRAW" << std::endl;
+  // TODO: SEND MODEL
+  float id = 0.0f;
+
+  for( auto obj: cubes )
+  {
+    if (comprobar)
+    {
+      progPick.sendUniformf("id", id);
+      obj->render( &progPick );
+    }
+    else
+    {
+      prog.sendUniformf("id", id);
+      obj->render( &prog );
+    }
+    id += 1.0f;
   }
 
   if ( comprobar )

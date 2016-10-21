@@ -2,7 +2,6 @@
  * @file    spinesStats.cpp
  * @brief
  * @author  Juan Guerrero Martín <juan.guerrero@urjc.es>
- *          Juan Guerrero Martín <juan.guerrero@urjc.es>
  * @date    2016
  * @remarks Copyright (c) 2016 GMRV/URJC. All rights reserved.
  * Do not distribute without further notice.
@@ -120,7 +119,7 @@ reto::PickingSystem *ps;
 
 std::vector<MyCube*> cubes;
 
-int MAX = 25;
+int MAX = 5;
 void initOGL( void )
 {
   glEnable( GL_DEPTH_TEST );
@@ -132,12 +131,7 @@ void initOGL( void )
   prog.autocatching( );
 
   progPick.loadVertexShader( RETO_EXAMPLE_SHADERS_PICK_VERT );
-  ps = new reto::PickingSystem( &progPick );
-
-  glFrontFace( GL_CCW );
-  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-  glEnable( GL_CULL_FACE );
+  ps = new reto::PickingSystem( progPick );
 
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
@@ -177,6 +171,12 @@ void initOGL( void )
       }
     }
   }
+
+  glFrontFace( GL_CCW );
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+  glEnable( GL_CULL_FACE );
+
 }
 
 void destroy( void )
@@ -186,13 +186,6 @@ void destroy( void )
 int pickX, pickY;
 bool comprobar = false;
 
-void updateMatrix( reto::ShaderProgram& ss )
-{
-  ss.use( );
-  ss.sendUniform4m("proj", camera->projectionMatrix( ));
-  ss.sendUniform4m("view", camera->viewMatrix( ));
-}
-
 void renderFunc( void )
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -200,14 +193,11 @@ void renderFunc( void )
 
   if ( comprobar )
   {
-    glScissor( pickX, pickY, 1, 1 );
-    glEnable(GL_SCISSOR_TEST);
-  }
-
-  if (comprobar)
-  {
-    updateMatrix( progPick );
     std::cout << "PICK" << std::endl;
+    progPick.use( );
+    progPick.sendUniform4m("proj", camera->projectionMatrix( ));
+    progPick.sendUniform4m("view", camera->viewMatrix( ));
+
     int selected = ps->click( reto::Point( { pickX, pickY } ) );
     std::cout << selected << std::endl;
 
@@ -215,17 +205,16 @@ void renderFunc( void )
   }
   else
   {
-    updateMatrix( prog );
-    float id = 0.0f;
+    //std::cout << "NORMAL" << std::endl;
+    prog.use( );
+    prog.sendUniform4m("proj", camera->projectionMatrix( ));
+    prog.sendUniform4m("view", camera->viewMatrix( ));
     for (auto cube: cubes)
     {
-      prog.sendUniformf("id", id);
       cube->render( &prog );
-      id += 1.0f;
     }
-    glFlush();
-    glutSwapBuffers( );
   }
+  glutSwapBuffers( );
 }
 
 void resizeFunc( int w, int h )
