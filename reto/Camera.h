@@ -169,6 +169,8 @@ namespace reto
     RETO_API
     float* projectionMatrix( void );
 
+    float* orthoMatrix( void );
+
     /**
      * Method to get the pointer to view matrix of the camera vectorized
      * in columns
@@ -244,7 +246,7 @@ namespace reto
     /**
      * Method to set the target camera distance between the camera and the pivot
      * pin
-     * @param targetRadius taget camera distance between the camera and the
+     * @param targetRadius target camera distance between the camera and the
      * pivot pin
      */
     void targetRadius( const float targetRadius_ );
@@ -297,6 +299,8 @@ private:
 
     void _BuildProjectionMatrix( void );
 
+    void _BuildOrthoProjectionMatrix( void );
+
     void _BuildViewMatrix( void );
 
     void _BuildViewProjectionMatrix( void );
@@ -338,6 +342,9 @@ private:
 
     //! Vectorized camera projection matrix
     std::vector<float> _projVec;
+
+    //! Vectorized camera orthoprojection matrix
+    std::vector<float> _orthoVec;
 
     //! Vectorized camera view matrix
     std::vector<float> _viewVec;
