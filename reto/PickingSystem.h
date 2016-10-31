@@ -44,10 +44,10 @@ namespace reto
       PickingSystem( );
       /**
        * Reuse a ShaderProgram that lacks fragment shader
-       * @param prog: ProgramShader
+       * @param prog: ProgramShader*
        **/
       RETO_API
-      PickingSystem( const reto::ShaderProgram& prog );
+      PickingSystem( reto::ShaderProgram* prog );
       virtual ~PickingSystem( );
 
       /**
@@ -86,7 +86,7 @@ namespace reto
       std::set<unsigned int> area( Point minPoint, Point maxPoint );
 
       RETO_API
-      reto::ShaderProgram const& program( ) const;
+      reto::ShaderProgram* const& program( ) const;
 
     protected:
       /**
@@ -103,8 +103,9 @@ namespace reto
       RETO_API
       virtual void renderObjects( void );
 
-    protected:
-      reto::ShaderProgram _program;
+    //protected:
+    public:
+      reto::ShaderProgram* _program;
       std::set< reto::Pickable* > _objects;
 
       virtual std::string _VertexCode( void );

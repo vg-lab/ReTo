@@ -160,6 +160,7 @@ void MyCube::render() {
 }
 
 void MyCube::render( reto::ShaderProgram* ss ) {
+  //std::cout << this->model[12] << ", " << this->model[13] << ", " << this->model[14] << std::endl;
   ss->sendUniform4m("model", this->model.data( ));
   glBindVertexArray(_vao);
   glDrawElements(GL_TRIANGLES, _size, GL_UNSIGNED_INT, 0);
