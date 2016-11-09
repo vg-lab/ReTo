@@ -72,8 +72,9 @@ common_find_package(GLUT SYSTEM)
 common_find_package(Boost COMPONENTS unit_test_framework)
 common_find_package(ZeroEQ)
 common_find_package(Lexis)
+common_find_package(FreeImage REQUIRED SYSTEM)
 
-list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3)
+list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3 FreeImage)
 
 if(GLUT_FOUND)
   list(APPEND RETO_DEPENDENT_LIBRARIES GLUT)

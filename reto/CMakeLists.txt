@@ -7,6 +7,7 @@ set(RETO_PUBLIC_HEADERS
   Pickable.h
   PickingSystem.h
   Spline.h
+  TextureManager.h
 )
 
 set(RETO_HEADERS )
@@ -18,11 +19,13 @@ set(RETO_SOURCES
   Pickable.cpp
   PickingSystem.cpp
   Spline.cpp
+  TextureManager.cpp
 )
 
 set(RETO_LINK_LIBRARIES
   ${OPENGL_LIBRARIES}
   ${GLEW_LIBRARIES}
+  ${FREEIMAGE_LIBRARIES}
 )
 
 if ( ZEROEQ_FOUND )

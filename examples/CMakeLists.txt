@@ -23,6 +23,19 @@ if ( GLUT_FOUND )
   )
   common_application( ReToDemoCubes )
 
+  set( RETOTEXTUREREADER_HEADERS
+    MyCube.h
+  )
+  set( RETOTEXTUREREADER_SOURCES
+    MyCube.cpp
+    textureReader.cpp
+  )
+  set( RETOTEXTUREREADER_LINK_LIBRARIES
+    ReTo
+    ${GLUT_LIBRARIES}
+  )
+  common_application( ReToTextureReader )
+
   set( RETOSHADERPROGRAM_HEADERS )
   set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
   set( RETOSHADERPROGRAM_LINK_LIBRARIES
