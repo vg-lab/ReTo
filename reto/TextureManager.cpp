@@ -59,7 +59,6 @@ namespace reto {
   }
   Texture::~Texture( )
   {
-    //if ( this->_handler != -1 )
     glDeleteTextures( 1, &this->_handler );
     this->_handler = -1;
   }
@@ -77,18 +76,9 @@ namespace reto {
     glBindTexture( this->_target, -1 );
   }
 
-
   Texture2D::Texture2D( TextureConfig& options, unsigned int width, unsigned int height )
-    : Texture( options, GL_TEXTURE_2D )
-    , _width( width )
-    , _height( height )
+    : Texture2D( options, nullptr, width, height )
   {
-    glGenTextures(1, &this->_handler);
-
-    glBindTexture( this->_target, this->_handler );
-
-    this->configTexture( nullptr );
-    this->_loaded = true;
   }
 
   Texture2D::Texture2D( TextureConfig& options, void* data, unsigned int width, unsigned int height )
@@ -125,30 +115,18 @@ namespace reto {
       data
     );
 
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_MIN_FILTER,
-      this->_minFilter);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_MAG_FILTER,
-      this->_magFilter);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_WRAP_S,
-      this->_wrapS);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_WRAP_T,
-      this->_wrapT);
+    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
 
     this->unbind( );
   }
   void Texture2D::load( void )
   {
-    if (!this->_loaded)
+    if ( !this->_loaded )
     {
-      glGenTextures(1, &this->_handler);
+      glGenTextures( 1, &this->_handler );
 
       glBindTexture( this->_target, this->_handler );
 
@@ -163,39 +141,39 @@ namespace reto {
     unsigned int &width_,
     unsigned int &height_ )
   {
-    FreeImage_Initialise(TRUE);
+    FreeImage_Initialise( TRUE );
 
-    FREE_IMAGE_FORMAT format = FreeImage_GetFileType(fileName_, 0);
-    if (format == FIF_UNKNOWN)
-      format = FreeImage_GetFIFFromFilename(fileName_);
-    if ((format == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading(format))
+    FREE_IMAGE_FORMAT format = FreeImage_GetFileType( fileName_, 0 );
+    if ( format == FIF_UNKNOWN )
+      format = FreeImage_GetFIFFromFilename( fileName_ );
+    if ( ( format == FIF_UNKNOWN ) || !FreeImage_FIFSupportsReading( format ) )
       return nullptr;
 
-    FIBITMAP* img = FreeImage_Load(format, fileName_);
-    if (img == nullptr)
+    FIBITMAP* img = FreeImage_Load( format, fileName_ );
+    if ( img == nullptr )
       return nullptr;
 
     FIBITMAP* tempImg = img;
-    img = FreeImage_ConvertTo32Bits(img);
-    FreeImage_Unload(tempImg);
+    img = FreeImage_ConvertTo32Bits( img );
+    FreeImage_Unload( tempImg );
 
-    width_ = FreeImage_GetWidth(img);
-    height_ = FreeImage_GetHeight(img);
+    width_ = FreeImage_GetWidth( img );
+    height_ = FreeImage_GetHeight( img );
 
     //BGRA a RGBA
-    unsigned char * map = new unsigned char[4 * width_*height_];
-    char *buff = (char*)FreeImage_GetBits(img);
+    unsigned char * map = new unsigned char[ 4 * width_*height_ ];
+    char *buff = ( char* )FreeImage_GetBits( img );
 
-    for (unsigned int j = 0; j < width_*height_; ++j)
+    for ( unsigned int j = 0; j < width_*height_; ++j )
     {
-      map[j * 4 + 0] = buff[j * 4 + 2];
-      map[j * 4 + 1] = buff[j * 4 + 1];
-      map[j * 4 + 2] = buff[j * 4 + 0];
-      map[j * 4 + 3] = buff[j * 4 + 3];
+      map[ j * 4 + 0 ] = buff[ j * 4 + 2 ];
+      map[ j * 4 + 1 ] = buff[ j * 4 + 1 ];
+      map[ j * 4 + 2 ] = buff[ j * 4 + 0 ];
+      map[ j * 4 + 3 ] = buff[ j * 4 + 3 ];
     }
 
-    FreeImage_Unload(img);
-    FreeImage_DeInitialise();
+    FreeImage_Unload( img );
+    FreeImage_DeInitialise( );
 
     return map;
   }
@@ -213,31 +191,16 @@ namespace reto {
     for ( auto& layer: data )
     {
       glTexSubImage3D(
-        this->_target,
-        0, 0, 0, i, width, height, 1, this->_format, this->_type, layer
+        this->_target, 0, 0, 0, i, width, height, 1,
+        this->_format, this->_type, layer
       );
       ++i;
     }
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_MIN_FILTER,
-      this->_minFilter);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_MAG_FILTER,
-      this->_magFilter);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_WRAP_S,
-      this->_wrapS);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_WRAP_T,
-      this->_wrapT);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_WRAP_R,
-      this->_wrapR);
+    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_R, this->_wrapR );
     this->unbind( );
   }
   Texture2DArray::~Texture2DArray( void )
@@ -245,8 +208,8 @@ namespace reto {
   }
   void Texture2DArray::load( void )
   {
-    if (!this->_loaded) {
-      glGenTextures(1, &this->_handler);
+    if ( !this->_loaded ) {
+      glGenTextures( 1, &this->_handler );
       glBindTexture( this->_target, this->_handler );
       this->_loaded = true;
     }
@@ -269,31 +232,27 @@ namespace reto {
       this->_type,
       data
     );
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_MIN_FILTER,
-      this->_minFilter);
-    glTexParameteri(
-      this->_target,
-      GL_TEXTURE_MAG_FILTER,
-      this->_magFilter);
+    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
 
     // Set the mipmap levels (base and max)
     glTexParameteri( this->_target, GL_TEXTURE_BASE_LEVEL, 0 );
     glTexParameteri( this->_target, GL_TEXTURE_MAX_LEVEL, 4 );
 
+    // TODO?
     //if (options.autoMipMap) {
     //    glGenerateMipmap( this->_target );
     //}
 
-    this->unbind();
+    this->unbind( );
   }
   Texture3D::~Texture3D( void )
   {
   }
   void Texture3D::load( void )
   {
-    if (!this->_loaded) {
+    if ( !this->_loaded )
+    {
       glGenTextures(1, &this->_handler);
       glBindTexture( this->_target, this->_handler );
       this->_loaded = true;
@@ -320,6 +279,5 @@ namespace reto {
   }
   TextureManager::~TextureManager( )
   {
-    // TODO: CLEAR ALL TEXTURES
   }
 };
