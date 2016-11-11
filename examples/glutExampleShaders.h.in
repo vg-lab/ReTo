@@ -42,4 +42,16 @@
 #define RETO_EXAMPLE_SHADERS_PICK_FRAG \
   "@PROJECT_SOURCE_DIR@/examples/pick.frag"
 
+
+
+#define RETO_EXAMPLE_SHADER_TEXTURE_VERT \
+  "@PROJECT_SOURCE_DIR@/examples/texture.vert"
+
+#define RETO_EXAMPLE_SHADER_TEXTURE_FRAG \
+  "@PROJECT_SOURCE_DIR@/examples/texture.frag"
+
+
+#define RETO_EXAMPLE_TEXTURE \
+  "@PROJECT_SOURCE_DIR@/examples/gmrv_grande.png"
+
 #endif
