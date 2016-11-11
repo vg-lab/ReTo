@@ -34,6 +34,8 @@ set( CMAKECOMMONTEMPLATE_DESCRIPTION "ReTo - Render Tools" )
 set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 
+option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" OFF )
+
 option( RETO_WITH_GEOMETRY_SHADERS "enabling/disabling geometry shaders" ON )
 option( RETO_WITH_TESSELATION_SHADERS
   "enabling/disabling tesselation shaders" ON )
@@ -72,9 +74,9 @@ common_find_package(GLUT SYSTEM)
 common_find_package(Boost COMPONENTS unit_test_framework)
 common_find_package(ZeroEQ)
 common_find_package(Lexis)
-common_find_package(FreeImage REQUIRED SYSTEM)
+common_find_package(FreeImage)
 
-list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3 FreeImage)
+list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3)
 
 if(GLUT_FOUND)
   list(APPEND RETO_DEPENDENT_LIBRARIES GLUT)
@@ -88,6 +90,10 @@ endif()
 
 if(LEXIS_FOUND)
   list(APPEND RETO_DEPENDENT_LIBRARIES Lexis)
+endif()
+
+if(FREEIMAGE_FOUND)
+  list(APPEND RETO_DEPENDENT_LIBRARIES FreeImage)
 endif()
 
 common_find_package_post( )

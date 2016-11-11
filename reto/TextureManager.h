@@ -28,11 +28,9 @@
 #endif
 
 #include <unordered_map>
-#include <memory>
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <FreeImage.h>
 
 namespace reto {
   struct TextureConfig {
@@ -51,25 +49,25 @@ namespace reto {
   {
     public:
       virtual ~Texture( ) = 0;
+
       void bind( int slot = -1 );
+
       void unbind( );
-      inline unsigned int handler( )
+
+      inline unsigned int handler( ) const
       {
         return this->_handler;
       }
-      inline unsigned int target( )
+      inline unsigned int target( ) const
       {
         return this->_target;
       }
-      /*virtual void resize( unsigned int, unsigned int )
+      inline bool isLoaded( ) const
       {
-
-      }*/
-      inline bool isLoaded( ) {
         return this->_loaded;
       }
     protected:
-      Texture( TextureConfig& options, unsigned int type );
+      Texture( const TextureConfig& options, unsigned int type );
 
       virtual void load( ) = 0;
 
@@ -91,16 +89,19 @@ namespace reto {
   class Texture2D: public Texture
   {
     public:
-      Texture2D( TextureConfig& options, unsigned int width, unsigned int height );
-      Texture2D( TextureConfig& options, void* data, unsigned int width, unsigned int height );
-      Texture2D( TextureConfig& options, std::string src );
+      Texture2D( const TextureConfig& options, unsigned int width, unsigned int height );
+      Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height );
+      Texture2D( const TextureConfig& options, const std::string src );
       virtual ~Texture2D( void );
     protected:
       void configTexture( void* data = nullptr );
       virtual void load( void );
+
+#ifdef RETO_USE_FREEIMAGE
       unsigned char* loadTexture( const char* fileName_,
-        unsigned int &width_,
-        unsigned int &height_ );
+        unsigned int& width_,
+        unsigned int& height_ );
+#endif
 
       std::string _src;
       unsigned int _width;
@@ -109,7 +110,7 @@ namespace reto {
   class Texture2DArray: public Texture
   {
     public:
-      Texture2DArray( TextureConfig& options, std::vector< void* > data,
+      Texture2DArray( const TextureConfig& options, std::vector< void* > data,
         unsigned int width, unsigned int height );
       virtual ~Texture2DArray( void );
     protected:
@@ -118,7 +119,7 @@ namespace reto {
   class Texture3D: public Texture
   {
     public:
-      Texture3D( TextureConfig& options, void* data, unsigned int width,
+      Texture3D( const TextureConfig& options, void* data, unsigned int width,
         unsigned int height, unsigned int depth );
       virtual ~Texture3D( void );
     protected:
@@ -128,13 +129,13 @@ namespace reto {
   {
     public:
       static TextureManager& getInstance();
-      void add( std::string alias, Texture* tex );
-      void remove( std::string alias );
-      Texture* get( std::string alias );
+      void add( const std::string alias, Texture* tex );
+      void remove( const std::string alias );
+      Texture* get( const std::string alias );
       protected:
       ~TextureManager( );
     protected:
-      std::unordered_map< std::string, std::unique_ptr< Texture > > _textures;
+      std::unordered_map< std::string, Texture* > _textures;
   };
 };
 #endif /* __RETO__TEXTURE_MANAGER__ */
