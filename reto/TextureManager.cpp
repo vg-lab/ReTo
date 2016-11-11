@@ -270,15 +270,15 @@ namespace reto {
                                     // Instantiated on first use.
     return instance;
   }
-  void TextureManager::add( const std::string alias, Texture* tex )
+  void TextureManager::add( const std::string& alias, Texture* tex )
   {
     this->_textures[ alias ] = tex;
   }
-  void TextureManager::remove( const std::string alias )
+  void TextureManager::remove( const std::string& alias )
   {
     this->_textures.erase( alias );
   }
-  Texture* TextureManager::get( const std::string alias )
+  Texture* TextureManager::get( const std::string& alias )
   {
     return this->_textures[ alias ];
   }
