@@ -129,9 +129,9 @@ namespace reto {
   {
     public:
       static TextureManager& getInstance();
-      void add( const std::string alias, Texture* tex );
-      void remove( const std::string alias );
-      Texture* get( const std::string alias );
+      void add( const std::string& alias, Texture* tex );
+      void remove( const std::string& alias );
+      Texture* get( const std::string& alias );
       protected:
       ~TextureManager( );
     protected:
