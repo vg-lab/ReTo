@@ -25,18 +25,20 @@ if( RETO_WITH_EXAMPLES )
     )
     common_application( ReToDemoCubes )
 
-    set( RETOTEXTUREREADER_HEADERS
-      MyCube.h
-    )
-    set( RETOTEXTUREREADER_SOURCES
-      MyCube.cpp
-      textureReader.cpp
-    )
-    set( RETOTEXTUREREADER_LINK_LIBRARIES
-      ReTo
-      ${GLUT_LIBRARIES}
-    )
-    common_application( ReToTextureReader )
+    if (RETO_USE_FREEIMAGE)
+      set( RETOTEXTUREREADER_HEADERS
+        MyCube.h
+      )
+      set( RETOTEXTUREREADER_SOURCES
+        MyCube.cpp
+        textureReader.cpp
+      )
+      set( RETOTEXTUREREADER_LINK_LIBRARIES
+        ReTo
+        ${GLUT_LIBRARIES}
+      )
+      common_application( ReToTextureReader )
+    endif( )
 
     set( RETOSHADERPROGRAM_HEADERS )
     set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
