@@ -192,7 +192,7 @@ namespace reto {
     this->load( );
     glBindTexture( this->_target, this->_handler );
     glTexImage3D( this->_target, this->_level, this->_internalFormat,
-      width, height, data.size( ), 0, this->_format, this->_type, nullptr );
+      width, height, GLsizei(data.size( )), 0, this->_format, this->_type, nullptr );
 
     unsigned int i = 0;
     for ( const auto& layer: data )
