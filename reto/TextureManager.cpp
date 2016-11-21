@@ -36,11 +36,13 @@
   #include <GL/freeglut.h>
 #endif
 
-// Image processing.
-#include <FreeImage.h>
+#ifdef RETO_USE_FREEIMAGE
+  // Image processing.
+  #include <FreeImage.h>
+#endif
 
 namespace reto {
-  Texture::Texture( TextureConfig& options, unsigned int type )
+  Texture::Texture( const TextureConfig& options, unsigned int type )
     : _handler( -1 )
   {
     this->_target = type;
@@ -76,12 +78,12 @@ namespace reto {
     glBindTexture( this->_target, -1 );
   }
 
-  Texture2D::Texture2D( TextureConfig& options, unsigned int width, unsigned int height )
+  Texture2D::Texture2D( const TextureConfig& options, unsigned int width, unsigned int height )
     : Texture2D( options, nullptr, width, height )
   {
   }
 
-  Texture2D::Texture2D( TextureConfig& options, void* data, unsigned int width, unsigned int height )
+  Texture2D::Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height )
     : Texture( options, GL_TEXTURE_2D )
     , _width( width )
     , _height( height )
@@ -93,7 +95,7 @@ namespace reto {
     this->configTexture( data );
     this->_loaded = true;
   }
-  Texture2D::Texture2D( TextureConfig& options, std::string src )
+  Texture2D::Texture2D( const TextureConfig& options, const std::string src )
     : Texture( options, GL_TEXTURE_2D )
     , _src ( src )
   {
@@ -130,16 +132,20 @@ namespace reto {
 
       glBindTexture( this->_target, this->_handler );
 
+#ifdef RETO_USE_FREEIMAGE
       auto pixels = this->loadTexture( this->_src.c_str( ), this->_width, this->_height );
 
       this->configTexture( pixels );
-
+#else
+      this->configTexture( nullptr );
+#endif
       this->_loaded = true;
     }
   }
+#ifdef RETO_USE_FREEIMAGE
   unsigned char* Texture2D::loadTexture( const char* fileName_,
-    unsigned int &width_,
-    unsigned int &height_ )
+    unsigned int& width_,
+    unsigned int& height_ )
   {
     FreeImage_Initialise( TRUE );
 
@@ -177,18 +183,19 @@ namespace reto {
 
     return map;
   }
+#endif
 
-  Texture2DArray::Texture2DArray( TextureConfig& options, std::vector< void* > data,
+  Texture2DArray::Texture2DArray( const TextureConfig& options, std::vector< void* > data,
     unsigned int width, unsigned int height )
     : Texture( options, GL_TEXTURE_2D_ARRAY )
   {
     this->load( );
     glBindTexture( this->_target, this->_handler );
     glTexImage3D( this->_target, this->_level, this->_internalFormat,
-      width, height, data.size( ), 0, this->_format, this->_type, nullptr );
+      width, height, GLsizei(data.size( )), 0, this->_format, this->_type, nullptr );
 
     unsigned int i = 0;
-    for ( auto& layer: data )
+    for ( const auto& layer: data )
     {
       glTexSubImage3D(
         this->_target, 0, 0, 0, i, width, height, 1,
@@ -215,7 +222,7 @@ namespace reto {
     }
   }
 
-  Texture3D::Texture3D( TextureConfig& options, void* data, unsigned int width,
+  Texture3D::Texture3D( const TextureConfig& options, void* data, unsigned int width,
     unsigned int height, unsigned int depth ):
     Texture( options, GL_TEXTURE_3D )
   {
@@ -262,22 +269,24 @@ namespace reto {
   TextureManager& TextureManager::getInstance()
   {
     static TextureManager instance; // Guaranteed to be destroyed.
-                // Instantiated on first use.
+                                    // Instantiated on first use.
     return instance;
   }
-  void TextureManager::add( std::string alias, Texture* tex )
+  void TextureManager::add( const std::string& alias, Texture* tex )
   {
-    this->_textures[ alias ] = std::unique_ptr< Texture >( tex );
+    this->_textures[ alias ] = tex;
   }
-  void TextureManager::remove( std::string alias )
+  void TextureManager::remove( const std::string& alias )
   {
     this->_textures.erase( alias );
   }
-  Texture* TextureManager::get( std::string alias )
+  Texture* TextureManager::get( const std::string& alias )
   {
-    return this->_textures[ alias ].get( );
+    return this->_textures[ alias ];
   }
   TextureManager::~TextureManager( )
   {
+    for(auto& pair : this->_textures) delete pair.second;
+    this->_textures.clear( );
   }
 };

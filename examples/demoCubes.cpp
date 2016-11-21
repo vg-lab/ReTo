@@ -139,9 +139,12 @@ void renderFunc( void )
   prog.use( );
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
-  for (auto i = -MAX; i <= MAX; i+= 5) {
-    for (auto j = -MAX; j <= MAX; j+= 5) {
-      for (auto k = -MAX; k <= MAX; k+= 5) {
+  for (auto i = -MAX; i <= MAX; i+= 5)
+  {
+    for (auto j = -MAX; j <= MAX; j+= 5)
+    {
+      for (auto k = -MAX; k <= MAX; k+= 5)
+      {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);
