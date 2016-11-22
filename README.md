@@ -11,8 +11,9 @@ ReTo provides the following tools:
 * Camera
 * Shader manager
 * Picking functionality
-* Obj Loader (triangle/quad mode)
+* Object Loader (triangle/quad mode)
 * Spline navigation
+* TextureManager
 
 ## Dependencies
 
@@ -25,6 +26,7 @@ The following dependencies are optional:
 * GLUT for some examples
 * ZeroEQ/Lexis for publishing camera
 * Boost's Unit Test Framework for unit testing.
+* FreeImage for Texture2D using file images.
 
 ## Building
 

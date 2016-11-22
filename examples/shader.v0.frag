@@ -1,57 +1,69 @@
-#version 330 core
+/*#version 330 core
 
 out vec4 outColor;
 
-in vec3 color;
-in vec3 pos;
 in vec3 norm;
-in vec2 texCoord;
 
-uniform sampler2D colorTex;
-uniform sampler2D emiTex;
+void main() {
+  outColor = vec4(norm, 1.0);
+}*/
+/*
 
-vec3 Ka;
-vec3 Kd;
-vec3 Ks;
-vec3 N;
-float alpha = 1700.0;
-vec3 Ke;
+#version 330 core
 
-vec3 Ia = vec3 (0.3);
-vec3 Id = vec3 (1.0);
-vec3 Is = vec3 (1.0);
-vec3 lpos = vec3 (0.0); 
+layout(location = 0) out vec4 ourColor;
+uniform float id;
 
-vec3 shade();
-
-void main()
-{
-	Ka = color;
-	Kd = color;
-	Ke = vec3(0.0);
-	Ks = vec3 (1.0);
-
-	N = normalize (norm);
-	
-	outColor = vec4(shade(), 1.0);   
+float module(float x, float y) {
+  return x - y * floor(x / y);
 }
 
-vec3 shade()
-{
-	vec3 c = vec3(0.0);
-	c = Ia * Ka;
+float packColor(vec3 color) {
+  color *= 255.0;
+  return color.r + color.g * 256.0 + color.b * 256.0 * 256.0;
+}
 
-	vec3 L = normalize (lpos - pos);
-	vec3 diffuse = Id * Kd * dot (L,N);
-	c += clamp(diffuse, 0.0, 1.0);
-	
-	vec3 V = normalize (-pos);
-	vec3 R = normalize (reflect (-L,N));
-	float factor = max (dot (R,V), 0.01);
-	vec3 specular = Is*Ks*pow(factor,alpha);
-	c += clamp(specular, 0.0, 1.0);
+vec3 unpackColor(float f) {
+  vec3 color;
+  color.b = floor(f / (256 * 256));
+  color.g = floor((f - color.b * 256 * 256) / 256);
+  color.r = floor(mod(f, 256.0));
+  return color / 255.0;
+}
 
-	c+=Ke;
-	
-	return c;
+void main( ) {
+  vec3 cc = unpackColor(id);
+  float cid = packColor(cc);
+  cid = round(cid);
+  if (cid == id) {
+    ourColor = vec4(0.0, 1.0, 0.0, 1.0);
+  }  else {
+    ourColor = vec4(1.0, 0.0, 0.0, 1.0);
+  }
+  ourColor = vec4(cc, 1.0);
+}
+*/
+
+
+
+#version 330 core
+
+layout(location = 0) out vec4 ourColor;
+uniform float id;
+
+float module(float x, float y) {
+  return x - y * floor(x / y);
+}
+
+vec3 unpackColor(float f) {
+  vec3 color;
+  color.b = floor(f / (256 * 256));
+  color.g = floor((f - color.b * 256 * 256) / 256);
+  color.r = floor(module(f, 256.0));
+  return color / 255.0;
+}
+
+void main( ) {
+  vec3 cc = unpackColor(id);
+  ourColor = vec4(cc, 1.0);
 }

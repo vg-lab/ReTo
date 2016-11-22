@@ -56,6 +56,8 @@ namespace reto
     #endif
     _shaders.clear( );
 
+    _isLinked = false;
+
     #ifdef RETO_OCC_QUERY
       // Occlusion query object
       // TODO: You need to call this after OpenGL context creation
@@ -66,6 +68,20 @@ namespace reto
   ShaderProgram::~ShaderProgram( void )
   {
     _destroy( );
+  }
+
+  bool ShaderProgram::isLinked( void )
+  {
+    return this->_isLinked;
+  }
+
+  bool ShaderProgram::isUniformCached( const std::string& unif )
+  {
+    return this->_uniformList.find(unif) != this->_uniformList.end( );
+  }
+  bool ShaderProgram::isAttributeCached( const std::string& attr )
+  {
+    return this->_attrsList.find(attr) != this->_attrsList.end( );
   }
 
   bool ShaderProgram::loadFromText( const std::string& vsSource,
@@ -137,6 +153,17 @@ namespace reto
     bool ShaderProgram::loadComputeShaderFromText( const std::string& source )
     {
       return _loadFromText( source, GL_COMPUTE_SHADER );
+    }
+  #endif
+
+  #ifdef RETO_TRANSFORM_FEEDBACK
+    void ShaderProgram::feedbackVarying( const char** varyings, int num, int mode )
+    {
+      if (_isLinked)
+      {
+        throw "Call this function just before linked.";
+      }
+      glTransformFeedbackVaryings( _program, num, varyings, mode );
     }
   #endif
 
@@ -292,6 +319,7 @@ namespace reto
       delete [ ] infoLog;
       return false;
     }
+    this->_isLinked = true;
     return true;
   }
 
@@ -340,7 +368,7 @@ namespace reto
   void ShaderProgram::addUniform( const std::string& uniformName )
   {
     unsigned int index = glGetUniformLocation( _program, uniformName.c_str( ) );
-    if( index != std::numeric_limits<unsigned int>::max( ) ) 
+    if( index != std::numeric_limits<unsigned int>::max( ) )
     {
       _uniformList[ uniformName ] = index;
     }
@@ -415,6 +443,51 @@ namespace reto
   unsigned int ShaderProgram::ubo( const std::string& _ubo )
   {
     return _uboList[ _ubo] ;
+  }
+
+  void ShaderProgram::autocatching( bool attributes, bool uniforms )
+  {
+    int count;
+
+    int size; // Variable size
+    GLenum type; // Variable type (float, vecX, matX, ...)
+
+    const GLsizei bufSize = 32;
+    char name[bufSize]; // GLSL variable name
+    int length; // Name length
+
+    if ( attributes )
+    {
+      glGetProgramiv( this->_program, GL_ACTIVE_ATTRIBUTES, &count);
+      //printf("Active Attributes: %d\n", count);
+
+      for (auto i = 0; i < count; ++i)
+      {
+        glGetActiveAttrib( this->_program, (GLuint)i, bufSize, &length,
+            &size, &type, name);
+
+        this->addAttribute( name );
+
+        //printf("Attribute #%d Type: %u Name: %s\n", i, type, name);
+      }
+    }
+
+    if ( uniforms )
+    {
+      glGetProgramiv( this->_program, GL_ACTIVE_UNIFORMS, &count );
+      //printf("Active Uniforms: %d\n", count);
+
+      for (auto i = 0; i < count; ++i)
+      {
+        glGetActiveUniform( this->_program, (GLuint)i, bufSize, &length,
+            &size, &type, name );
+
+        this->addUniform( name );
+
+        //printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+      }
+
+    }
   }
 
   #ifdef RETO_SUBPROGRAMS

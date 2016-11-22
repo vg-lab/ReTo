@@ -29,5 +29,29 @@
 #define RETO_EXAMPLE_SHADERS_V0_FRAG \
   "@PROJECT_SOURCE_DIR@/examples/shader.v0.frag"
 
+#define RETO_EXAMPLE_SHADER_COLOR_VERT \
+  "@PROJECT_SOURCE_DIR@/examples/color.vert"
+
+#define RETO_EXAMPLE_SHADER_COLOR_FRAG \
+  "@PROJECT_SOURCE_DIR@/examples/color.frag"
+
+
+#define RETO_EXAMPLE_SHADERS_PICK_VERT \
+  "@PROJECT_SOURCE_DIR@/examples/pick.vert"
+
+#define RETO_EXAMPLE_SHADERS_PICK_FRAG \
+  "@PROJECT_SOURCE_DIR@/examples/pick.frag"
+
+
+
+#define RETO_EXAMPLE_SHADER_TEXTURE_VERT \
+  "@PROJECT_SOURCE_DIR@/examples/texture.vert"
+
+#define RETO_EXAMPLE_SHADER_TEXTURE_FRAG \
+  "@PROJECT_SOURCE_DIR@/examples/texture.frag"
+
+
+#define RETO_EXAMPLE_TEXTURE \
+  "@PROJECT_SOURCE_DIR@/examples/gmrv_grande.png"
 
 #endif

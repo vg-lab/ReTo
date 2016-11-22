@@ -34,11 +34,14 @@ set( CMAKECOMMONTEMPLATE_DESCRIPTION "ReTo - Render Tools" )
 set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 
+option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" OFF )
+
 option( RETO_WITH_GEOMETRY_SHADERS "enabling/disabling geometry shaders" ON )
 option( RETO_WITH_TESSELATION_SHADERS
   "enabling/disabling tesselation shaders" ON )
 option( RETO_WITH_SUBPROGRAMS "enabling/disabling subprograms" ON )
 option( RETO_WITH_OCC_QUERY "enabling/disabling occlusion query" ON )
+option( RETO_WITH_TRANSFORM_FEEDBACK "enabling/disabling transform feedback" ON )
 
 if ( RETO_WITH_GEOMETRY_SHADERS )
   list(APPEND COMMON_FIND_PACKAGE_DEFINES RETO_GEOMETRY_SHADERS)
@@ -53,7 +56,11 @@ if ( RETO_WITH_SUBPROGRAMS )
 endif( )
 
 if ( RETO_WITH_OCC_QUERY )
-  add_definitions( -DRETO_OCC_QUERY )
+  list(APPEND COMMON_FIND_PACKAGE_DEFINES RETO_OCC_QUERY)
+endif( )
+
+if ( RETO_WITH_TRANSFORM_FEEDBACK )
+  list(APPEND COMMON_FIND_PACKAGE_DEFINES RETO_TRANSFORM_FEEDBACK)
 endif( )
 
 
@@ -67,6 +74,7 @@ common_find_package(GLUT SYSTEM)
 common_find_package(Boost COMPONENTS unit_test_framework)
 common_find_package(ZeroEQ)
 common_find_package(Lexis)
+common_find_package(FreeImage)
 
 list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3)
 
@@ -82,6 +90,10 @@ endif()
 
 if(LEXIS_FOUND)
   list(APPEND RETO_DEPENDENT_LIBRARIES Lexis)
+endif()
+
+if(FREEIMAGE_FOUND)
+  list(APPEND RETO_DEPENDENT_LIBRARIES FreeImage)
 endif()
 
 common_find_package_post( )

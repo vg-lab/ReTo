@@ -50,7 +50,9 @@ namespace reto
 
     _Rotation( _RotationFromPY( pitch_, yaw_ ));
     _BuildProjectionMatrix( );
+    _BuildOrthoProjectionMatrix( );
     _BuildViewMatrix( );
+    _BuildViewProjectionMatrix( );
   }
 
 #ifdef RETO_USE_ZEROEQ
@@ -90,6 +92,7 @@ namespace reto
         new std::thread( [&]() { while( true ) _subscriber->receive( 10000 );});
 
     _BuildProjectionMatrix( );
+    _BuildOrthoProjectionMatrix( );
     _BuildViewMatrix( );
     _BuildViewProjectionMatrix( );
   }
@@ -192,6 +195,11 @@ namespace reto
     return _projVec.data( );
   }
 
+  float* Camera::orthoMatrix( void )
+  {
+    return _orthoVec.data( );
+  }
+
   float* Camera::viewMatrix( void )
   {
     return _viewVec.data( );
@@ -221,6 +229,7 @@ namespace reto
   {
     _ratio = ratio_;
     _BuildProjectionMatrix( );
+    _BuildOrthoProjectionMatrix( );
     _BuildViewProjectionMatrix( );
   }
 
@@ -282,7 +291,9 @@ namespace reto
 
   void Camera::_BuildProjectionMatrix( void )
   {
-    _projVec.resize(16);
+    _projVec.resize( 16 );
+
+    auto nf = 1.0f / ( _nearPlane - _farPlane );
 
     // row 1
     _projVec[0] = _f / _ratio;
@@ -297,14 +308,50 @@ namespace reto
     // row 3
     _projVec[8] = .0f;
     _projVec[9] = .0f;
-    _projVec[10] = ( _farPlane + _nearPlane ) / ( _nearPlane - _farPlane );
+    _projVec[10] = ( _farPlane + _nearPlane ) * nf;
     _projVec[11] = -1.0f;
     // row 4
     _projVec[12] = .0f;
     _projVec[13] = .0f;
-    _projVec[14] = ( 2.0f * _farPlane * _nearPlane ) /
-      ( _nearPlane - _farPlane );
+    _projVec[14] = ( 2.0f * _farPlane * _nearPlane ) * nf;
     _projVec[15] = .0f;
+  }
+
+  void Camera::_BuildOrthoProjectionMatrix( void )
+  {
+    _orthoVec.resize( 16 );
+
+    float left = 0.0f;
+    float right = this->width( ) * 2.5f;
+    float top = this->height( ) * 2.5f;
+    float bottom = 0.0f;
+    float near = _nearPlane;
+    float far = _farPlane;
+
+    auto lr = 1.0f / (left - right),
+      bt = 1.0f / (bottom - top),
+      nf = 1.0f / (near - far);
+
+    // row 1
+    _orthoVec[0] = -2.0f * lr;
+    _orthoVec[1] = 0.0f;
+    _orthoVec[2] = 0.0f;
+    _orthoVec[3] = 0.0f;
+    // row 2
+    _orthoVec[4] = 0.0f;
+    _orthoVec[5] = -2.0f * bt;
+    _orthoVec[6] = 0.0f;
+    _orthoVec[7] = 0.0f;
+    // row 3
+    _orthoVec[8] = 0.0f;
+    _orthoVec[9] = 0.0f;
+    _orthoVec[10] = 2.0f * nf;
+    _orthoVec[11] = 0.0f;
+    // row 4
+    _orthoVec[12] = (left + right) * lr;
+    _orthoVec[13] = (top + bottom) * bt;
+    _orthoVec[14] = (far + near) * nf;
+    _orthoVec[15] = 1.0f;
   }
 
   void Camera::_BuildViewMatrix( void )

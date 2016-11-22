@@ -148,6 +148,6 @@ int main( int argc, char** argv )
 
   return 0;
 
-#endif // RETO_GEOMETRY_SHADERS
-
 }
+
+#endif // RETO_GEOMETRY_SHADERS

@@ -167,6 +167,11 @@ namespace reto
     bool loadComputeShaderFromText( const std::string& source );
   #endif
 
+  #ifdef RETO_TRANSFORM_FEEDBACK
+    RETO_API
+    void feedbackVarying( const char** varyings, int num, int mode );
+  #endif
+
     /**
      * Method to compile a program
      * @return If program compile and link OK
@@ -213,10 +218,10 @@ namespace reto
     void bindAttribute( const std::string& attr, unsigned int index );
     /**
      * Method to catching an uniform value.
-     * @param uniform: Uniform name
+     * @param unifs: Uniform name
      */
     RETO_API
-    void addUniform( const std::string& uniform );
+    void addUniform( const std::string& unifs );
     /**
      * Method to catching an array of uniform values.
      * @param uniforms: Uniform vector names
@@ -225,11 +230,26 @@ namespace reto
     void addUniforms( const std::vector<char*> uniforms );
     /**
      * Method to bind a specific index to a uniform value
-     * @param uniform: Uniform name
+     * @param unif: Uniform name
      * @param index: Uniform index
      */
     RETO_API
-    void bindUniform( const std::string& uniform, unsigned int index );
+    void bindUniform( const std::string& unifs, unsigned int index );
+
+    /**
+     * Method to check if uniform exist (only check in uniform cache)
+     * @param uniform: Uniform name
+     * @return bool
+     */
+    RETO_API
+    bool isUniformCached( const std::string& unif );
+    /**
+     * Method to check if attribute exist (only check in attribute cache)
+     * @param attribute: Attribute name
+     * @return bool
+     */
+    RETO_API
+    bool isAttributeCached( const std::string& attr );
     /**
      * Method to catching an uniform buffer object
      * @param _ubo: Uniform Buffer Object name
@@ -269,7 +289,7 @@ namespace reto
     RETO_API
     unsigned int ubo( const std::string& _ubo );
     /**
-     * Method to get a subprogram index of a specific kind of shader 
+     * Method to get a subprogram index of a specific kind of shader
      *    in cache
      * @param name: Subprogram name
      * @param shaderType: OpenGL Shader type
@@ -398,7 +418,7 @@ namespace reto
      * Method to send a mat4
      * @param uniform: Uniform name
      * @param data: Data
-     * @param inverse: Specifies whether to transpose 
+     * @param inverse: Specifies whether to transpose
      *    the matrix as the values are loaded into the uniform variable
      */
     RETO_API
@@ -409,7 +429,7 @@ namespace reto
      * Method to send a mat4
      * @param uniform: Uniform name
      * @param data: Data
-     * @param inverse: Specifies whether to transpose 
+     * @param inverse: Specifies whether to transpose
      *    the matrix as the values are loaded into the uniform variable
      */
     RETO_API
@@ -421,7 +441,7 @@ namespace reto
       /**
        * Method to active a subprogram in a specific shader
        * @param name: Subprogram name
-       * @param shaderType: OpenGL Shader type 
+       * @param shaderType: OpenGL Shader type
        */
       RETO_API
       void activeSubprogram( const std::string& name, int shaderType );
@@ -535,10 +555,21 @@ namespace reto
     RETO_API
     void create( void );
     /**
-     * Method to link program and check status 
+     * Method to link program and check status
      */
     RETO_API
     bool link( void );
+
+    RETO_API
+    bool isLinked( void );
+
+    /**
+     * Autocatching attributes and uniforms
+     * @param attributes Autocatching attributes (default= true)
+     * @param uniforms Autocatching attributes (default= true)
+     */
+    RETO_API
+    void autocatching( bool attributes = true, bool uniforms = true );
   protected:
     void _destroy( );
     bool _load( const std::string& file, int type );
@@ -567,6 +598,8 @@ namespace reto
     #ifdef RETO_OCC_QUERY
       unsigned int _occQuery;
     #endif
+
+    bool _isLinked;
   };
 }
 #endif // __RETO__PROGRAM_SHADER__
