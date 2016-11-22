@@ -66,7 +66,6 @@ endif( )
 
 include( Common )
 
-common_find_package(nvidiaOpenGL )
 common_find_package(OpenGL REQUIRED SYSTEM)
 common_find_package(GLEW REQUIRED SYSTEM)
 common_find_package(Eigen3 REQUIRED SYSTEM)
