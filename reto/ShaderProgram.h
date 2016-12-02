@@ -75,7 +75,7 @@ namespace reto
      */
     RETO_API
     bool loadFragmentShader( const std::string& file );
-  #ifdef RETO_GEOMETRY_SHADERS
+#ifdef RETO_GEOMETRY_SHADERS
     /**
      * Method to load and add a geometry shader from file
      * @param source: Shader file source
@@ -83,8 +83,8 @@ namespace reto
      */
     RETO_API
     bool loadGeometryShader( const std::string& file );
-  #endif
-  #ifdef RETO_TESSELATION_SHADERS
+#endif
+#ifdef RETO_TESSELATION_SHADERS
     /**
      * Method to load and add a tesselation evaluation shader from file
      * @param source: Shader file source
@@ -99,8 +99,8 @@ namespace reto
      */
     RETO_API
     bool loadTesselationControlShader( const std::string& file );
-  #endif
-  #ifdef RETO_COMPUTE_SHADERS
+#endif
+#ifdef RETO_COMPUTE_SHADERS
     /**
      * Method to load and add a computer shader from file
      * @param source: Shader file source
@@ -108,7 +108,7 @@ namespace reto
      */
     RETO_API
     bool loadComputeShader( const std::string& file );
-  #endif
+#endif
     /**
      * Method to load and add a vertex and fragment shaders from text
      * @param source: Vertex shader source
@@ -132,7 +132,7 @@ namespace reto
      */
     RETO_API
     bool loadFragmentShaderFromText( const std::string& source );
-  #ifdef RETO_GEOMETRY_SHADERS
+#ifdef RETO_GEOMETRY_SHADERS
     /**
      * Method to load and add a geometry shader from text
      * @param source: Shader source
@@ -140,8 +140,8 @@ namespace reto
      */
     RETO_API
     bool loadGeometryShaderFromText( const std::string& source );
-  #endif
-  #ifdef RETO_TESSELATION_SHADERS
+#endif
+#ifdef RETO_TESSELATION_SHADERS
     /**
      * Method to load and add a tesselation evaluation shader from text
      * @param source: Shader source
@@ -156,8 +156,8 @@ namespace reto
      */
     RETO_API
     bool loadTesselationControlShaderFromText( const std::string& source );
-  #endif
-  #ifdef RETO_COMPUTE_SHADERS
+#endif
+#ifdef RETO_COMPUTE_SHADERS
     /**
      * Method to load and add a computer shader from text
      * @param source: Shader source
@@ -165,12 +165,12 @@ namespace reto
      */
     RETO_API
     bool loadComputeShaderFromText( const std::string& source );
-  #endif
+#endif
 
-  #ifdef RETO_TRANSFORM_FEEDBACK
+#ifdef RETO_TRANSFORM_FEEDBACK
     RETO_API
     void feedbackVarying( const char** varyings, int num, int mode );
-  #endif
+#endif
 
     /**
      * Method to compile a program
@@ -257,15 +257,15 @@ namespace reto
     RETO_API
     void addUbo( const std::string& _ubo );
 
-    #ifdef RETO_SUBPROGRAMS
+#ifdef RETO_SUBPROGRAMS
     /**
      * Method to cathing a subprogram in a specific kind of shader
      * @param name: Subprogram name
      * @param shaderType: OpenGL Shader type
      */
-      RETO_API
-      void addSubroutine( const std::string& name, int shaderType );
-    #endif
+    RETO_API
+    void addSubroutine( const std::string& name, int shaderType );
+#endif
 
     /**
      * Method to get a attribute index in cache
@@ -485,117 +485,117 @@ namespace reto
                         const float* m,
                         bool inverse = false );
 
-    #ifdef RETO_SUBPROGRAMS
-      /**
-       * Method to active a subprogram in a specific shader
-       * @param name: Subprogram name
-       * @param shaderType: OpenGL Shader type
-       */
-      RETO_API
-      void activeSubprogram( const std::string& name, int shaderType );
-    #endif
+#ifdef RETO_SUBPROGRAMS
+    /**
+     * Method to active a subprogram in a specific shader
+     * @param name: Subprogram name
+     * @param shaderType: OpenGL Shader type
+     */
+    RETO_API
+    void activeSubprogram( const std::string& name, int shaderType );
+#endif
 
-    #ifdef RETO_OCC_QUERY
-      /**
-       * Method to check if object is visible in frustrum
-       * @return object is visible
-       */
-      RETO_API
-      bool occlusionQuery( std::function<void( )> renderFunc );
-    #endif
+#ifdef RETO_OCC_QUERY
+    /**
+     * Method to check if object is visible in frustrum
+     * @return object is visible
+     */
+    RETO_API
+    bool occlusionQuery( std::function<void( )> renderFunc );
+#endif
 
-    #ifdef RETO_COMPUTE_SHADERS
-      /**
-       * Method to launch one or more compute work groups.
-       * @param numGroupX: The number of work groups to be launched
-       *                   in the X dimension.
-       * @param numGroupY: The number of work groups to be launched
-       *                   in the Y dimension.
-       * @param numGroupZ: The number of work groups to be launched
-       *                   in the Z dimension.
-       */
-      RETO_API
-      void launchComputeWork( unsigned int numGroupX, unsigned int numGroupY,
-                              unsigned int numGroupZ );
-    #endif
-    #ifdef RETO_TESSELATION_SHADERS
-      /**
-       * Method to get patch vertices.
-       * @return Num of patches
-       */
-      RETO_API
-      unsigned int getPatchVertices( void );
-      /**
-       * Method to get inner tesselation level.
-       * @return Inner level
-       */
-      RETO_API
-      float getInnerLevel( void );
-      /**
-       * Method to get outer tesselation level.
-       * @return Outer level
-       */
-      RETO_API
-      float getOuterLevel( void );
+#ifdef RETO_COMPUTE_SHADERS
+    /**
+     * Method to launch one or more compute work groups.
+     * @param numGroupX: The number of work groups to be launched
+     *                   in the X dimension.
+     * @param numGroupY: The number of work groups to be launched
+     *                   in the Y dimension.
+     * @param numGroupZ: The number of work groups to be launched
+     *                   in the Z dimension.
+     */
+    RETO_API
+    void launchComputeWork( unsigned int numGroupX, unsigned int numGroupY,
+                            unsigned int numGroupZ );
+#endif
+#ifdef RETO_TESSELATION_SHADERS
+    /**
+     * Method to get patch vertices.
+     * @return Num of patches
+     */
+    RETO_API
+    unsigned int getPatchVertices( void );
+    /**
+     * Method to get inner tesselation level.
+     * @return Inner level
+     */
+    RETO_API
+    float getInnerLevel( void );
+    /**
+     * Method to get outer tesselation level.
+     * @return Outer level
+     */
+    RETO_API
+    float getOuterLevel( void );
 
-      /**
-       * Method to set patch vertices.
-       * @param numPatches: Num of patches
-       */
-      RETO_API
-      void setPatchVertices( unsigned int numPatches );
-      /**
-       * Method to set inner tesselation level.
-       * @param level: Inner level
-       */
-      RETO_API
-      void setInnerLevel( float level );
-      /**
-       * Method to set outer tesselation level.
-       * @param level: Outer level
-       */
-      RETO_API
-      void setOuterLevel( float level );
-    #endif
-    #ifdef RETO_GEOMETRY_SHADERS
-      /**
-       * Method to get max output vertices.
-       * @return int: Máx. num of vertices
-       */
-      RETO_API
-      int getGeometryMaxOutput( void );
-      /**
-       * Method to get max input geometry type.
-       * @return int: Input geometry type
-       */
-      RETO_API
-      int getGeometryInputType( void );
-      /**
-       * Method to get output geometry type.
-       * @return int: Output geometry type
-       */
-      RETO_API
-      int getGeometryOutputType( void );
+    /**
+     * Method to set patch vertices.
+     * @param numPatches: Num of patches
+     */
+    RETO_API
+    void setPatchVertices( unsigned int numPatches );
+    /**
+     * Method to set inner tesselation level.
+     * @param level: Inner level
+     */
+    RETO_API
+    void setInnerLevel( float level );
+    /**
+     * Method to set outer tesselation level.
+     * @param level: Outer level
+     */
+    RETO_API
+    void setOuterLevel( float level );
+#endif
+#ifdef RETO_GEOMETRY_SHADERS
+    /**
+     * Method to get max output vertices.
+     * @return int: Máx. num of vertices
+     */
+    RETO_API
+    int getGeometryMaxOutput( void );
+    /**
+     * Method to get max input geometry type.
+     * @return int: Input geometry type
+     */
+    RETO_API
+    int getGeometryInputType( void );
+    /**
+     * Method to get output geometry type.
+     * @return int: Output geometry type
+     */
+    RETO_API
+    int getGeometryOutputType( void );
 
-      /**
-       * Method to set max output vertices.
-       * @param maxValue: Max. num of vertices
-       */
-      RETO_API
-      void setGeometryMaxOutput( unsigned int maxValue );
-      /**
-       * Method to set input geometry type.
-       * @param inputValue: Input geometry type
-       */
-      RETO_API
-      void setGeometryInputType( unsigned int inputValue );
-      /**
-       * Method to set output geometry type.
-       * @param outputType: Output geometry type
-       */
-      RETO_API
-      void setGeometryOutputType( unsigned int outputType );
-    #endif
+    /**
+     * Method to set max output vertices.
+     * @param maxValue: Max. num of vertices
+     */
+    RETO_API
+    void setGeometryMaxOutput( unsigned int maxValue );
+    /**
+     * Method to set input geometry type.
+     * @param inputValue: Input geometry type
+     */
+    RETO_API
+    void setGeometryInputType( unsigned int inputValue );
+    /**
+     * Method to set output geometry type.
+     * @param outputType: Output geometry type
+     */
+    RETO_API
+    void setGeometryOutputType( unsigned int outputType );
+#endif
 
     /**
      * Method to create program and attach all shaders
@@ -628,24 +628,24 @@ namespace reto
     std::map<std::string, unsigned int> _uniformList;
     std::map<std::string, unsigned int> _uboList;
 
-    #ifdef RETO_SUBPROGRAMS
-      typedef struct SubProgram
+#ifdef RETO_SUBPROGRAMS
+    typedef struct SubProgram
+    {
+      const char* name;
+      unsigned int index;
+      SubProgram( const char* n, unsigned int i )
       {
-        const char* name;
-        unsigned int index;
-        SubProgram( const char* n, unsigned int i )
-        {
-          this->name = n;
-          this->index = i;
-        }
-      } SubProgram;
-      std::multimap<int, SubProgram> _subprograms;
-    #endif
+        this->name = n;
+        this->index = i;
+      }
+    } SubProgram;
+    std::multimap<int, SubProgram> _subprograms;
+#endif
     std::vector<unsigned int> _shaders;
 
-    #ifdef RETO_OCC_QUERY
-      unsigned int _occQuery;
-    #endif
+#ifdef RETO_OCC_QUERY
+    unsigned int _occQuery;
+#endif
 
     bool _isLinked;
   };
