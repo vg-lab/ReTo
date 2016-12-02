@@ -58,6 +58,9 @@ namespace reto {
 
     this->_minFilter = options.minFilter;
     this->_magFilter = options.magFilter;
+
+    this->_packAlignment = options.packAlignment;
+    this->_unpackAlignment = options.unpackAlignment;
   }
   Texture::~Texture( )
   {
@@ -77,6 +80,53 @@ namespace reto {
   {
     glBindTexture( this->_target, -1 );
   }
+  void Texture::resize( int, int ) {}
+  void Texture::resize( int, int, void* ) {}
+
+  Texture1D::Texture1D( const TextureConfig& options, void* data, unsigned int width )
+    : Texture(options, GL_TEXTURE_1D)
+    , _width( width )
+    {
+    glGenTextures(1, &this->_handler);
+
+    glBindTexture( this->_target, this->_handler );
+
+    this->configTexture( data );
+    this->_loaded = true;
+    }
+  Texture1D::~Texture1D( void ) { }
+
+  void Texture1D::load( void )
+  { }
+  void Texture1D::configTexture( void* data )
+  {
+    if (_packAlignment > 0)
+    {
+      glPixelStorei(GL_PACK_ALIGNMENT, this->_packAlignment);
+    }
+    if (_unpackAlignment > 0)
+    {
+      glPixelStorei(GL_UNPACK_ALIGNMENT, this->_unpackAlignment);
+    }
+
+    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS );
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
+
+    glTexImage1D(
+      this->_target,
+      this->_level,
+      this->_internalFormat,
+      this->_width,
+      this->_border,
+      this->_format,
+      this->_type,
+      data
+    );
+
+    this->unbind( );
+  }
 
   Texture2D::Texture2D( const TextureConfig& options, unsigned int width, unsigned int height )
     : Texture2D( options, nullptr, width, height )
@@ -90,6 +140,7 @@ namespace reto {
   {
     glGenTextures(1, &this->_handler);
 
+    this->bind();
     glBindTexture( this->_target, this->_handler );
 
     this->configTexture( data );
@@ -123,6 +174,17 @@ namespace reto {
     glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
 
     this->unbind( );
+  }
+  void Texture2D::resize( int w, int h)
+  {
+    resize( w, h, nullptr );
+  }
+  void Texture2D::resize( int w, int h, void* data)
+  {
+    _width = w;
+    _height = h;
+    this->bind();
+    configTexture(data);
   }
   void Texture2D::load( void )
   {
@@ -227,6 +289,24 @@ namespace reto {
     Texture( options, GL_TEXTURE_3D )
   {
     this->load( );
+    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
+    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
+    glTexParameterf( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS);
+    glTexParameterf( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT);
+    glTexParameteri( this->_target, GL_TEXTURE_WRAP_R, this->_wrapR);
+
+    // Set the mipmap levels (base and max)
+    glTexParameteri( this->_target, GL_TEXTURE_BASE_LEVEL, 0 );
+    glTexParameteri( this->_target, GL_TEXTURE_MAX_LEVEL, 4 );
+
+    if (_packAlignment > 0)
+    {
+      glPixelStorei(GL_PACK_ALIGNMENT, _packAlignment);
+    }
+    if (_unpackAlignment > 0)
+    {
+      glPixelStorei(GL_UNPACK_ALIGNMENT, _unpackAlignment);
+    }
     glTexImage3D(
       this->_target,
       this->_level,
@@ -239,12 +319,6 @@ namespace reto {
       this->_type,
       data
     );
-    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
-
-    // Set the mipmap levels (base and max)
-    glTexParameteri( this->_target, GL_TEXTURE_BASE_LEVEL, 0 );
-    glTexParameteri( this->_target, GL_TEXTURE_MAX_LEVEL, 4 );
 
     // TODO?
     //if (options.autoMipMap) {

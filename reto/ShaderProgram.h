@@ -399,6 +399,48 @@ namespace reto
     void sendUniform4v( const std::string& uniform,
                         const float* data );
     /**
+     * Method to send a ivec2
+     * @param uniform: Uniform name
+     * @param data: Data
+     */
+    RETO_API
+    void sendUniform2iv( const std::string& uniformName, const int* data );
+    /**
+     * Method to send a ivec2
+     * @param uniform: Uniform name
+     * @param data: Data
+     */
+    RETO_API
+    void sendUniform2iv( const std::string& uniformName, const std::vector< int > & data );
+    /**
+     * Method to send a ivec3
+     * @param uniform: Uniform name
+     * @param data: Data
+     */
+    RETO_API
+    void sendUniform3iv( const std::string& uniformName, const int* data );
+    /**
+     * Method to send a ivec3
+     * @param uniform: Uniform name
+     * @param data: Data
+     */
+    RETO_API
+    void sendUniform3iv( const std::string& uniformName, const std::vector< int > & data );
+    /**
+     * Method to send a ivec4
+     * @param uniform: Uniform name
+     * @param data: Data
+     */
+    RETO_API
+    void sendUniform4iv( const std::string& uniformName, const int* data );
+    /**
+     * Method to send a ivec4
+     * @param uniform: Uniform name
+     * @param data: Data
+     */
+    RETO_API
+    void sendUniform4iv( const std::string& uniformName, const std::vector< int > & data );
+    /**
      * Method to send a mat3
      * @param uniform: Uniform name
      * @param data: Data
@@ -570,7 +612,7 @@ namespace reto
      */
     RETO_API
     void autocatching( bool attributes = true, bool uniforms = true );
-  protected:
+  public:
     void _destroy( );
     bool _load( const std::string& file, int type );
     bool _loadFromText( const std::string& source, int type );

@@ -44,6 +44,8 @@ namespace reto {
     unsigned int wrapS = GL_CLAMP_TO_EDGE;
     unsigned int wrapT = GL_CLAMP_TO_EDGE;
     unsigned int wrapR = GL_CLAMP_TO_EDGE;
+    unsigned int packAlignment = 0;
+    unsigned int unpackAlignment = 0;
   };
   class Texture
   {
@@ -66,6 +68,8 @@ namespace reto {
       {
         return this->_loaded;
       }
+      virtual void resize( int w, int h);
+      virtual void resize( int w, int h, void* data);
     protected:
       Texture( const TextureConfig& options, unsigned int type );
 
@@ -85,6 +89,9 @@ namespace reto {
       unsigned int _wrapS;
       unsigned int _wrapT;
       unsigned int _wrapR;
+
+      unsigned int _packAlignment;
+      unsigned int _unpackAlignment;
   };
   class Texture2D: public Texture
   {
@@ -93,6 +100,8 @@ namespace reto {
       Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height );
       Texture2D( const TextureConfig& options, const std::string src );
       virtual ~Texture2D( void );
+      virtual void resize( int w, int h);
+      virtual void resize( int w, int h, void* data);
     protected:
       void configTexture( void* data = nullptr );
       virtual void load( void );
@@ -107,12 +116,24 @@ namespace reto {
       unsigned int _width;
       unsigned int _height;
   };
+  class Texture1D: public Texture
+  {
+    public:
+      Texture1D( const TextureConfig& options, void* data, unsigned int width );
+      virtual ~Texture1D( void );
+      //virtual void resize( int w, int h);
+    protected:
+      unsigned int _width;
+      void configTexture( void* data = nullptr );
+      virtual void load( void );
+  };
   class Texture2DArray: public Texture
   {
     public:
       Texture2DArray( const TextureConfig& options, std::vector< void* > data,
         unsigned int width, unsigned int height );
       virtual ~Texture2DArray( void );
+      //virtual void resize( int w, int h);
     protected:
       virtual void load( void );
   };
@@ -122,6 +143,7 @@ namespace reto {
       Texture3D( const TextureConfig& options, void* data, unsigned int width,
         unsigned int height, unsigned int depth );
       virtual ~Texture3D( void );
+      //virtual void resize( int w, int h);
     protected:
       virtual void load( void );
   };
