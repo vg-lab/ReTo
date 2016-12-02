@@ -404,42 +404,48 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform2iv( const std::string& uniformName, const int* data );
+    void sendUniform2iv( const std::string& uniformName,
+      const int* data );
     /**
      * Method to send a ivec2
      * @param uniform: Uniform name
      * @param data: Data
      */
     RETO_API
-    void sendUniform2iv( const std::string& uniformName, const std::vector< int > & data );
+    void sendUniform2iv( const std::string& uniformName,
+      const std::vector< int > & data );
     /**
      * Method to send a ivec3
      * @param uniform: Uniform name
      * @param data: Data
      */
     RETO_API
-    void sendUniform3iv( const std::string& uniformName, const int* data );
+    void sendUniform3iv( const std::string& uniformName,
+      const int* data );
     /**
      * Method to send a ivec3
      * @param uniform: Uniform name
      * @param data: Data
      */
     RETO_API
-    void sendUniform3iv( const std::string& uniformName, const std::vector< int > & data );
+    void sendUniform3iv( const std::string& uniformName,
+      const std::vector< int > & data );
     /**
      * Method to send a ivec4
      * @param uniform: Uniform name
      * @param data: Data
      */
     RETO_API
-    void sendUniform4iv( const std::string& uniformName, const int* data );
+    void sendUniform4iv( const std::string& uniformName,
+      const int* data );
     /**
      * Method to send a ivec4
      * @param uniform: Uniform name
      * @param data: Data
      */
     RETO_API
-    void sendUniform4iv( const std::string& uniformName, const std::vector< int > & data );
+    void sendUniform4iv( const std::string& uniformName,
+      const std::vector< int > & data );
     /**
      * Method to send a mat3
      * @param uniform: Uniform name
@@ -517,7 +523,7 @@ namespace reto
        * Method to get patch vertices.
        * @return Num of patches
        */
-     RETO_API
+      RETO_API
       unsigned int getPatchVertices( void );
       /**
        * Method to get inner tesselation level.
@@ -529,7 +535,7 @@ namespace reto
        * Method to get outer tesselation level.
        * @return Outer level
        */
-     RETO_API
+      RETO_API
       float getOuterLevel( void );
 
       /**
@@ -612,7 +618,7 @@ namespace reto
      */
     RETO_API
     void autocatching( bool attributes = true, bool uniforms = true );
-  public:
+  protected:
     void _destroy( );
     bool _load( const std::string& file, int type );
     bool _loadFromText( const std::string& source, int type );
