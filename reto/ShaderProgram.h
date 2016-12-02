@@ -273,21 +273,21 @@ namespace reto
      * @return Attribute index
      */
     RETO_API
-    unsigned int attribute( const std::string& _attr );
+    int attribute( const std::string& _attr );
     /**
      * Method to get a uniform index in cache
      * @param _unif: Uniform name
      * @return Uniform index
      */
     RETO_API
-    unsigned int uniform( const std::string& _unif );
+    int uniform( const std::string& _unif );
     /**
      * Method to get a Uniform Buffer Object index in cache
      * @param _ubo: Uniform Buffer Object name
      * @return Uniform Buffer Object index
      */
     RETO_API
-    unsigned int ubo( const std::string& _ubo );
+    int ubo( const std::string& _ubo );
     /**
      * Method to get a subprogram index of a specific kind of shader
      *    in cache
@@ -296,21 +296,21 @@ namespace reto
      * @return Subprogram index
      */
     RETO_API
-    unsigned int subprogram( const std::string& name, int shaderType );
+    int subprogram( const std::string& name, int shaderType );
     /**
      * Method to get a attribute index in cache
      * @param _attr: Attribute name
      * @return Attribute index
      */
     RETO_API
-    unsigned int operator( )( const std::string& _attr );
+    int operator( )( const std::string& _attr );
     /**
      * Method to get a uniform index in cache
      * @param _unif: Uniform name
      * @return Uniform index
      */
     RETO_API
-    unsigned int operator[]( const std::string& _unif );
+    int operator[]( const std::string& _unif );
 
     /**
      * Method to send a boolean

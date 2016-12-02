@@ -420,17 +420,25 @@ namespace reto
     glBindAttribLocation( _program, index, attr.c_str( ) );
   }
 
-  unsigned int ShaderProgram::attribute( const std::string& attr )
+  int ShaderProgram::attribute( const std::string& attr )
   {
-    return _attrsList[ attr ];
+    auto it = _attrsList.find( attr );
+    if ( it != _attrsList.end( ) )
+    {
+      return it->second;
+    }
+    else
+    {
+      return -1;
+    }
   }
 
-  unsigned int ShaderProgram::operator( )( const std::string& attr )
+  int ShaderProgram::operator( )( const std::string& attr )
   {
     return  attribute( attr );
   }
 
-  unsigned int ShaderProgram::uniform( const std::string& uniformName )
+  int ShaderProgram::uniform( const std::string& uniformName )
   {
     auto it = _uniformList.find( uniformName );
     if ( it != _uniformList.end( ) )
@@ -443,14 +451,23 @@ namespace reto
     }
   }
 
-  unsigned int ShaderProgram::operator[ ]( const std::string& attr )
+  int ShaderProgram::operator[ ]( const std::string& attr )
   {
     return  uniform( attr );
   }
 
-  unsigned int ShaderProgram::ubo( const std::string& _ubo )
+  int ShaderProgram::ubo( const std::string& _ubo )
   {
-    return _uboList[ _ubo] ;
+
+    auto it = _uboList.find( _ubo );
+    if ( it != _uboList.end( ) )
+    {
+      return it->second;
+    }
+    else
+    {
+      return -1;
+    }
   }
 
   void ShaderProgram::autocatching( bool attributes, bool uniforms )
@@ -499,7 +516,7 @@ namespace reto
   }
 
   #ifdef RETO_SUBPROGRAMS
-    unsigned int ShaderProgram::subprogram( const std::string& name,
+    int ShaderProgram::subprogram( const std::string& name,
                                       int shaderType )
     {
       std::pair<std::multimap<int, SubProgram>::iterator,
