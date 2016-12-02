@@ -88,6 +88,7 @@ if( RETO_WITH_EXAMPLES )
   set( RETOSPLINEDEMO_SOURCES splineExample.cpp )
   set( RETOSPLINEDEMO_LINK_LIBRARIES
     ReTo
+    ${GLUT_LIBRARIES}
   )
   common_application( ReToSplineDemo )
 
