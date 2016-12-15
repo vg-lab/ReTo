@@ -30,10 +30,8 @@
   #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
   #include <OpenGL/gl.h>
   #include <OpenGL/glu.h>
-  #include <GL/freeglut.h>
 #else
   #include <GL/gl.h>
-  #include <GL/freeglut.h>
 #endif
 
 #ifdef RETO_USE_FREEIMAGE
