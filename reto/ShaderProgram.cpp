@@ -420,29 +420,54 @@ namespace reto
     glBindAttribLocation( _program, index, attr.c_str( ) );
   }
 
-  unsigned int ShaderProgram::attribute( const std::string& attr )
+  int ShaderProgram::attribute( const std::string& attr )
   {
-    return _attrsList[ attr ];
+    auto it = _attrsList.find( attr );
+    if ( it != _attrsList.end( ) )
+    {
+      return it->second;
+    }
+    else
+    {
+      return -1;
+    }
   }
 
-  unsigned int ShaderProgram::operator( )( const std::string& attr )
+  int ShaderProgram::operator( )( const std::string& attr )
   {
     return  attribute( attr );
   }
 
-  unsigned int ShaderProgram::uniform( const std::string& uniformName )
+  int ShaderProgram::uniform( const std::string& uniformName )
   {
-    return _uniformList[ uniformName ];
+    auto it = _uniformList.find( uniformName );
+    if ( it != _uniformList.end( ) )
+    {
+      return it->second;
+    }
+    else
+    {
+      return -1;
+    }
   }
 
-  unsigned int ShaderProgram::operator[ ]( const std::string& attr )
+  int ShaderProgram::operator[ ]( const std::string& attr )
   {
     return  uniform( attr );
   }
 
-  unsigned int ShaderProgram::ubo( const std::string& _ubo )
+  int ShaderProgram::ubo( const std::string& _ubo )
   {
-    return _uboList[ _ubo] ;
+
+    auto it = _uboList.find( _ubo );
+    if ( it != _uboList.end( ) )
+    {
+      return it->second;
+    }
+    else
+    {
+      return -1;
+    }
   }
 
   void ShaderProgram::autocatching( bool attributes, bool uniforms )
@@ -491,7 +516,7 @@ namespace reto
   }
 
   #ifdef RETO_SUBPROGRAMS
-    unsigned int ShaderProgram::subprogram( const std::string& name,
+    int ShaderProgram::subprogram( const std::string& name,
                                       int shaderType )
     {
       std::pair<std::multimap<int, SubProgram>::iterator,
@@ -527,103 +552,145 @@ namespace reto
                                    float x, float y, float z )
   {
     int loc = uniform( uniformName );
-    glUniform3f( loc, x, y, z );
+    if (loc >= 0) glUniform3f( loc, x, y, z );
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
     int loc = uniform( uniformName );
-    glUniform2fv( loc, 1, data.data( ) );
+    if (loc >= 0) glUniform2fv( loc, 1, data.data( ) );
   }
 
   void ShaderProgram::sendUniform2v( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniform2fv( loc, 1, data );
+    if (loc >= 0) glUniform2fv( loc, 1, data );
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
     int loc = uniform( uniformName );
-    glUniform3fv( loc, 1, data.data( ) );
+    if (loc >= 0) glUniform3fv( loc, 1, data.data( ) );
   }
 
   void ShaderProgram::sendUniform3v( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniform3fv( loc, 1, data );
+    if (loc >= 0) glUniform3fv( loc, 1, data );
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
                                      const std::vector< float >& data )
   {
     int loc = uniform( uniformName );
-    glUniform4fv( loc, 1, data.data( ) );
+    if (loc >= 0) glUniform4fv( loc, 1, data.data( ) );
   }
 
   void ShaderProgram::sendUniform4v( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniform4fv( loc, 1, data );
+    if (loc >= 0) glUniform4fv( loc, 1, data );
+  }
+
+  void ShaderProgram::sendUniform2iv( const std::string& uniformName,
+                                      const int* data )
+  {
+    int loc = uniform( uniformName );
+    if (loc >= 0) glUniform2i( loc, data[0], data[1]);
+  }
+
+  void ShaderProgram::sendUniform2iv( const std::string& uniformName,
+                                      const std::vector< int > & data )
+  {
+    int loc = uniform( uniformName );
+    if (loc >= 0) glUniform2i( loc, data[0], data[1]);
+  }
+
+  void ShaderProgram::sendUniform3iv( const std::string& uniformName,
+                                      const int* data )
+  {
+    int loc = uniform( uniformName );
+    if (loc >= 0) glUniform3i( loc, data[0], data[1], data[2]);
+  }
+
+  void ShaderProgram::sendUniform3iv( const std::string& uniformName,
+                                      const std::vector< int > & data )
+  {
+    int loc = uniform( uniformName );
+    if (loc >= 0) glUniform3i( loc, data[0], data[1], data[2]);
+  }
+
+  void ShaderProgram::sendUniform4iv( const std::string& uniformName,
+                                      const int* data )
+  {
+    int loc = uniform( uniformName );
+    if (loc >= 0) glUniform4i( loc, data[0], data[1], data[2], data[3]);
+  }
+
+  void ShaderProgram::sendUniform4iv( const std::string& uniformName,
+                                      const std::vector< int > & data )
+  {
+    int loc = uniform( uniformName );
+    if (loc >= 0) glUniform4i( loc, data[0], data[1], data[2], data[3]);
   }
 
   void ShaderProgram::sendUniform4m( const std::string& uniformName,
     const std::vector< float > & data, bool inverse )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix4fv( loc, 1, inverse, data.data( ) );
+    if (loc >= 0) glUniformMatrix4fv( loc, 1, inverse, data.data( ) );
   }
 
   void ShaderProgram::sendUniform4m( const std::string& uniformName,
     const float* data, bool inverse )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix4fv( loc, 1, inverse, data );
+    if (loc >= 0) glUniformMatrix4fv( loc, 1, inverse, data );
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const std::vector< float > & data )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix3fv( loc, 1, GL_FALSE, data.data( ) );
+    if (loc >= 0) glUniformMatrix3fv( loc, 1, GL_FALSE, data.data( ) );
   }
 
   void ShaderProgram::sendUniform3m( const std::string& uniformName,
                                      const float* data )
   {
     int loc = uniform( uniformName );
-    glUniformMatrix3fv( loc, 1, GL_FALSE, data );
+    if (loc >= 0) glUniformMatrix3fv( loc, 1, GL_FALSE, data );
   }
 
   void ShaderProgram::sendUniformf( const std::string& uniformName,
                                     float val )
   {
     int loc = uniform( uniformName );
-    glUniform1f( loc, val );
+    if (loc >= 0) glUniform1f( loc, val );
   }
 
   void ShaderProgram::sendUniformi( const std::string& uniformName, int val )
   {
     int loc = uniform( uniformName );
-    glUniform1i( loc, val );
+    if (loc >= 0) glUniform1i( loc, val );
   }
 
   void ShaderProgram::sendUniformb( const std::string& uniformName,
                                     bool val)
   {
     int loc = uniform( uniformName );
-    glUniform1i( loc, val );
+    if (loc >= 0) glUniform1i( loc, val );
   }
 
   void ShaderProgram::sendUniformu( const std::string& uniformName, unsigned int val )
   {
     int loc = uniform( uniformName );
-    glUniform1ui( loc, val );
+    if (loc >= 0) glUniform1ui( loc, val );
   }
 
   #ifdef RETO_SUBPROGRAMS

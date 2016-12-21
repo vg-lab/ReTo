@@ -20,6 +20,7 @@ function( reto_generate_shaders
     __RETO_GEN_SHADERS_FILE__
     )
   file(GLOB __SHADERS__ ${__RETO_GEN_SHADERS_PATH__}/* )
+
   add_custom_command(
     COMMAND ${PYTHON_EXECUTABLE} ${RETO_GENERATE_SHADERS}
     ARGS
@@ -27,10 +28,8 @@ function( reto_generate_shaders
     -n ${__RETO_GEN_SHADERS_NAMESPACE__}
     -r ${__RETO_GEN_SHADERS_PATH__}
     -f ${__RETO_GEN_SHADERS_FILE__}
-    DEPENDS
-    ${RETO_GENERATE_SHADERS}
-    ${__JSON__}
-    OUTPUT
-    ${__RETO_GEN_SHADERS_FILE__}
-    )
+    DEPENDS ${RETO_GENERATE_SHADERS}
+    OUTPUT ${__RETO_GEN_SHADERS_FILE__}
+    MAIN_DEPENDENCY ${__SHADERS__}
+  )
 endfunction( )
