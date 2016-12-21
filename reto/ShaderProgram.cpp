@@ -598,42 +598,42 @@ namespace reto
   }
 
   void ShaderProgram::sendUniform2iv( const std::string& uniformName,
-                                      const int* data )
+                                      const unsigned int* data )
   {
     int loc = uniform( uniformName );
     if (loc >= 0) glUniform2i( loc, data[0], data[1]);
   }
 
   void ShaderProgram::sendUniform2iv( const std::string& uniformName,
-                                      const std::vector< int > & data )
+                                      const std::vector< unsigned int > & data )
   {
     int loc = uniform( uniformName );
     if (loc >= 0) glUniform2i( loc, data[0], data[1]);
   }
 
   void ShaderProgram::sendUniform3iv( const std::string& uniformName,
-                                      const int* data )
+                                      const unsigned int* data )
   {
     int loc = uniform( uniformName );
     if (loc >= 0) glUniform3i( loc, data[0], data[1], data[2]);
   }
 
   void ShaderProgram::sendUniform3iv( const std::string& uniformName,
-                                      const std::vector< int > & data )
+                                      const std::vector< unsigned int > & data )
   {
     int loc = uniform( uniformName );
     if (loc >= 0) glUniform3i( loc, data[0], data[1], data[2]);
   }
 
   void ShaderProgram::sendUniform4iv( const std::string& uniformName,
-                                      const int* data )
+                                      const unsigned int* data )
   {
     int loc = uniform( uniformName );
     if (loc >= 0) glUniform4i( loc, data[0], data[1], data[2], data[3]);
   }
 
   void ShaderProgram::sendUniform4iv( const std::string& uniformName,
-                                      const std::vector< int > & data )
+                                      const std::vector< unsigned int > & data )
   {
     int loc = uniform( uniformName );
     if (loc >= 0) glUniform4i( loc, data[0], data[1], data[2], data[3]);
