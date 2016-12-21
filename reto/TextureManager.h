@@ -49,115 +49,116 @@ namespace reto {
   };
   class Texture
   {
-    public:
-      virtual ~Texture( ) = 0;
+  public:
+    virtual ~Texture( ) = 0;
 
-      void bind( int slot = -1 );
+    void bind( int slot = -1 );
 
-      void unbind( );
+    void unbind( );
 
-      inline unsigned int handler( ) const
-      {
-        return this->_handler;
-      }
-      inline unsigned int target( ) const
-      {
-        return this->_target;
-      }
-      inline bool isLoaded( ) const
-      {
-        return this->_loaded;
-      }
-      virtual void resize( int w, int h);
-      virtual void resize( int w, int h, void* data);
-    protected:
-      Texture( const TextureConfig& options, unsigned int type );
+    inline unsigned int handler( ) const
+    {
+      return this->_handler;
+    }
+    inline unsigned int target( ) const
+    {
+      return this->_target;
+    }
+    inline bool isLoaded( ) const
+    {
+      return this->_loaded;
+    }
+    virtual void resize( int w, int h);
+    virtual void resize( int w, int h, void* data);
+  protected:
+    Texture( const TextureConfig& options, unsigned int type );
 
-      virtual void load( ) = 0;
+    virtual void load( ) = 0;
 
-      bool _loaded = false;
-      unsigned int _target;
-      unsigned int _handler;
+    bool _loaded = false;
+    unsigned int _target;
+    unsigned int _handler;
 
-      unsigned int _internalFormat;
-      unsigned int _format;
-      unsigned int _border;
-      unsigned int _minFilter;
-      unsigned int _magFilter;
-      unsigned int _type;
-      unsigned int _level;
-      unsigned int _wrapS;
-      unsigned int _wrapT;
-      unsigned int _wrapR;
+    unsigned int _internalFormat;
+    unsigned int _format;
+    unsigned int _border;
+    unsigned int _minFilter;
+    unsigned int _magFilter;
+    unsigned int _type;
+    unsigned int _level;
+    unsigned int _wrapS;
+    unsigned int _wrapT;
+    unsigned int _wrapR;
 
-      unsigned int _packAlignment;
-      unsigned int _unpackAlignment;
+    unsigned int _packAlignment;
+    unsigned int _unpackAlignment;
   };
   class Texture2D: public Texture
   {
-    public:
-      Texture2D( const TextureConfig& options, unsigned int width, unsigned int height );
-      Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height );
-      Texture2D( const TextureConfig& options, const std::string src );
-      virtual ~Texture2D( void );
-      virtual void resize( int w, int h);
-      virtual void resize( int w, int h, void* data);
-    protected:
-      void configTexture( void* data = nullptr );
-      virtual void load( void );
+  public:
+    Texture2D( const TextureConfig& options, unsigned int width, unsigned int height );
+    Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height );
+    Texture2D( const TextureConfig& options, const std::string src );
+    virtual ~Texture2D( void );
+    virtual void resize( int w, int h);
+    virtual void resize( int w, int h, void* data);
+  protected:
+    void configTexture( void* data = nullptr );
+    virtual void load( void );
 
 #ifdef RETO_USE_FREEIMAGE
-      unsigned char* loadTexture( const char* fileName_,
-        unsigned int& width_,
-        unsigned int& height_ );
+    unsigned char* loadTexture( const char* fileName_,
+      unsigned int& width_,
+      unsigned int& height_ );
 #endif
 
-      std::string _src;
-      unsigned int _width;
-      unsigned int _height;
+    std::string _src;
+    unsigned int _width;
+    unsigned int _height;
   };
   class Texture1D: public Texture
   {
-    public:
-      Texture1D( const TextureConfig& options, void* data, unsigned int width );
-      virtual ~Texture1D( void );
-      //virtual void resize( int w, int h);
-    protected:
-      unsigned int _width;
-      void configTexture( void* data = nullptr );
-      virtual void load( void );
+  public:
+    Texture1D( const TextureConfig& options, void* data, unsigned int width );
+    virtual ~Texture1D( void );
+    //virtual void resize( int w, int h);
+  protected:
+    unsigned int _width;
+    void configTexture( void* data = nullptr );
+    virtual void load( void );
   };
   class Texture2DArray: public Texture
   {
-    public:
-      Texture2DArray( const TextureConfig& options, std::vector< void* > data,
-        unsigned int width, unsigned int height );
-      virtual ~Texture2DArray( void );
-      //virtual void resize( int w, int h);
-    protected:
-      virtual void load( void );
+  public:
+    Texture2DArray( const TextureConfig& options, std::vector< void* > data,
+      unsigned int width, unsigned int height );
+    virtual ~Texture2DArray( void );
+    //virtual void resize( int w, int h);
+  protected:
+    virtual void load( void );
   };
   class Texture3D: public Texture
   {
-    public:
-      Texture3D( const TextureConfig& options, void* data, unsigned int width,
-        unsigned int height, unsigned int depth );
-      virtual ~Texture3D( void );
-      //virtual void resize( int w, int h);
-    protected:
-      virtual void load( void );
+  public:
+    Texture3D( const TextureConfig& options, void* data, unsigned int width,
+      unsigned int height, unsigned int depth );
+    virtual ~Texture3D( void );
+    void update( int w, int h, int d, void* data );
+    //virtual void resize( int w, int h);
+  protected:
+    virtual void load( void );
   };
   class TextureManager
   {
-    public:
-      static TextureManager& getInstance();
-      void add( const std::string& alias, Texture* tex );
-      void remove( const std::string& alias );
-      Texture* get( const std::string& alias );
-      protected:
-      ~TextureManager( );
+  public:
+    static TextureManager& getInstance();
+    void add( const std::string& alias, Texture* tex );
+    void remove( const std::string& alias );
+    Texture* get( const std::string& alias );
     protected:
-      std::unordered_map< std::string, Texture* > _textures;
+    ~TextureManager( );
+  protected:
+    std::unordered_map< std::string, Texture* > _textures;
   };
 };
 #endif /* __RETO__TEXTURE_MANAGER__ */

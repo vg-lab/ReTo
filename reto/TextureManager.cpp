@@ -307,6 +307,11 @@ namespace reto {
     {
       glPixelStorei(GL_UNPACK_ALIGNMENT, _unpackAlignment);
     }
+    update(width, height, depth, data);
+  }
+  void Texture3D::update( int width, int height, int depth, void* data )
+  {
+    this->bind();
     glTexImage3D(
       this->_target,
       this->_level,
@@ -319,13 +324,7 @@ namespace reto {
       this->_type,
       data
     );
-
-    // TODO?
-    //if (options.autoMipMap) {
-    //    glGenerateMipmap( this->_target );
-    //}
-
-    this->unbind( );
+    this->unbind();
   }
   Texture3D::~Texture3D( void )
   {
