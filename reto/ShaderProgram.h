@@ -405,7 +405,7 @@ namespace reto
      */
     RETO_API
     void sendUniform2iv( const std::string& uniformName,
-      const int* data );
+      const unsigned int* data );
     /**
      * Method to send a ivec2
      * @param uniform: Uniform name
@@ -413,7 +413,7 @@ namespace reto
      */
     RETO_API
     void sendUniform2iv( const std::string& uniformName,
-      const std::vector< int > & data );
+      const std::vector< unsigned int > & data );
     /**
      * Method to send a ivec3
      * @param uniform: Uniform name
@@ -421,7 +421,7 @@ namespace reto
      */
     RETO_API
     void sendUniform3iv( const std::string& uniformName,
-      const int* data );
+      const unsigned int* data );
     /**
      * Method to send a ivec3
      * @param uniform: Uniform name
@@ -429,7 +429,7 @@ namespace reto
      */
     RETO_API
     void sendUniform3iv( const std::string& uniformName,
-      const std::vector< int > & data );
+      const std::vector< unsigned int > & data );
     /**
      * Method to send a ivec4
      * @param uniform: Uniform name
@@ -437,7 +437,7 @@ namespace reto
      */
     RETO_API
     void sendUniform4iv( const std::string& uniformName,
-      const int* data );
+      const unsigned int* data );
     /**
      * Method to send a ivec4
      * @param uniform: Uniform name
@@ -445,7 +445,7 @@ namespace reto
      */
     RETO_API
     void sendUniform4iv( const std::string& uniformName,
-      const std::vector< int > & data );
+      const std::vector< unsigned int > & data );
     /**
      * Method to send a mat3
      * @param uniform: Uniform name
