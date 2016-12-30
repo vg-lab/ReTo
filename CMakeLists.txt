@@ -36,12 +36,17 @@ set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" OFF )
 
+option( RETO_WITH_COMPUTE_SHADERS "enabling/disabling compute shaders" ON )
 option( RETO_WITH_GEOMETRY_SHADERS "enabling/disabling geometry shaders" ON )
 option( RETO_WITH_TESSELATION_SHADERS
   "enabling/disabling tesselation shaders" ON )
 option( RETO_WITH_SUBPROGRAMS "enabling/disabling subprograms" ON )
 option( RETO_WITH_OCC_QUERY "enabling/disabling occlusion query" ON )
 option( RETO_WITH_TRANSFORM_FEEDBACK "enabling/disabling transform feedback" ON )
+
+if ( RETO_WITH_COMPUTE_SHADERS )
+  list(APPEND COMMON_FIND_PACKAGE_DEFINES RETO_COMPUTE_SHADERS)
+endif( )
 
 if ( RETO_WITH_GEOMETRY_SHADERS )
   list(APPEND COMMON_FIND_PACKAGE_DEFINES RETO_GEOMETRY_SHADERS)
