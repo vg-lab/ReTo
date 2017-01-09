@@ -28,7 +28,7 @@ function( reto_generate_shaders
     -n ${__RETO_GEN_SHADERS_NAMESPACE__}
     -r ${__RETO_GEN_SHADERS_PATH__}
     -f ${__RETO_GEN_SHADERS_FILE__}
-    DEPENDS ${RETO_GENERATE_SHADERS}
+    DEPENDS ${__SHADERS__}
     OUTPUT ${__RETO_GEN_SHADERS_FILE__}
     MAIN_DEPENDENCY ${__SHADERS__}
   )

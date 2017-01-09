@@ -91,7 +91,7 @@ def read_file( root, file, path, import_file ):
       print( var_name + " repeated ..." )
       return []
     set_vars.add( var_name )
-    list.append( "  const char* " + var_name + " = " )
+    list.append( "  const char* const " + var_name + " = " )
     list.append( '"' + content + '";' )
     list.append( "\n\n" )
   else:
