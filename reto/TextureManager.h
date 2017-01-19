@@ -121,6 +121,7 @@ namespace reto {
   public:
     Texture1D( const TextureConfig& options, void* data, unsigned int width );
     virtual ~Texture1D( void );
+    void update(void* data, unsigned int width);
     //virtual void resize( int w, int h);
   protected:
     unsigned int _width;
