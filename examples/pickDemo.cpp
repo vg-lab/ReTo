@@ -36,7 +36,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
-reto::Camera* camera;
+reto::OrthographicCamera* camera;
 
 // X Y mouse position.
 int previousX;
@@ -75,7 +75,7 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.0f );
 
-  camera = new reto::Camera( );
+  camera = new reto::OrthographicCamera( );
 
   glutMainLoop( );
   destroy( );
@@ -272,9 +272,10 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
+      //camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+      //camera->radius( 1000.0f );
+      //camera->rotation( 0.0f, 0.0f );
+      camera->center( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) );
       std::cout << "Centering." << std::endl;
       glutPostRedisplay( );
       break;
@@ -298,7 +299,6 @@ void keyboardFunc( unsigned char key, int, int )
 
 void mouseFunc( int button, int state, int x, int y )
 {
-  // TODO: ps->click(Point{ mouseX, mouseY });
   /**
    * GLUT
    * button: 0 (left), 1 (central), 2 (right), 3 (wheel up), 4 (wheel down).
@@ -309,20 +309,13 @@ void mouseFunc( int button, int state, int x, int y )
     mouseDown = true;
     if( button == 0 ) rotation = true;
     if( button == 1 ) traslation = true;
-    if( button == 2 ) {
-      printf("Click at %d, %d\n", x, height - y);
-      comprobar = true;
-      pickX = x;
-      pickY = height - y;
-    }
     if ( (button == 3) || (button == 4) )
     {
-      //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
-      float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+      if( button == 3 )
+        camera->zoom( -mouseWheelFactor );
+      else
+        camera->zoom( mouseWheelFactor );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.

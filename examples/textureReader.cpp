@@ -36,7 +36,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
-reto::Camera* camera;
+reto::OrthographicCamera* camera;
 
 // X Y mouse position.
 int previousX;
@@ -75,7 +75,7 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
-  camera = new reto::Camera( );
+  camera = new reto::OrthographicCamera( );
 
   glutMainLoop( );
   destroy( );
@@ -244,9 +244,10 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
+      //camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+      //camera->radius( 1000.0f );
+      //camera->rotation( 0.0f, 0.0f );
+      camera->center( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) );
       std::cout << "Centering." << std::endl;
       glutPostRedisplay( );
       break;
@@ -282,12 +283,11 @@ void mouseFunc( int button, int state, int x, int y )
     if( button == 1 ) traslation = true;
     if ( (button == 3) || (button == 4) )
     {
-      //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
-      float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+      if( button == 3 )
+        camera->zoom( -mouseWheelFactor );
+      else
+        camera->zoom( mouseWheelFactor );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.

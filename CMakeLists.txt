@@ -34,7 +34,7 @@ set( CMAKECOMMONTEMPLATE_DESCRIPTION "ReTo - Render Tools" )
 set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 
-option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" OFF )
+option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" ON )
 
 option( RETO_WITH_COMPUTE_SHADERS "enabling/disabling compute shaders" ON )
 option( RETO_WITH_GEOMETRY_SHADERS "enabling/disabling geometry shaders" ON )

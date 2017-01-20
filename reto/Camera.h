@@ -3,6 +3,7 @@
  *
  * Authors: Juan Jose Garcia
  * Authors: Cristian Rodríguez Bernal
+ * Authors: Juan Guerrero Martín
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -34,21 +35,6 @@
 
 #include <reto/api.h>
 
-#ifdef RETO_USE_ZEROEQ
-#include <zeroeq/zeroeq.h>
-#include <servus/uri.h>
-
-#include <mutex>
-#include <boost/bind.hpp>
-
-#ifdef RETO_USE_LEXIS
-#include <lexis/lexis.h>
-#endif
-
-#include <thread>
-
-#endif
-
 namespace reto
 {
 
@@ -73,45 +59,31 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    Camera( float fov_ = 45.0f, float ratio_ = ((float)16)/9,
+    Camera( float width_ = 1920.0f, float height_ = 1080.0f,
             float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
-            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
-            float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
-
-#ifdef RETO_USE_ZEROEQ
-    /**
-     * Camera constructor
-     * @param session ZeroEq session to synchronize the camera with other
-     * applications
-     * @param fov camera field of view
-     * @param ratio camera ratio
-     * @param nearPlane camera near plane
-     * @param farPlan camera far plane
-     * @param pivot camera rotation pivot
-     * @param radius camera distance from the camera pivot
-     * @param yaw camera rotation of y exe
-     * @param pitch camera rotation of x exe
-     */
-    RETO_API
-    Camera( const std::string& session_, float fov_ = 45.0f,
-            float ratio_ = ((float)16)/9, float nearPlane_ = 0.1f,
-            float farPlane_ = 10000.0f,
-            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
-            float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
-#endif
+            Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+            float yaw_ = 0.0f, float pitch_ = 0.0f );
 
     /**
      * Default destructor
      */
     RETO_API
-    ~Camera( void );
+    virtual ~Camera( void );
+
+    /** BEGIN basic_functions **/
+
+    RETO_API
+    virtual void center( Eigen::Vector3f centeredPosition_ ) = 0;
+
+    RETO_API
+    virtual void zoom( float increment_ ) = 0;
 
     /**
      * Method to translate the camera from the actual position
      * @param increment_ camera translation
      */
     RETO_API
-    void localTranslation( Eigen::Vector3f increment_ );
+    virtual void localTranslation( Eigen::Vector3f increment_ ) = 0;
 
     /**
      * Method to rotate the camera from the actual rotation
@@ -119,21 +91,50 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    void localRotation( const float yaw_, const float pitch_ );
+    virtual void localRotation( float yaw_, float pitch_ );
+
+    /** END basic_functions **/
+
+    /** BEGIN getters & setters **/
 
     /**
-     * Method to if there is a target pivot move the camera to this target pivot
-     *@return boolean that is 1 if the camera is actually moving
+     * Method to get window width size
+     * @return window width size
      */
     RETO_API
-    bool anim( void );
+    int width( void );
 
     /**
-     * Method to get the field of view of the camera
-     * @return float with the field of view of the camera
+     * Method to get window height size
+     * @return window height size
      */
     RETO_API
-    float fov( void );
+    int height( void );
+
+    /**
+     * Method to set window size
+     * @param w: Window width
+     * @param h: Window height
+     */
+    RETO_API
+    virtual void setWindowSize( const int width_, const int height_ );
+
+    /**
+     * Method to set the camera projection ratio
+     * @param ratio camera projection ratio
+     */
+    RETO_API
+    virtual void ratio( float ratio_ );
+
+    /**
+     * Method to get and set the near plane of the camera
+     * @return the reference to a float with the near plane attrib of the camera
+     */
+    RETO_API
+    float& nearPlane( void )
+    {
+      return _nearPlane;
+    }
 
     /**
      * Method to get and set the far plane of the camera
@@ -146,30 +147,11 @@ namespace reto
     }
 
     /**
-     * Method to get the actual pivot pin of the camera
-     * @return Eige::Vector3f with the pivot pin of the camera
+     * Method to get the pointer to the camera position vectorized
+     * @return pointer to float whit the vectorized camera position
      */
     RETO_API
-    Eigen::Vector3f pivot( void );
-
-    /**
-     * Method to get the actual distance between the camera and the pivot pin
-     * aka camera radius
-     * @return float with the distance between the camera and the pivot pin
-     */
-    RETO_API
-    float radius( void );
-
-    /**
-     * Method to get the pointer to projection matrix of the camera vectorized
-     * in columns
-     * @return pointer to float whit the column vectorized projection matrix of
-     * the camera
-     */
-    RETO_API
-    float* projectionMatrix( void );
-
-    float* orthoMatrix( void );
+    float* position( void );
 
     /**
      * Method to get the pointer to view matrix of the camera vectorized
@@ -181,6 +163,15 @@ namespace reto
     float* viewMatrix( void );
 
     /**
+     * Method to get the pointer to projection matrix of the camera vectorized
+     * in columns
+     * @return pointer to float whit the column vectorized projection matrix of
+     * the camera
+     */
+    RETO_API
+    float* projectionMatrix( void );
+
+    /**
      * Method to get the pointer to projectionview matrix of the camera
      * vectorized in columns
      * @return pointer to float whit the column vectorized projectionview
@@ -189,135 +180,39 @@ namespace reto
     RETO_API
     float* viewProjectionMatrix( void );
 
-    /**
-     * Method to get the pointer to the camera position vectorized
-     * @return pointer to float whit the vectorized camera position
-     */
-    RETO_API
-    float* position( void );
+    /** END getters & setters **/
 
-#ifdef RETO_USE_ZEROEQ
-    /**
-     * Method to get the pointer to the camera subscriber used to sinchronize
-     * the camera with other applications
-     * @return pointer to zeroeq::Subscriber
-     */
-    RETO_API
-    zeroeq::Subscriber* subscriber( void );
-#endif
-
-    /**
-     * Method to set the camera projection ratio
-     * @param ratio camera projection ratio
-     */
-    RETO_API
-    void ratio( float ratio_ );
+protected:
 
     RETO_API
-    /**
-     * Method to set the camera pivot pin
-     * @param pivot new camera pivot pin
-     */
-    void pivot( Eigen::Vector3f pivot_ );
-
-    RETO_API
-    /**
-     * Method to set the distance between the camera and the pivot pin
-     * @param radius distance between the camera and the pivot pin
-     */
-    void radius( const float radius_ );
-
-    RETO_API
-    /**
-     * Method to set the rotation of the camera
-     * @param yaw camera rotation of y exe
-     * @param pitch camera rotation of x exe
-     */
-    void rotation( const float yaw_, const float pitch_ );
-
-    RETO_API
-    /**
-     * Method to set the target pivot of the camera
-     * @param targetPivot camera target pivot pin
-     */
-    void targetPivot( Eigen::Vector3f targetPivot_ );
-
-    RETO_API
-    /**
-     * Method to set the target camera distance between the camera and the pivot
-     * pin
-     * @param targetRadius target camera distance between the camera and the
-     * pivot pin
-     */
-    void targetRadius( const float targetRadius_ );
-
-    RETO_API
-    /**
-     * Method to set the target pivot pin a nd the target camera distance
-     * between the camera and this pivot pin
-     * @param targetPivot camera target pivot pin
-     * @param targetRadius target camera distance between the camera and the
-     * pivot pin
-     */
-    void targetPivotRadius( Eigen::Vector3f targetPivot_,
-                            const float targetRadius_ );
-
-    RETO_API
-    /**
-     * Method to set the anim duration of the camera movement from actual pivot
-     * and radius to the target pivot and radius
-     */
-    void animDuration( const float animDuration_ );
-
-    RETO_API
-    /**
-     * Method to set window size
-     * @param w: Window width
-     * @param h: Window height
-     */
-    void setWindowSize( const int width_, const int height_ );
-
-    /**
-     * Method to get window width size
-     * @return window width size
-     */
-    int width( void );
-
-    /**
-     * Method to get window height size
-     * @return window height size
-     */
-    int height( void );
-
-private:
-
-    void _PositionVectorized( const std::vector<float>& positionVec_ );
-
-    void _Rotation( const Eigen::Matrix3f& rotation_ );
-
-    void _ViewMatrixVectorized( const std::vector<float>& viewVec_ );
-
-    void _BuildProjectionMatrix( void );
-
-    void _BuildOrthoProjectionMatrix( void );
-
-    void _BuildViewMatrix( void );
-
-    void _BuildViewProjectionMatrix( void );
-
-#ifdef RETO_USE_ZEROEQ
-    void _OnCameraEvent( lexis::render::ConstLookOutPtr event_ );
-#endif
-
     Eigen::Matrix3f _RotationFromPY( float yaw_, float pitch_ );
 
+    RETO_API
+    virtual void _BuildViewMatrix( void );
 
-    //! Factor to calculate the camera projection matrix based on the camera
-    //! far plane, near plane, field of view and ratio
-    float _f;
+    RETO_API
+    virtual void _BuildProjectionMatrix( void ) = 0;
 
-    //! Camera fild of view
-    float _fov;
+    RETO_API
+    virtual void _BuildViewProjectionMatrix( void ) = 0;
+
+    /** BEGIN auxiliar **/
+
+    virtual void _PositionVectorized( const std::vector<float>& positionVec_ );
+
+    virtual void _ViewMatrixVectorized( const std::vector<float>& viewVec_ );
+
+    virtual void _Rotation( const Eigen::Matrix3f& rotation_ );
+
+    /** END auxiliar **/
+
+    /** BEGIN basic_attributes **/
+
+    //! Window width
+    int _width;
+
+    //! Window height
+    int _height;
 
     //! Camera ratio
     float _ratio;
@@ -328,86 +223,22 @@ private:
     //! Camera far plane
     float _farPlane;
 
-    //! Camera pivot pin
-    Eigen::Vector3f _pivot;
-
-    //! Distance between the camera and the pivot pin
-    float _radius;
+    //! Vectorized camera position
+    std::vector<float> _positionVec;
 
     //! Camera rotation matrix
     Eigen::Matrix3f _rotation;
 
-    //! Vectorized camera position
-    std::vector<float> _positionVec;
+    //! Vectorized camera view matrix
+    std::vector<float> _viewVec;
 
     //! Vectorized camera projection matrix
     std::vector<float> _projVec;
 
-    //! Vectorized camera orthoprojection matrix
-    std::vector<float> _orthoVec;
-
-    //! Vectorized camera view matrix
-    std::vector<float> _viewVec;
-
     //! Vectorized camera viewprojection matrix
     std::vector<float> _viewProjVec;
 
-    //! Camera target pivot pin
-    Eigen::Vector3f _targetPivot;
-
-    //! Target distance between the camera an the pivot pin
-    float _targetRadius;
-
-#ifdef RETO_USE_ZEROEQ
-
-    //! State of the zeq connection: 1 activated, 0 desactivated
-    bool _zeqConnection;
-
-    //! ZeroEQ session to sinchronize the camera with other apps
-    std::string _zeroeqSession;
-
-    //! ZeroEQ publisher
-    zeroeq::Publisher* _publisher;
-
-    //! ZeroEQ subscriber
-    zeroeq::Subscriber* _subscriber;
-
-    //! Mutex to access to the camera position
-    std::mutex _positionMutex;
-
-    //! Mutex to access to the camera rotation matrix
-    std::mutex _rotationMutex;
-
-    //! Mutex to accessto the camera view matrix
-    std::mutex _viewMatrixMutex;
-
-    //! Thread that runs the ZeroEQ subscriber
-    std::thread* _subscriberThread;
-#endif
-
-    //! State of the camera animation
-    bool _isAniming;
-
-    //! Bool to check if the camera animation is in the first step
-    bool _firstStep;
-
-    //! Camera pivot animation speed
-    float _speedPivot;
-
-    //! Camera radius animation speed
-    float _speedRadius;
-
-    //! Camera animation duration in seconds
-    float _animDuration;
-
-    //! Register of the previus time in the animation loop
-    std::chrono::time_point< std::chrono::system_clock > _previusTime;
-
-    //! Window width
-    int _width;
-
-    //! Window height
-    int _height;
+    /** END basic_attributes **/
 
   };
 } //end namespace reto
