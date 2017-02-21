@@ -127,8 +127,9 @@ def parse_cli( ):
   return optionsdict
 
 if __name__ == "__main__":
-  reload(sys)
-  sys.setdefaultencoding('utf8')
+  if sys.version[0] == '2':
+    reload(sys)
+    sys.setdefaultencoding("utf-8")
 
   opts = parse_cli( )
   src = Template( tmpl )
@@ -147,11 +148,11 @@ if __name__ == "__main__":
   code = src.substitute( d )
 
 
-  
+
   if os.path.exists( opts["fileOutput"] ):
     try:
       os.remove( opts["fileOutput"] )
-    except OSError, e:
+    except e:
       print ("Error: %s - %s." % ( e.filename, e.strerror) )
 
   file = io.open(opts["fileOutput"], mode="w",  encoding='utf-8')
