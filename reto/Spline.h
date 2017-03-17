@@ -36,47 +36,58 @@ namespace reto
   class Spline
   {
     public:
+
+      RETO_API
+      Spline( void );
+
       /**
        * Create a new Spline object.
        * @param points Point list who define the spline.
        */
       RETO_API
-      Spline( const std::vector< Eigen::Vector3f >& points );
+      Spline( const std::vector< Eigen::Vector3f >& eyes_,
+              const std::vector< Eigen::Vector3f >& centers_,
+              const std::vector< Eigen::Vector3f >& ups_ );
       /**
        * Evaluate the spline in a specific time.
        * @param dt Time to evaluate. Must be in [0, 1] interval.
        * @return Interpolated position in dt time.
        */
       RETO_API
-      Eigen::Vector3f evaluate( float dt );
+      Eigen::Vector3f evaluatePosition( unsigned int firstId,
+                                        float t );
+
+      RETO_API
+      Eigen::Matrix3f evaluateOrientation( unsigned int firstId,
+                                           float t );
       /**
        * Returns tangent vector in last time evaluate called.
        * @return Intepolated tangent in dt time.
        */
-      RETO_API
-      Eigen::Vector3f getTangent( void );
+      //RETO_API
+      //Eigen::Vector3f getTangent( void );
       /**
        * Returns tangent vector between between two times given.
        * @param dt0 Last time
        * @param dt1 Current time
        * @return Interpolated tangent in position.
        */
-      RETO_API
-      Eigen::Vector3f getTangent( float dt0, float dt1 );
+      //RETO_API
+      //Eigen::Vector3f getTangent( float dt0, float dt1 );
       /**
        * Returns interpolated angle between last and current time.
        * @return angle (in radians).
        */
-      RETO_API
-      float angleBetweenPoints( void );
+      //RETO_API
+      //float angleBetweenPoints( void );
       /**
        * Returns interpolated angle between last and current time.
        * @param dt0 Last time
        * @param dt1 Current time
        * @return angle (in radians).
        */
-      RETO_API
-      float angleBetweenPoints( float dt0, float dt1 );
+      //RETO_API
+      //float angleBetweenPoints( float dt0, float dt1 );
     protected:
       /**
        * Evalate catmull rom spline with 4 given values and time
@@ -90,11 +101,14 @@ namespace reto
       float _catmullRom( float p0, float p1, float p2, float p3, float t );
 
       //! List of points who defineds the spline
-      std::vector< Eigen::Vector3f > _points;
+      std::vector< Eigen::Vector3f > _eyes;
+      std::vector< Eigen::Vector3f > _centers;
+      std::vector< Eigen::Vector3f > _ups;
+
       //!Current time used (default = 0)
-      float _currentdt;
+      //float _currentdt;
       //! Last time used (default = 0)
-      float _olddt;
+      //float _olddt;
   }; // class Spline
 }; // namespace reto
 

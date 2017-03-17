@@ -34,6 +34,10 @@
 
 #include <reto/api.h>
 
+// For the spline.
+#include <stdlib.h>
+#include "Spline.h"
+
 #ifdef RETO_USE_ZEROEQ
 #include <zeroeq/zeroeq.h>
 #include <servus/uri.h>
@@ -127,6 +131,15 @@ namespace reto
      */
     RETO_API
     bool anim( void );
+
+    // For the spline.
+    RETO_API
+    bool animUsingSpline( void );
+
+    RETO_API
+    void moveUsingSpline( const std::vector< Eigen::Vector3f >& eyes,
+                          const std::vector< Eigen::Vector3f >& centers,
+                          const std::vector< Eigen::Vector3f >& ups );
 
     /**
      * Method to get the field of view of the camera
@@ -303,6 +316,10 @@ private:
 
     void _BuildViewMatrix( void );
 
+    // For the spline.
+    void _BuildViewMatrixUsingPositionAndOrientation( /*Eigen::Vector3f position_,*/
+                                                      Eigen::Matrix3f orientation_ );
+
     void _BuildViewProjectionMatrix( void );
 
 #ifdef RETO_USE_ZEROEQ
@@ -408,6 +425,21 @@ private:
 
     //! Window height
     int _height;
+
+    // For the spline.
+    //std::vector< Eigen::Vector3f > _splineTargetPositions;
+    Spline _spline;
+    float _paramTStep;
+    unsigned int _nodesSize;
+    unsigned int _currentNodeId;
+    float _currentT;
+    //unsigned int _currentTargetPositionId;
+    bool _isSplineAniming;
+    bool _splineFirstStep;
+    float _splineSpeed;
+    float _splineAnimDuration;
+    std::chrono::time_point< std::chrono::system_clock > _splinePreviousTime;
+
 
   };
 } //end namespace reto

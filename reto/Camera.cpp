@@ -42,11 +42,20 @@ namespace reto
     , _speedPivot( 1.0f / 60.0f )
     , _speedRadius( 1.0f / 60.0f )
     , _animDuration( 2.0f )
+    , _spline( )
   {
     _fov = fov_ * ( M_PI / 360.0f );
     _f = 1.0f / tan( _fov );
 
     _previusTime = std::chrono::system_clock::now( );
+
+    // For the spline
+    _isSplineAniming = false;
+    _splineFirstStep = false;
+    _splineSpeed = 1.0f / 60.0f;
+    _splineAnimDuration = 20.0f;
+    _splinePreviousTime = std::chrono::system_clock::now( );
+    _paramTStep = 0.005f;
 
     _Rotation( _RotationFromPY( pitch_, yaw_ ));
     _BuildProjectionMatrix( );
@@ -171,6 +180,129 @@ namespace reto
     }
     _previusTime = actualTime;
     return false;
+  }
+
+  bool Camera::animUsingSpline( void )
+  {
+
+    std::chrono::time_point< std::chrono::system_clock > currentTime =
+      std::chrono::system_clock::now( );
+
+    if ( _isSplineAniming )
+    {
+      auto duration = std::chrono::duration_cast< std::chrono::milliseconds >
+        ( currentTime - _splinePreviousTime );
+      float dt = ( ( float ) duration.count( ) ) * 0.001f;
+
+      Eigen::Vector3f currentPosition = Eigen::Vector3f( _positionVec[0],
+                                                         _positionVec[1],
+                                                         _positionVec[2] );
+
+      //Eigen::Vector3f targetPosition = _splineTargetPositions.at( _currentTargetPositionId );
+      Eigen::Vector3f targetPosition = _spline.evaluatePosition( _currentNodeId,
+                                                                 _currentT );
+
+      std::cout << "targetPosition: (" << targetPosition.x() << ", "
+                                       << targetPosition.y() << ", "
+                                       << targetPosition.z() << ")" << std::endl;
+
+      Eigen::Vector3f diffPosition = targetPosition - currentPosition;
+
+      if ( _splineFirstStep )
+      {
+        _splineSpeed = diffPosition.norm( ) / _splineAnimDuration;
+        _splineFirstStep = false;
+      }
+
+      float distance = dt * _splineSpeed;
+
+      bool positionInPlace = false;
+
+      Eigen::Vector3f nextPosition = currentPosition;
+      if (( positionInPlace = ( diffPosition.norm() <= distance )))
+        nextPosition = targetPosition;
+      else
+        nextPosition = currentPosition + diffPosition.normalized() * distance;
+
+      Eigen::Vector3f increment = nextPosition - currentPosition;
+      //localTranslation( increment );
+
+      Eigen::Matrix3f targetOrientation =
+        _spline.evaluateOrientation( _currentNodeId,
+                                     _currentT );
+
+      std::cout << "targetOrientation: " << std::endl;
+      std::cout << "("  << targetOrientation(0,0) << ", " << targetOrientation(1,0) << ", "  << targetOrientation(2,0) << ")" << std::endl;
+      std::cout << "("  << targetOrientation(0,1) << ", " << targetOrientation(1,1) << ", "  << targetOrientation(2,1) << ")" << std::endl;
+      std::cout << "("  << targetOrientation(0,2) << ", " << targetOrientation(1,2) << ", "  << targetOrientation(2,2) << ")" << std::endl;
+      std::cout << std::endl;
+
+      // Applying rotation and translation.
+      _Rotation( targetOrientation );
+      _pivot += _rotation.transpose( ) * increment;
+
+      // Building view matrix.
+      //_BuildViewMatrixUsingPositionAndOrientation( /*increment,*/ targetOrientation );
+      _BuildViewMatrix( );
+      _BuildViewProjectionMatrix( );
+
+      // For a strange reason ( x == 1.0f ) does not work.
+      bool finishedT = ( _currentT >= 1.0f );
+      bool finishedNodes = ( _currentNodeId >=  _nodesSize - 1 );
+      //bool finishCondition = ( _currentTargetPositionId == _splineTargetPositions.size()-1 );
+
+      // Spline state.
+      /**
+      std::cout << "currentT: " << _currentT << std::endl;
+      std::cout << "T: " << finishedT << std::endl;
+      std::cout << "currentNode: " << _currentNodeId << std::endl;
+      std::cout << "NODE: " << finishedNodes << std::endl;
+      std::cout << "INPLACE: " << positionInPlace << std::endl;
+      std::cout << std::endl;
+      **/
+
+      _isSplineAniming = !( /*positionInPlace &&*/ finishedT && finishedNodes );
+
+      // Spline state.
+      /**/
+      std::cout << "ANIM: " << _isSplineAniming << std::endl;
+      std::cout << std::endl;
+      /**/
+
+      if( finishedT )
+      {
+        _currentT = 0.0f;
+        _currentNodeId += 1;
+      }
+      else
+      {
+        /**if( positionInPlace )**/ _currentT += _paramTStep;
+      }
+      _splinePreviousTime = currentTime;
+      return true;
+    }
+    _splinePreviousTime = currentTime;
+    return false;
+  }
+
+  void Camera::moveUsingSpline( const std::vector< Eigen::Vector3f >& eyes,
+                                const std::vector< Eigen::Vector3f >& centers,
+                                const std::vector< Eigen::Vector3f >& ups )
+  {
+    _isSplineAniming = true;
+    _splineFirstStep = true;
+    _spline = Spline( eyes, centers, ups );
+    _nodesSize = eyes.size();
+    _currentT = _paramTStep;
+    _currentNodeId = 0;
+    /*
+    _currentTargetPositionId = 1;
+    for( auto point : points )
+    {
+      Eigen::Vector3f currentPoint( point[0], point[1], point[2]  );
+      _splineTargetPositions.push_back( currentPoint );
+    }
+    */
   }
 
   // GETTERS
@@ -391,6 +523,78 @@ namespace reto
     viewVec[13] = - pv.y( );
     viewVec[14] = - pv.z( ) - _radius;
     viewVec[15] = 1.0f;
+
+    _ViewMatrixVectorized( viewVec );
+
+#ifdef RETO_USE_ZEROEQ
+    if ( _zeqConnection )
+    {
+      std::vector< double > viewm ( viewVec.begin( ), viewVec.end( ));
+
+      lexis::render::LookOut lookout;
+      lookout.setMatrix( viewm );
+      _publisher->publish( lookout );
+    }
+#endif
+
+  }
+
+  void Camera::_BuildViewMatrixUsingPositionAndOrientation( /*Eigen::Vector3f position_,*/
+                                                            Eigen::Matrix3f orientation_ )
+  {
+
+    // Applying translation.
+    //_pivot += orientation_.transpose( ) * position_;
+
+    Eigen::Vector3f pos = orientation_.transpose( ) *
+    Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) * _radius + _pivot;
+
+    Eigen::Vector3f pv = orientation_ * _pivot;
+
+    /*
+    std::vector<float> positionVec;
+    positionVec.resize( 3 );
+    positionVec[ 0 ] =  position_.x( );
+    positionVec[ 1 ] =  position_.y( );
+    positionVec[ 2 ] =  position_.z( );
+    */
+
+    std::vector<float> positionVec;
+    positionVec.resize( 3 );
+    positionVec[ 0 ] =  pos.x( );
+    positionVec[ 1 ] =  pos.y( );
+    positionVec[ 2 ] =  pos.z( );
+
+    _PositionVectorized( positionVec );
+
+    std::vector<float> viewVec(16);
+
+    // row 1
+    viewVec[0] = orientation_( 0, 0 );
+    viewVec[1] = orientation_( 1, 0 );
+    viewVec[2] = orientation_( 2, 0 );
+    viewVec[3] = .0f;
+    // row 2
+    viewVec[4] = orientation_( 0, 1 );
+    viewVec[5] = orientation_( 1, 1 );
+    viewVec[6] = orientation_( 2, 1 );
+    viewVec[7] = .0f;
+    // row 3
+    viewVec[8] = orientation_( 0, 2 );
+    viewVec[9] = orientation_( 1, 2 );
+    viewVec[10] = orientation_( 2, 2 );
+    viewVec[11] = .0f;
+    // row 4
+    viewVec[12] = - pv.x( );
+    viewVec[13] = - pv.y( );
+    viewVec[14] = - pv.z( ) - _radius;
+    viewVec[15] = 1.0f;
+    /*
+    viewVec[12] = positionVec[0];
+    viewVec[13] = positionVec[1];
+    viewVec[14] = positionVec[2];
+    viewVec[15] = 1.0f;
+    */
 
     _ViewMatrixVectorized( viewVec );
 
