@@ -1,5 +1,5 @@
 /**
- * @file    spinesStats.cpp
+ * @file    demoCubes.cpp
  * @brief
  * @author  Juan Guerrero Martín <juan.guerrero@urjc.es>
  * @date    2016
@@ -36,7 +36,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
-reto::Camera* camera;
+reto::CameraController* cameraController;
 
 // X Y mouse position.
 int previousX;
@@ -54,6 +54,8 @@ bool traslation = false;
 const float mouseWheelFactor = 1.2f;
 const float rotationScale = 0.01f;
 const float traslationScale = 0.2f;
+
+std::vector< float > matrix4fToVector16f( Eigen::Matrix4f inputMatrix );
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -75,7 +77,8 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
-  camera = new reto::Camera( );
+  cameraController = new reto::CameraController( reto::CameraController::TProjection::ORTHOGRAPHIC,
+                                                 reto::CameraController::TCamera::STANDARD );
 
   glutMainLoop( );
   destroy( );
@@ -119,7 +122,7 @@ void initOGL( void )
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
   prog.load( RETO_EXAMPLE_SHADER_COLOR_VERT,
-              RETO_EXAMPLE_SHADER_COLOR_FRAG );
+             RETO_EXAMPLE_SHADER_COLOR_FRAG );
   prog.compileAndLink( );
   prog.autocatching( );
 
@@ -130,6 +133,35 @@ void initOGL( void )
 void destroy( void )
 {
 }
+
+std::vector< float > matrix4fToVector16f( Eigen::Matrix4f inputMatrix )
+{
+  std::vector< float > toReturn;
+
+  toReturn.push_back( inputMatrix( 0, 0 ) );
+  toReturn.push_back( inputMatrix( 1, 0 ) );
+  toReturn.push_back( inputMatrix( 2, 0 ) );
+  toReturn.push_back( inputMatrix( 3, 0 ) );
+
+  toReturn.push_back( inputMatrix( 0, 1 ) );
+  toReturn.push_back( inputMatrix( 1, 1 ) );
+  toReturn.push_back( inputMatrix( 2, 1 ) );
+  toReturn.push_back( inputMatrix( 3, 1 ) );
+
+  toReturn.push_back( inputMatrix( 0, 2 ) );
+  toReturn.push_back( inputMatrix( 1, 2 ) );
+  toReturn.push_back( inputMatrix( 2, 2 ) );
+  toReturn.push_back( inputMatrix( 3, 2 ) );
+
+  toReturn.push_back( inputMatrix( 0, 3 ) );
+  toReturn.push_back( inputMatrix( 1, 3 ) );
+  toReturn.push_back( inputMatrix( 2, 3 ) );
+  toReturn.push_back( inputMatrix( 3, 3 ) );
+
+  return toReturn;
+}
+
+
 #define MAX 25
 void renderFunc( void )
 {
@@ -137,8 +169,8 @@ void renderFunc( void )
 
   // std::cout << "DRAW" << std::endl;
   prog.use( );
-  prog.sendUniform4m("proj", camera->projectionMatrix( ));
-  prog.sendUniform4m("view", camera->viewMatrix( ));
+  prog.sendUniform4m("proj", matrix4fToVector16f( cameraController->_camera->getProjMatrix( ) ));
+  prog.sendUniform4m("view", matrix4fToVector16f( cameraController->_camera->getViewMatrix( ) ));
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
     for (auto j = -MAX; j <= MAX; j+= 5)
@@ -181,7 +213,7 @@ void renderFunc( void )
 
 void resizeFunc( int width, int height )
 {
-  camera->ratio((( double ) width ) / height );
+  cameraController->resize( width, height );
   glViewport( 0, 0, width, height );
 }
 
@@ -197,12 +229,34 @@ void keyboardFunc( unsigned char key, int, int )
   switch( key )
   {
     // Camera control.
+    case 'w':
+    case 'W':
+      cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, 10.0f ) );
+      glutPostRedisplay( );
+      break;
+
+    case 's':
+    case 'S':
+      cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) );
+      glutPostRedisplay( );
+      break;
+
+    case 'a':
+    case 'A':
+      cameraController->localTranslation( Eigen::Vector3f( 10.0f, 0.0f, 0.0f ) );
+      glutPostRedisplay( );
+      break;
+
+    case 'd':
+    case 'D':
+      cameraController->localTranslation( Eigen::Vector3f( -10.0f, 0.0f, 0.0f ) );
+      glutPostRedisplay( );
+      break;
+
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
-      std::cout << "Centering." << std::endl;
+      cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ) );
+      std::cout << "Camera centered." << std::endl;
       glutPostRedisplay( );
       break;
     case 'm':
@@ -239,10 +293,10 @@ void mouseFunc( int button, int state, int x, int y )
     {
       //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
-      float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+      if( button == 3 )
+        cameraController->zoom( -0.1f );
+      else
+        cameraController->zoom( 0.1f );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.
@@ -269,14 +323,15 @@ void mouseMotionFunc( int x, int y )
     float deltaY = y - previousY;
     if( rotation )
     {
-      camera->localRotation( deltaX * rotationScale,
-                             deltaY * rotationScale );
+      cameraController->localRotation( deltaX * rotationScale,
+                                       deltaY * rotationScale );
     }
     if( traslation )
     {
-      camera->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-                                                  deltaY * traslationScale,
-                                                  0.0f ) );
+      std::cout << "Not implemented." << std::endl;
+      //cameraController->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
+      //                                                      0.0f,
+      //                                                      deltaY * traslationScale ) );
     }
     previousX = x;
     previousY = y;

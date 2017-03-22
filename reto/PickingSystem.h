@@ -34,6 +34,8 @@
 #include <tuple>
 #include <reto/api.h>
 
+#include <iostream>
+
 namespace reto
 {
   typedef std::pair<unsigned int, unsigned int> Point;
