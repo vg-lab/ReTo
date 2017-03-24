@@ -30,14 +30,16 @@ namespace reto
   Camera::Camera( unsigned int width_, unsigned int height_,
                   float nearPlane_, float farPlane_,
                   Eigen::Vector3f position_,
-                  Eigen::Matrix3f orientation_,
+                  Eigen::Vector3f up_,
+                  Eigen::Vector3f lookAt_,
                   float fov_ )
   : _width( width_ )
   , _height( height_ )
   , _nearPlane( nearPlane_ )
   , _farPlane( farPlane_ )
   , _position( position_ )
-  , _orientation( orientation_ )
+  , _up( up_ )
+  , _lookAt( lookAt_ )
   , _fov( fov_ )
   {
     _viewMatrix = Eigen::Matrix4f::Identity( );
@@ -49,67 +51,77 @@ namespace reto
   {
   }
 
-  unsigned int Camera::getWidth( void )
+  unsigned int Camera::width( void ) const
   {
     return _width;
   }
 
-  void Camera::setWidth( unsigned int width_ )
+  void Camera::width( unsigned int width_ )
   {
     _width = width_;
   }
 
-  unsigned int Camera::getHeight( void )
+  unsigned int Camera::height( void ) const
   {
     return _height;
   }
 
-  void Camera::setHeight( unsigned int height_ )
+  void Camera::height( unsigned int height_ )
   {
     _height = height_;
   }
 
-  float Camera::getNearPlane( void )
+  float Camera::nearPlane( void ) const
   {
     return _nearPlane;
   }
 
-  void Camera::setNearPlane( float nearPlane_ )
+  void Camera::nearPlane( float nearPlane_ )
   {
     _nearPlane = nearPlane_;
   }
 
-  float Camera::getFarPlane( void )
+  float Camera::farPlane( void ) const
   {
     return _farPlane;
   }
 
-  void Camera::setFarPlane( float farPlane_ )
+  void Camera::farPlane( float farPlane_ )
   {
     _farPlane = farPlane_;
   }
 
-  Eigen::Vector3f Camera::getPosition( void )
+  Eigen::Vector3f Camera::position( void ) const
   {
     return _position;
   }
 
-  void Camera::setPosition( Eigen::Vector3f position_ )
+  void Camera::position( Eigen::Vector3f position_ )
   {
     _position = position_;
   }
 
-  Eigen::Matrix3f Camera::getOrientation( void )
+  Eigen::Vector3f Camera::up( void ) const
   {
-    return _orientation;
+    return _up;
   }
 
-  void Camera::setOrientation( Eigen::Matrix3f orientation_ )
+  void Camera::up( Eigen::Vector3f up_ )
   {
-    _orientation = orientation_;
+    _up = up_;
   }
 
-  Eigen::Matrix4f Camera::getViewMatrix( void )
+  Eigen::Vector3f Camera::lookAt( void ) const
+  {
+    return _lookAt;
+  }
+
+  void Camera::lookAt( Eigen::Vector3f lookAt_ )
+  {
+    _lookAt = lookAt_;
+  }
+
+  Eigen::Matrix4f Camera::viewMatrix( void ) const
   {
     Eigen::Matrix4f viewMatrix_ = Eigen::Matrix4f::Identity( );
     viewMatrix_( 0, 0 ) = _viewMatrix( 0, 0 ); viewMatrix_( 1, 0 ) = _viewMatrix( 1, 0 );
@@ -123,7 +135,7 @@ namespace reto
     return viewMatrix_;
   }
 
-  void Camera::setViewMatrix( Eigen::Matrix4f viewMatrix_ )
+  void Camera::viewMatrix( Eigen::Matrix4f viewMatrix_ )
   {
     _viewMatrix( 0, 0 ) = viewMatrix_( 0, 0 ); _viewMatrix( 1, 0 ) = viewMatrix_( 1, 0 );
     _viewMatrix( 2, 0 ) = viewMatrix_( 2, 0 ); _viewMatrix( 3, 0 ) = viewMatrix_( 3, 0 );
@@ -135,7 +147,7 @@ namespace reto
     _viewMatrix( 2, 3 ) = viewMatrix_( 2, 3 ); _viewMatrix( 3, 3 ) = viewMatrix_( 3, 3 );
   }
 
-  Eigen::Matrix4f Camera::getProjMatrix( void )
+  Eigen::Matrix4f Camera::projMatrix( void ) const
   {
     Eigen::Matrix4f projMatrix_ = Eigen::Matrix4f::Identity( );
     projMatrix_( 0, 0 ) = _projMatrix( 0, 0 ); projMatrix_( 1, 0 ) = _projMatrix( 1, 0 );
@@ -149,7 +161,7 @@ namespace reto
     return projMatrix_;
   }
 
-  void Camera::setProjMatrix( Eigen::Matrix4f projMatrix_ )
+  void Camera::projMatrix( Eigen::Matrix4f projMatrix_ )
   {
     _projMatrix( 0, 0 ) = projMatrix_( 0, 0 ); _projMatrix( 1, 0 ) = projMatrix_( 1, 0 );
     _projMatrix( 2, 0 ) = projMatrix_( 2, 0 ); _projMatrix( 3, 0 ) = projMatrix_( 3, 0 );
@@ -161,7 +173,7 @@ namespace reto
     _projMatrix( 2, 3 ) = projMatrix_( 2, 3 ); _projMatrix( 3, 3 ) = projMatrix_( 3, 3 );
   }
 
-  Eigen::Matrix4f Camera::getViewProjMatrix( void )
+  Eigen::Matrix4f Camera::viewProjMatrix( void ) const
   {
     Eigen::Matrix4f viewProjMatrix_ = Eigen::Matrix4f::Identity( );
     viewProjMatrix_( 0, 0 ) = _viewProjMatrix( 0, 0 ); viewProjMatrix_( 1, 0 ) = _viewProjMatrix( 1, 0 );
@@ -175,7 +187,7 @@ namespace reto
     return viewProjMatrix_;
   }
 
-  void Camera::setViewProjMatrix( Eigen::Matrix4f viewProjMatrix_ )
+  void Camera::viewProjMatrix( Eigen::Matrix4f viewProjMatrix_ )
   {
     _viewProjMatrix( 0, 0 ) = viewProjMatrix_( 0, 0 ); _viewProjMatrix( 1, 0 ) = viewProjMatrix_( 1, 0 );
     _viewProjMatrix( 2, 0 ) = viewProjMatrix_( 2, 0 ); _viewProjMatrix( 3, 0 ) = viewProjMatrix_( 3, 0 );
@@ -187,12 +199,12 @@ namespace reto
     _viewProjMatrix( 2, 3 ) = viewProjMatrix_( 2, 3 ); _viewProjMatrix( 3, 3 ) = viewProjMatrix_( 3, 3 );
   }
 
-  float Camera::getFOV( void )
+  float Camera::fov( void ) const
   {
     return _fov;
   }
 
-  void Camera::setFOV( float fov_ )
+  void Camera::fov( float fov_ )
   {
     _fov = fov_;
   }

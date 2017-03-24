@@ -40,8 +40,9 @@ namespace reto
     RETO_API
     Camera( unsigned int width_ = 1920, unsigned int height_ = 1080,
             float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
-            Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f ),
-            Eigen::Matrix3f orientation_ = Eigen::Matrix3f::Identity( ),
+            Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+            Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+            Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
             float fov_ = 45.0f );
 
     RETO_API
@@ -50,64 +51,70 @@ namespace reto
     /** BEGIN getters & setters **/
 
     RETO_API
-    unsigned int getWidth( void );
+    unsigned int width( void ) const;
 
     RETO_API
-    void setWidth( unsigned int width_ );
+    void width( unsigned int width_ );
 
     RETO_API
-    unsigned int getHeight( void );
+    unsigned int height( void ) const;
 
     RETO_API
-    void setHeight( unsigned int height_ );
+    void height( unsigned int height_ );
 
     RETO_API
-    float getNearPlane( void );
+    float nearPlane( void ) const;
 
     RETO_API
-    void setNearPlane( float nearPlane_ );
+    void nearPlane( float nearPlane_ );
 
     RETO_API
-    float getFarPlane( void );
+    float farPlane( void ) const;
 
     RETO_API
-    void setFarPlane( float farPlane_ );
+    void farPlane( float farPlane_ );
 
     RETO_API
-    Eigen::Vector3f getPosition( void );
+    Eigen::Vector3f position( void ) const;
 
     RETO_API
-    void setPosition( Eigen::Vector3f position_ );
+    void position( Eigen::Vector3f position_ );
 
     RETO_API
-    Eigen::Matrix3f getOrientation( void );
+    Eigen::Vector3f up( void ) const;
 
     RETO_API
-    void setOrientation( Eigen::Matrix3f orientation_ );
+    void up( Eigen::Vector3f up_ );
 
     RETO_API
-    Eigen::Matrix4f getViewMatrix( void );
+    Eigen::Vector3f lookAt( void ) const;
 
     RETO_API
-    void setViewMatrix( Eigen::Matrix4f viewMatrix_ );
+    void lookAt( Eigen::Vector3f lookAt );
 
     RETO_API
-    Eigen::Matrix4f getProjMatrix( void );
+    Eigen::Matrix4f viewMatrix( void ) const;
 
     RETO_API
-    void setProjMatrix( Eigen::Matrix4f projMatrix_ );
+    void viewMatrix( Eigen::Matrix4f viewMatrix_ );
 
     RETO_API
-    Eigen::Matrix4f getViewProjMatrix( void );
+    Eigen::Matrix4f projMatrix( void ) const;
 
     RETO_API
-    void setViewProjMatrix( Eigen::Matrix4f viewProjMatrix_ );
+    void projMatrix( Eigen::Matrix4f projMatrix_ );
 
     RETO_API
-    float getFOV( void );
+    Eigen::Matrix4f viewProjMatrix( void ) const;
 
     RETO_API
-    void setFOV( float fov_ );
+    void viewProjMatrix( Eigen::Matrix4f viewProjMatrix_ );
+
+    RETO_API
+    float fov( void ) const;
+
+    RETO_API
+    void fov( float fov_ );
 
     /** END getters & setters **/
 
@@ -120,7 +127,8 @@ protected:
     float _nearPlane;
     float _farPlane;
     Eigen::Vector3f _position;
-    Eigen::Matrix3f _orientation;
+    Eigen::Vector3f _up;
+    Eigen::Vector3f _lookAt;
     Eigen::Matrix4f _viewMatrix;
     Eigen::Matrix4f _projMatrix;
     Eigen::Matrix4f _viewProjMatrix;

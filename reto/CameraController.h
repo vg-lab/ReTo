@@ -75,6 +75,12 @@ namespace reto
     void localTranslation( Eigen::Vector3f increment_ );
 
     RETO_API
+    void moveUsingLookAtVector( float increment_ );
+
+    RETO_API
+    void moveUsingTangentVector( float increment_ );
+
+    RETO_API
     void localRotation( float yaw_, float pitch_ );
 
     /** END basic functions **/
@@ -88,6 +94,11 @@ namespace reto
 
     RETO_API
     Eigen::Matrix3f generateRotationMatrix( float yaw_, float pitch_ );
+
+    RETO_API
+    Eigen::Matrix4f lookAt( Eigen::Vector3f position_,
+                            Eigen::Vector3f lookAt_,
+                            Eigen::Vector3f up_ );
 
     /** END auxiliar functions **/
 

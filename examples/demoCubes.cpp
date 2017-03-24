@@ -10,6 +10,7 @@
 // std.
 #include <string>
 #include <glutExampleShaders.h>
+#include <math.h>
 
 // OpenGL, GLEW, GLUT.
 #include <GL/glew.h>
@@ -50,10 +51,18 @@ bool rotation = false;
 bool traslation = false;
 
 // Constants.
-
 const float mouseWheelFactor = 1.2f;
+// lookAt.
+// const float rotationScale = 0.1f;
+// orientation.
 const float rotationScale = 0.01f;
 const float traslationScale = 0.2f;
+
+// Euler angles.
+/**
+float currentYaw = -90.0f;
+float currentPitch = 0.0f;
+**/
 
 std::vector< float > matrix4fToVector16f( Eigen::Matrix4f inputMatrix );
 
@@ -66,7 +75,7 @@ void mouseMotionFunc( int x, int y );
 
 void initContext( int argc, char** argv );
 void initOGL( void );
-void destroy( void);
+void destroy( void );
 
 MyCube* mycube;
 
@@ -77,7 +86,7 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
-  cameraController = new reto::CameraController( reto::CameraController::TProjection::ORTHOGRAPHIC,
+  cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
                                                  reto::CameraController::TCamera::STANDARD );
 
   glutMainLoop( );
@@ -169,8 +178,8 @@ void renderFunc( void )
 
   // std::cout << "DRAW" << std::endl;
   prog.use( );
-  prog.sendUniform4m("proj", matrix4fToVector16f( cameraController->_camera->getProjMatrix( ) ));
-  prog.sendUniform4m("view", matrix4fToVector16f( cameraController->_camera->getViewMatrix( ) ));
+  prog.sendUniform4m("proj", matrix4fToVector16f( cameraController->_camera->projMatrix( ) ));
+  prog.sendUniform4m("view", matrix4fToVector16f( cameraController->_camera->viewMatrix( ) ));
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
     for (auto j = -MAX; j <= MAX; j+= 5)
@@ -228,31 +237,38 @@ void keyboardFunc( unsigned char key, int, int )
 {
   switch( key )
   {
+
     // Camera control.
     case 'w':
     case 'W':
-      cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, 10.0f ) );
+      cameraController->moveUsingLookAtVector( 10.0f );
+      //cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, 10.0f ) );
       glutPostRedisplay( );
       break;
-
     case 's':
     case 'S':
-      cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) );
+    {
+      cameraController->moveUsingLookAtVector( -10.0f );
+      //cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) );
       glutPostRedisplay( );
       break;
-
+    }
     case 'a':
     case 'A':
-      cameraController->localTranslation( Eigen::Vector3f( 10.0f, 0.0f, 0.0f ) );
+    {
+      cameraController->moveUsingTangentVector( -10.0f );
+      //cameraController->localTranslation( Eigen::Vector3f( 10.0f, 0.0f, 0.0f ) );
       glutPostRedisplay( );
       break;
-
+    }
     case 'd':
     case 'D':
-      cameraController->localTranslation( Eigen::Vector3f( -10.0f, 0.0f, 0.0f ) );
+    {
+      cameraController->moveUsingTangentVector( 10.0f );
+      //cameraController->localTranslation( Eigen::Vector3f( -10.0f, 0.0f, 0.0f ) );
       glutPostRedisplay( );
       break;
-
+    }
     case 'c':
     case 'C':
       cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ) );
@@ -323,12 +339,30 @@ void mouseMotionFunc( int x, int y )
     float deltaY = y - previousY;
     if( rotation )
     {
-      cameraController->localRotation( deltaX * rotationScale,
-                                       deltaY * rotationScale );
+      deltaX *= rotationScale;
+      deltaY *= rotationScale;
+
+      /**/
+      cameraController->localRotation( deltaX, deltaY );
+      /**/
+
+      /**
+      currentYaw -= deltaX;
+      currentPitch += deltaY;
+
+      if( currentPitch > 89.0f ) currentPitch = 89.0f;
+      if( currentPitch < -89.0f ) currentPitch = -89.0f;
+
+      // To radians.
+      currentYaw *= (M_PI/180.0f);
+      currentPitch *= (M_PI/180.0f);
+
+      cameraController->localRotation( currentYaw, currentPitch );
+      **/
     }
     if( traslation )
     {
-      std::cout << "Not implemented." << std::endl;
+      std::cout << "Please use WASD instead." << std::endl;
       //cameraController->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
       //                                                      0.0f,
       //                                                      deltaY * traslationScale ) );
