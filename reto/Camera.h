@@ -40,7 +40,7 @@ namespace reto
     RETO_API
     Camera( unsigned int width_ = 1920, unsigned int height_ = 1080,
             float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
-            Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+            Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
             Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
             Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
             float fov_ = 45.0f );

@@ -26,7 +26,8 @@ namespace reto
 {
 
   CameraController::CameraController( TProjection projection_,
-                                      TCamera cameraType_ )
+                                      TCamera cameraType_,
+                                      Path* path_ )
   {
 
     // Creating camera with default values.
@@ -104,11 +105,28 @@ namespace reto
     viewProjMatrix = projMatrix * viewMatrix;
 
     _camera->viewProjMatrix( viewProjMatrix );
+
+    // Assigning path.
+    _path = path_;
+
+    // Animation attributes.
+    _isAniming = false;
+    _animationFirstStep = false;
+    _animationSpeed = 0.1f;
+    _animationDuration = 10.0f;
+    _animationPreviousTime = std::chrono::system_clock::now( );
+    _tStep = 0.05f;
   }
 
   CameraController::~CameraController( void )
   {
     delete _camera;
+    delete _path;
+  }
+
+  void CameraController::path( Path* path_ )
+  {
+    _path = path_;
   }
 
   void CameraController::center( Eigen::Vector3f centeredPosition_ )
@@ -410,6 +428,127 @@ namespace reto
     Eigen::Matrix4f newViewProjMatrix = _camera->projMatrix( ) * newViewMatrix;
 
     _camera->viewProjMatrix( newViewProjMatrix );
+  }
+
+  void CameraController::triggerAnimation( void )
+  {
+    _isAniming = true;
+    _animationFirstStep = true;
+    _currentT = _tStep;
+    _currentNodeId = 0;
+  }
+
+  bool CameraController::animate( void )
+  {
+    if( _path->empty( ) )
+    {
+      std::cerr << "A path has not been built." << std::endl;
+      return false;
+    }
+
+    std::chrono::time_point< std::chrono::system_clock > currentTime =
+      std::chrono::system_clock::now( );
+
+    if ( _isAniming )
+    {
+      auto duration = std::chrono::duration_cast< std::chrono::milliseconds >
+        ( currentTime - _animationPreviousTime );
+
+     float dt = ( ( float ) duration.count( ) ) * 0.001f;
+
+     Eigen::Vector3f currentPosition = _camera->position( );
+
+     Eigen::Vector3f targetPosition = _path->evaluatePosition( _currentNodeId,
+                                                               _currentT );
+
+     /**
+     std::cout << "targetPosition: (" << targetPosition.x() << ", "
+                                      << targetPosition.y() << ", "
+                                      << targetPosition.z() << ")" << std::endl;
+     **/
+
+     Eigen::Vector3f diffPosition = targetPosition - currentPosition;
+
+     if ( _animationFirstStep )
+     {
+       _animationSpeed = diffPosition.norm( ) / _animationDuration;
+       _animationFirstStep = false;
+     }
+
+     // Position-in-place checking.
+     float distance = dt * _animationSpeed;
+     bool positionInPlace = false;
+     Eigen::Vector3f nextPosition = currentPosition;
+     if ( ( positionInPlace = ( diffPosition.norm() <= distance ) ) )
+       nextPosition = targetPosition;
+     else
+       nextPosition = currentPosition + diffPosition.normalized() * distance;
+
+     //Eigen::Vector3f increment = nextPosition - currentPosition;
+
+     Eigen::Matrix3f targetOrientation =
+       _path->evaluateOrientation( _currentNodeId,
+                                   _currentT );
+
+     /*
+     std::cout << "targetOrientation: " << std::endl;
+     std::cout << "("  << targetOrientation(0,0) << ", " << targetOrientation(1,0) << ", "  << targetOrientation(2,0) << ")" << std::endl;
+     std::cout << "("  << targetOrientation(0,1) << ", " << targetOrientation(1,1) << ", "  << targetOrientation(2,1) << ")" << std::endl;
+     std::cout << "("  << targetOrientation(0,2) << ", " << targetOrientation(1,2) << ", "  << targetOrientation(2,2) << ")" << std::endl;
+     std::cout << std::endl;
+     */
+
+     // Applying rotation and translation.
+     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
+     newViewMatrix.block( 0, 0, 3, 3 ) = targetOrientation;
+     newViewMatrix( 0, 3 ) = nextPosition.x( );
+     newViewMatrix( 1, 3 ) = nextPosition.y( );
+     newViewMatrix( 2, 3 ) = nextPosition.z( );
+
+     // Updating matrices.
+     _camera->viewMatrix( newViewMatrix );
+     Eigen::Matrix4f newViewProjMatrix = _camera->projMatrix( ) * newViewMatrix;
+     _camera->viewProjMatrix( newViewProjMatrix );
+
+     // For a strange reason ( x == 1.0f ) does not work.
+     bool finishedT = ( _currentT >= 1.0f );
+     bool finishedNodes = ( _currentNodeId >=  _path->nodesSize() - 1 );
+     //bool finishCondition = ( _currentTargetPositionId == _splineTargetPositions.size()-1 );
+
+     // Path state.
+     /**
+     std::cout << "currentT: " << _currentT << std::endl;
+     std::cout << "T: " << finishedT << std::endl;
+     std::cout << "currentNode: " << _currentNodeId << std::endl;
+     std::cout << "NODE: " << finishedNodes << std::endl;
+     std::cout << "INPLACE: " << positionInPlace << std::endl;
+     std::cout << std::endl;
+     **/
+
+     _isAniming = !( /*positionInPlace &&*/ finishedT && finishedNodes );
+
+     // Spline state.
+     /**/
+     std::cout << "Animating camera: " << _isAniming << std::endl;
+     std::cout << std::endl;
+     /**/
+
+     if( finishedT )
+     {
+       _currentT = 0.0f;
+       _currentNodeId += 1;
+     }
+     else
+     {
+       /**if( positionInPlace )**/ _currentT += _tStep;
+     }
+
+     _animationPreviousTime = currentTime;
+     return true;
+    }
+
+    _animationPreviousTime = currentTime;
+    return false;
   }
 
   Eigen::Matrix3f CameraController::generateRotationMatrix( float yaw_, float pitch_ )

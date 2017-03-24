@@ -11,6 +11,7 @@
 #include <string>
 #include <glutExampleShaders.h>
 #include <math.h>
+#include <vector>
 
 // OpenGL, GLEW, GLUT.
 #include <GL/glew.h>
@@ -38,6 +39,8 @@ using namespace reto;
 #include "MyCube.h"
 
 reto::CameraController* cameraController;
+
+unsigned int idleTimeCounter = 0;
 
 // X Y mouse position.
 int previousX;
@@ -88,6 +91,31 @@ int main( int argc, char** argv )
 
   cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
                                                  reto::CameraController::TCamera::STANDARD );
+
+  Eigen::Vector3f defaultCameraPosition = cameraController->_camera->position( );
+  Eigen::Vector3f defaultCameraLookAt = cameraController->_camera->lookAt( );
+  Eigen::Vector3f defaultCameraUp = cameraController->_camera->up( );
+
+  Path* path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
+
+  path->addNode( defaultCameraPosition, defaultCameraLookAt, defaultCameraUp );
+
+  // Node 1.
+  path->addNode( Eigen::Vector3f( -defaultCameraPosition.z( ), 250.0f, 0.0f ),
+                 Eigen::Vector3f( defaultCameraPosition.z( ), -250.0f, 0.0f ),
+                 Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
+
+  // Node 2.
+  path->addNode( Eigen::Vector3f( 0.0f, 0.0f, -defaultCameraPosition.z( ) ),
+                 Eigen::Vector3f( 0.0f, 0.0f, defaultCameraPosition.z( ) ),
+                 Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
+
+  // Node 3.
+  path->addNode( Eigen::Vector3f( defaultCameraPosition.z( ), -250.0f, 0.0f ),
+                 Eigen::Vector3f( -defaultCameraPosition.z( ), 250.0f, 0.0f ),
+                 Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
+
+  cameraController->path( path );
 
   glutMainLoop( );
   destroy( );
@@ -228,8 +256,13 @@ void resizeFunc( int width, int height )
 
 void idleFunc( void )
 {
-  static float angle = 0.0f;
-  angle = ( angle > 2.0f * float( M_PI )) ? 0 : angle + 0.01f;
+  //static float angle = 0.0f;
+  //angle = ( angle > 2.0f * float( M_PI )) ? 0 : angle + 0.01f;
+  if( idleTimeCounter > 5 && cameraController->animate( ) )
+  {
+    idleTimeCounter = 0;
+  }
+  idleTimeCounter++;
   glutPostRedisplay( );
 }
 
@@ -237,8 +270,13 @@ void keyboardFunc( unsigned char key, int, int )
 {
   switch( key )
   {
-
     // Camera control.
+    case 'i':
+    case 'I':
+      cameraController->triggerAnimation( );
+      glutPostRedisplay( );
+      break;
+
     case 'w':
     case 'W':
       cameraController->moveUsingLookAtVector( 10.0f );

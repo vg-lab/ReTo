@@ -27,8 +27,11 @@
 #include <Eigen/Dense>
 
 #include <iostream>
+#include <chrono>
+#include <ctime>
 
 #include "Camera.h"
+#include "Path.h"
 
 #include <reto/api.h>
 
@@ -55,10 +58,18 @@ namespace reto
 
     RETO_API
     CameraController( TProjection projection_,
-                      TCamera cameraType_ );
+                      TCamera cameraType_,
+                      Path* path_ = new Path( Path::TInterpolationMethod::LERP ) );
 
     RETO_API
     virtual ~CameraController( void );
+
+    /** BEGIN wrappers **/
+
+    RETO_API
+    void path( Path* path_ );
+
+    /** END wrappers **/
 
     /** BEGIN basic functions **/
 
@@ -85,6 +96,12 @@ namespace reto
 
     /** END basic functions **/
 
+    RETO_API
+    void triggerAnimation( void );
+
+    RETO_API
+    bool animate( void );
+
     // Temporary.
     Camera* _camera;
 
@@ -106,8 +123,23 @@ namespace reto
 
     TProjection _projection;
     TCamera _cameraType;
+    Path* _path;
 
     /** END basic attributes **/
+
+    /** BEGIN animation attributes **/
+
+    bool _isAniming;
+    bool _animationFirstStep;
+    float _animationSpeed;
+    float _animationDuration;
+    std::chrono::time_point< std::chrono::system_clock > _animationPreviousTime;
+
+    unsigned int _currentNodeId;
+    float _currentT;
+    float _tStep;
+
+    /** END animation attributes **/
 
   };
 

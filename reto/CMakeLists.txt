@@ -5,6 +5,7 @@ set(RETO_PUBLIC_HEADERS
   Camera.h
   CameraController.h
   ShaderProgram.h
+  Path.h
   Pickable.h
   PickingSystem.h
   Spline.h
@@ -18,6 +19,7 @@ set(RETO_SOURCES
   Camera.cpp
   CameraController.cpp
   ShaderProgram.cpp
+  Path.cpp
   Pickable.cpp
   PickingSystem.cpp
   Spline.cpp
