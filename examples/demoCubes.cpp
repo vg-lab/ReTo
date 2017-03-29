@@ -55,17 +55,14 @@ bool traslation = false;
 
 // Constants.
 const float mouseWheelFactor = 1.2f;
-// lookAt.
-// const float rotationScale = 0.1f;
-// orientation.
-const float rotationScale = 0.01f;
+const float rotationScale = 0.1f;
 const float traslationScale = 0.2f;
 
 // Euler angles.
-/**
-float currentYaw = -90.0f;
+/**/
+float currentYaw = 90.0f;
 float currentPitch = 0.0f;
-**/
+/**/
 
 std::vector< float > matrix4fToVector16f( Eigen::Matrix4f inputMatrix );
 
@@ -280,14 +277,12 @@ void keyboardFunc( unsigned char key, int, int )
     case 'w':
     case 'W':
       cameraController->moveUsingLookAtVector( 10.0f );
-      //cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, 10.0f ) );
       glutPostRedisplay( );
       break;
     case 's':
     case 'S':
     {
       cameraController->moveUsingLookAtVector( -10.0f );
-      //cameraController->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) );
       glutPostRedisplay( );
       break;
     }
@@ -295,7 +290,6 @@ void keyboardFunc( unsigned char key, int, int )
     case 'A':
     {
       cameraController->moveUsingTangentVector( -10.0f );
-      //cameraController->localTranslation( Eigen::Vector3f( 10.0f, 0.0f, 0.0f ) );
       glutPostRedisplay( );
       break;
     }
@@ -303,7 +297,6 @@ void keyboardFunc( unsigned char key, int, int )
     case 'D':
     {
       cameraController->moveUsingTangentVector( 10.0f );
-      //cameraController->localTranslation( Eigen::Vector3f( -10.0f, 0.0f, 0.0f ) );
       glutPostRedisplay( );
       break;
     }
@@ -380,23 +373,13 @@ void mouseMotionFunc( int x, int y )
       deltaX *= rotationScale;
       deltaY *= rotationScale;
 
-      /**/
-      cameraController->localRotation( deltaX, deltaY );
-      /**/
-
-      /**
-      currentYaw -= deltaX;
-      currentPitch += deltaY;
+      currentYaw += deltaX;
+      currentPitch -= deltaY;
 
       if( currentPitch > 89.0f ) currentPitch = 89.0f;
       if( currentPitch < -89.0f ) currentPitch = -89.0f;
 
-      // To radians.
-      currentYaw *= (M_PI/180.0f);
-      currentPitch *= (M_PI/180.0f);
-
       cameraController->localRotation( currentYaw, currentPitch );
-      **/
     }
     if( traslation )
     {

@@ -142,6 +142,7 @@ namespace reto
         _camera->up( Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
         _camera->lookAt( Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) );
         newViewMatrix = lookAt( _camera->position( ), _camera->lookAt( ), _camera->up( ) );
+        std::cout << "VIEW-C: " << newViewMatrix << std::endl;
       }
       break;
 
@@ -273,14 +274,7 @@ namespace reto
 
         Eigen::Vector3f newPosition = currentPosition + increment_;
 
-        _camera->position( newPosition );
-
-        // Updating only position.
-        newViewMatrix( 0, 3 ) = _camera->position().x( );
-        newViewMatrix( 1, 3 ) = _camera->position().y( );
-        newViewMatrix( 2, 3 ) = _camera->position().z( );
-
-        //newViewMatrix = lookAt( _camera->position( ), _camera->lookAt( ), _camera->up( ) );
+        newViewMatrix = lookAt( newPosition, _camera->lookAt( ), _camera->up( ) );
       }
       break;
 
@@ -314,14 +308,7 @@ namespace reto
 
         Eigen::Vector3f newPosition = currentPosition + increment_ * currentLookAt;
 
-        _camera->position( newPosition );
-
-        // Updating only position.
-        newViewMatrix( 0, 3 ) = _camera->position().x( );
-        newViewMatrix( 1, 3 ) = _camera->position().y( );
-        newViewMatrix( 2, 3 ) = _camera->position().z( );
-
-        //newViewMatrix = lookAt( _camera->position( ), currentLookAt, _camera->up( ) );
+        newViewMatrix = lookAt( newPosition, currentLookAt, _camera->up( ) );
       }
       break;
 
@@ -357,14 +344,7 @@ namespace reto
 
         Eigen::Vector3f newPosition = currentPosition + increment_ * currentTangent;
 
-        _camera->position( newPosition );
-
-        // Updating only position.
-        newViewMatrix( 0, 3 ) = _camera->position().x( );
-        newViewMatrix( 1, 3 ) = _camera->position().y( );
-        newViewMatrix( 2, 3 ) = _camera->position().z( );
-
-        //newViewMatrix = lookAt( _camera->position( ), currentLookAt, currentUp );
+        newViewMatrix = lookAt( newPosition, currentLookAt, currentUp );
       }
       break;
 
@@ -392,25 +372,17 @@ namespace reto
     {
       case STANDARD :
       {
-        /**
+        // To radians.
+        float yawRadians = ( yaw_ * M_PI ) / 180.0f;
+        float pitchRadians = ( pitch_ * M_PI ) / 180.0f;
+
         Eigen::Vector3f newLookAt;
-        newLookAt( 0 ) = cos( yaw_ ) * cos( pitch_ );
-        newLookAt( 1 ) = sin( yaw_ ) * cos( pitch_ );
-        newLookAt( 2 ) = sin( pitch_ );
+        newLookAt( 0 ) = cos( pitchRadians ) * cos( yawRadians );
+        newLookAt( 1 ) = sin( pitchRadians );
+        newLookAt( 2 ) = cos( pitchRadians ) * sin( yawRadians );
         newLookAt.normalize( );
 
-        _camera->lookAt( newLookAt );
-
-         newViewMatrix = lookAt( _camera->position( ), _camera->lookAt( ), _camera->up( ) );
-        **/
-
-        /**/
-        Eigen::Matrix3f currentOrientation =
-          newViewMatrix.block( 0, 0, 3, 3 );
-        Eigen::Matrix3f rotationMatrix = generateRotationMatrix( yaw_, pitch_ );
-        Eigen::Matrix3f newOrientation = rotationMatrix * currentOrientation;
-        newViewMatrix.block( 0, 0, 3, 3 ) = newOrientation;
-        /**/
+        newViewMatrix = lookAt( _camera->position( ), newLookAt, _camera->up( ) );
       }
       break;
 
@@ -575,32 +547,27 @@ namespace reto
                                             Eigen::Vector3f lookAt_,
                                             Eigen::Vector3f up_ )
   {
-    // Orientation.
+    // Updating vectors.
     Eigen::Vector3f eyeToCenter = lookAt_.normalized( );
-    //Eigen::Vector3f eyeToCenter = center_ - eye_;
-    //eyeToCenter.normalize( );
-    Eigen::Vector3f upVector = up_.normalized( );
+    Eigen::Vector3f upVector = up_ - up_.dot( eyeToCenter ) * eyeToCenter;
+    upVector.normalize( );
     Eigen::Vector3f tangentVector = eyeToCenter.cross( upVector );
     tangentVector.normalize( );
-    upVector = tangentVector.cross( eyeToCenter );
 
-    // IMPORTANT: Updating up vector.
+    // Setting vectors.
+    _camera->position( position_ );
+    _camera->lookAt( eyeToCenter );
     _camera->up( upVector );
 
-    // Position.
-    float x = position_.x( );
-    //float x = -tangentVector.dot( position_ );
-    float y = position_.y( );
-    //float y = -upVector.dot( position_ );
-    float z = position_.z( );
-    //float z = eyeToCenter.dot( position_ );
-
-    _camera->position( Eigen::Vector3f( x, y, z ) );
+    // Relative position.
+    float x = -tangentVector.dot( position_ );
+    float y = -upVector.dot( position_ );
+    float z = eyeToCenter.dot( position_ );
 
     Eigen::Matrix4f toReturn;
-    toReturn << tangentVector.x( ), upVector.x( ), -eyeToCenter.x( ), x,
-                tangentVector.y( ), upVector.y( ), -eyeToCenter.y( ), y,
-                tangentVector.z( ), upVector.z( ), -eyeToCenter.z( ), z,
+    toReturn << tangentVector.x( ), tangentVector.y( ), tangentVector.z( ), x,
+                upVector.x( ), upVector.y( ), upVector.z( ), y,
+                -eyeToCenter.x( ), -eyeToCenter.y( ), -eyeToCenter.z( ), z,
                 0.0f, 0.0f, 0.0f, 1.0f;
 
     return toReturn;
