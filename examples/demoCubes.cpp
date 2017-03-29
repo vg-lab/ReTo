@@ -97,19 +97,26 @@ int main( int argc, char** argv )
 
   path->addNode( defaultCameraPosition, defaultCameraLookAt, defaultCameraUp );
 
+  float yOffset = 200.0f;
+
   // Node 1.
-  path->addNode( Eigen::Vector3f( -defaultCameraPosition.z( ), 250.0f, 0.0f ),
-                 Eigen::Vector3f( defaultCameraPosition.z( ), -250.0f, 0.0f ),
+  path->addNode( Eigen::Vector3f( defaultCameraPosition.z( )*2.0f, yOffset, 0.0f ),
+                 Eigen::Vector3f( -defaultCameraPosition.z( )*2.0f, -yOffset, 0.0f ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
 
   // Node 2.
-  path->addNode( Eigen::Vector3f( 0.0f, 0.0f, -defaultCameraPosition.z( ) ),
-                 Eigen::Vector3f( 0.0f, 0.0f, defaultCameraPosition.z( ) ),
+  path->addNode( Eigen::Vector3f( defaultCameraPosition.z( ), -yOffset, -defaultCameraPosition.z( ) ),
+                 Eigen::Vector3f( -defaultCameraPosition.z( ), yOffset, defaultCameraPosition.z( ) ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
 
   // Node 3.
-  path->addNode( Eigen::Vector3f( defaultCameraPosition.z( ), -250.0f, 0.0f ),
-                 Eigen::Vector3f( -defaultCameraPosition.z( ), 250.0f, 0.0f ),
+  path->addNode( Eigen::Vector3f( 0.0f, yOffset, -defaultCameraPosition.z( )*2.0f ),
+                 Eigen::Vector3f( 0.0f, -yOffset, defaultCameraPosition.z( )*2.0f ),
+                 Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
+
+  // Node 4.
+  path->addNode( Eigen::Vector3f( -defaultCameraPosition.z( ), -yOffset, 0.0f ),
+                 Eigen::Vector3f( defaultCameraPosition.z( ), yOffset, 0.0f ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
 
   cameraController->path( path );

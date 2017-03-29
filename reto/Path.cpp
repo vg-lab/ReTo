@@ -130,6 +130,69 @@ namespace reto
     return evaluatedPosition;
    }
 
+  Eigen::Vector3f Path::evaluateLookAt( unsigned int originNodeId_,
+                                        float t_ )
+  {
+    unsigned int destinationNodeId = ( originNodeId_ == _positions.size() - 1 )
+                                       ? 0
+                                       : originNodeId_ + 1;
+
+    // Normalizing. Just in case.
+
+    // Origin node.
+    Eigen::Vector3f originLookAtVector = _lookAts[ originNodeId_ ];
+    originLookAtVector.normalize( );
+
+    // Destination node.
+    Eigen::Vector3f destinationLookAtVector = _lookAts[ destinationNodeId ];
+    destinationLookAtVector.normalize( );
+
+    // Interpolation method: slerp.
+
+    Eigen::Quaternionf baseQuaternion;
+    baseQuaternion = Eigen::Quaternionf::Identity();
+
+    // LookAt quaternion.
+    Eigen::Quaternionf lookAtQuaternion;
+    lookAtQuaternion.setFromTwoVectors( originLookAtVector, destinationLookAtVector );
+    Eigen::Vector3f interpolatedLookAtVector =
+     ( baseQuaternion.slerp( t_, lookAtQuaternion ) ) * originLookAtVector;
+
+    return interpolatedLookAtVector;
+  }
+
+  Eigen::Vector3f Path::evaluateUp( unsigned int originNodeId_,
+                                    float t_ )
+  {
+    unsigned int destinationNodeId = ( originNodeId_ == _positions.size() - 1 )
+                                       ? 0
+                                       : originNodeId_ + 1;
+
+    // Normalizing. Just in case.
+
+    // Origin node.
+    Eigen::Vector3f originUpVector = _ups[ originNodeId_ ];
+    originUpVector.normalize( );
+
+    // Destination node.
+    Eigen::Vector3f destinationUpVector = _ups[ destinationNodeId ];
+    destinationUpVector.normalize( );
+
+    // Interpolation method: slerp.
+
+    Eigen::Quaternionf baseQuaternion;
+    baseQuaternion = Eigen::Quaternionf::Identity();
+
+    // Up quaternion.
+    Eigen::Quaternionf upQuaternion;
+    upQuaternion.setFromTwoVectors( originUpVector, destinationUpVector );
+    Eigen::Vector3f interpolatedUpVector =
+      ( baseQuaternion.slerp( t_, upQuaternion ) ) * originUpVector;
+
+    return interpolatedUpVector;
+  }
+
+  /**
   Eigen::Matrix3f Path::evaluateOrientation( unsigned int originNodeId_,
                                              float t_ )
   {
@@ -188,6 +251,7 @@ namespace reto
 
     return interpolatedOrientation;
   }
+  **/
 
   float Path::_lerp( float p1, float p2, float t )
   {

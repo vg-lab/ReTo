@@ -115,7 +115,7 @@ namespace reto
     _animationSpeed = 0.1f;
     _animationDuration = 10.0f;
     _animationPreviousTime = std::chrono::system_clock::now( );
-    _tStep = 0.05f;
+    _tStep = 0.01f;
   }
 
   CameraController::~CameraController( void )
@@ -426,12 +426,14 @@ namespace reto
       auto duration = std::chrono::duration_cast< std::chrono::milliseconds >
         ( currentTime - _animationPreviousTime );
 
-     float dt = ( ( float ) duration.count( ) ) * 0.001f;
+     float dt = ( ( float ) duration.count( ) ) * 0.1f;
 
      Eigen::Vector3f currentPosition = _camera->position( );
+     std::cout << "currentPosition: " << currentPosition << std::endl;
 
      Eigen::Vector3f targetPosition = _path->evaluatePosition( _currentNodeId,
                                                                _currentT );
+     std::cout << "targetPosition: " << targetPosition << std::endl;
 
      /**
      std::cout << "targetPosition: (" << targetPosition.x() << ", "
@@ -450,32 +452,30 @@ namespace reto
      // Position-in-place checking.
      float distance = dt * _animationSpeed;
      bool positionInPlace = false;
+     float tForOrientation = _currentT - _tStep;
      Eigen::Vector3f nextPosition = currentPosition;
      if ( ( positionInPlace = ( diffPosition.norm() <= distance ) ) )
+     {
        nextPosition = targetPosition;
+     }
      else
-       nextPosition = currentPosition + diffPosition.normalized() * distance;
+     {
+       Eigen::Vector3f displacement = diffPosition.normalized() * distance;
+       //std::cout << "displacement:" << displacement << std::endl;
+       nextPosition = currentPosition + displacement;
+       tForOrientation += _tStep * ( displacement.norm() / diffPosition.norm() );
+     }
 
-     //Eigen::Vector3f increment = nextPosition - currentPosition;
+     std::cout << "nextPosition:" << nextPosition << std::endl;
 
-     Eigen::Matrix3f targetOrientation =
-       _path->evaluateOrientation( _currentNodeId,
-                                   _currentT );
+     Eigen::Vector3f nextLookAt = _path->evaluateLookAt( _currentNodeId,
+                                                         tForOrientation );
 
-     /*
-     std::cout << "targetOrientation: " << std::endl;
-     std::cout << "("  << targetOrientation(0,0) << ", " << targetOrientation(1,0) << ", "  << targetOrientation(2,0) << ")" << std::endl;
-     std::cout << "("  << targetOrientation(0,1) << ", " << targetOrientation(1,1) << ", "  << targetOrientation(2,1) << ")" << std::endl;
-     std::cout << "("  << targetOrientation(0,2) << ", " << targetOrientation(1,2) << ", "  << targetOrientation(2,2) << ")" << std::endl;
-     std::cout << std::endl;
-     */
+     Eigen::Vector3f nextUp = _path->evaluateUp( _currentNodeId,
+                                                 tForOrientation );
 
-     // Applying rotation and translation.
-     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
-     newViewMatrix.block( 0, 0, 3, 3 ) = targetOrientation;
-     newViewMatrix( 0, 3 ) = nextPosition.x( );
-     newViewMatrix( 1, 3 ) = nextPosition.y( );
-     newViewMatrix( 2, 3 ) = nextPosition.z( );
+     Eigen::Matrix4f newViewMatrix =
+       lookAt( nextPosition, nextLookAt, nextUp );
 
      // Updating matrices.
      _camera->viewMatrix( newViewMatrix );
@@ -512,7 +512,7 @@ namespace reto
      }
      else
      {
-       /**if( positionInPlace )**/ _currentT += _tStep;
+       /*if( positionInPlace )*/ _currentT += _tStep;
      }
 
      _animationPreviousTime = currentTime;
@@ -557,7 +557,10 @@ namespace reto
     // Setting vectors.
     _camera->position( position_ );
     _camera->lookAt( eyeToCenter );
+    std::cout << "eyeToCenter:" << eyeToCenter << std::endl;
     _camera->up( upVector );
+    std::cout << "upVector:" << upVector << std::endl;
+    std::cout << std::endl;
 
     // Relative position.
     float x = -tangentVector.dot( position_ );

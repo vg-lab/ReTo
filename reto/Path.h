@@ -74,9 +74,18 @@ namespace reto
     RETO_API
     Eigen::Vector3f evaluatePosition( unsigned int originNodeId_,
                                       float t_ );
+
     RETO_API
-    Eigen::Matrix3f evaluateOrientation( unsigned int originNodeId_,
-                                         float t_ );
+    Eigen::Vector3f evaluateLookAt( unsigned int originNodeId_,
+                                    float t_ );
+
+    RETO_API
+    Eigen::Vector3f evaluateUp( unsigned int originNodeId_,
+                                float t_ );
+
+    //RETO_API
+    //Eigen::Matrix3f evaluateOrientation( unsigned int originNodeId_,
+    //                                     float t_ );
 
   private:
 
