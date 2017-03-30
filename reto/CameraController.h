@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
  * Authors: Juan Guerrero Martín
  *
@@ -23,21 +23,25 @@
 #ifndef __RETO_CAMERACONTROLLER__
 #define __RETO_CAMERACONTROLLER__
 
-// Eigen
-#include <Eigen/Dense>
+#include "Camera.h"
+#include "Path.h"
 
 #include <iostream>
 #include <chrono>
 #include <ctime>
-
-#include "Camera.h"
-#include "Path.h"
-
+#include <Eigen/Dense>
 #include <reto/api.h>
 
 namespace reto
 {
 
+  //! Camera controller
+  /*!
+    This class manages the camera. Basically it updates camera view and
+    projection matrices. With this class the user can do the following
+    actions with the camera: centering, zooming, resizing, translating,
+    rotating and animating.
+   */
   class CameraController
   {
   public:
@@ -64,14 +68,11 @@ namespace reto
     RETO_API
     virtual ~CameraController( void );
 
-    /** BEGIN wrappers **/
+    RETO_API
+    Path* path( void );
 
     RETO_API
     void path( Path* path_ );
-
-    /** END wrappers **/
-
-    /** BEGIN basic functions **/
 
     RETO_API
     void center( Eigen::Vector3f centeredPosition_ = Eigen::Vector3f( 0.0f ) );
@@ -83,51 +84,42 @@ namespace reto
     void resize( float width_, float height_ );
 
     RETO_API
-    void localTranslation( Eigen::Vector3f increment_ );
+    void translate( Eigen::Vector3f increment_ );
 
     RETO_API
-    void moveUsingLookAtVector( float increment_ );
+    void translateInLookAtVectorDirection( float increment_ );
 
     RETO_API
-    void moveUsingTangentVector( float increment_ );
+    void translateInUpVectorDirection( float increment_ );
 
     RETO_API
-    void localRotation( float yaw_, float pitch_ );
-
-    /** END basic functions **/
+    void translateInRightVectorDirection( float increment_ );
 
     RETO_API
-    void triggerAnimation( void );
+    void localOrientation( float yaw_, float pitch_ );
 
     RETO_API
     bool animate( void );
+
+    RETO_API
+    void triggerAnimation( void );
 
     // Temporary.
     Camera* _camera;
 
   private:
 
-    /** BEGIN auxiliar functions **/
+    RETO_API
+    Eigen::Matrix4f _lookAt( Eigen::Vector3f position_,
+                             Eigen::Vector3f lookAt_,
+                             Eigen::Vector3f up_ );
 
     RETO_API
-    Eigen::Matrix3f generateRotationMatrix( float yaw_, float pitch_ );
-
-    RETO_API
-    Eigen::Matrix4f lookAt( Eigen::Vector3f position_,
-                            Eigen::Vector3f lookAt_,
-                            Eigen::Vector3f up_ );
-
-    /** END auxiliar functions **/
-
-    /** BEGIN basic attributes **/
+    Eigen::Matrix3f _generateRotationMatrix( float yaw_, float pitch_ );
 
     TProjection _projection;
     TCamera _cameraType;
     Path* _path;
-
-    /** END basic attributes **/
-
-    /** BEGIN animation attributes **/
 
     bool _isAniming;
     bool _animationFirstStep;
@@ -139,10 +131,8 @@ namespace reto
     float _currentT;
     float _tStep;
 
-    /** END animation attributes **/
-
   };
 
-}
+} // end namespace reto
 
-#endif
+#endif // __RETO_CAMERA__

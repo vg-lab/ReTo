@@ -29,7 +29,6 @@ namespace reto
                                       TCamera cameraType_,
                                       Path* path_ )
   {
-
     // Creating camera with default values.
     _camera = new Camera( );
     _projection = projection_;
@@ -50,7 +49,8 @@ namespace reto
     {
       case STANDARD :
       {
-        viewMatrix = lookAt( defaultPosition, defaultLookAt, defaultUp );
+        viewMatrix = _lookAt( defaultPosition, defaultLookAt, defaultUp );
+        //std::cout << "firstViewMatrix: " << viewMatrix << std::endl;
       }
       break;
 
@@ -124,6 +124,11 @@ namespace reto
     delete _path;
   }
 
+  Path* CameraController::path( void )
+  {
+    return _path;
+  }
+
   void CameraController::path( Path* path_ )
   {
     _path = path_;
@@ -138,11 +143,10 @@ namespace reto
     {
       case STANDARD :
       {
-        _camera->position( centeredPosition_ );
-        _camera->up( Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
-        _camera->lookAt( Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) );
-        newViewMatrix = lookAt( _camera->position( ), _camera->lookAt( ), _camera->up( ) );
-        std::cout << "VIEW-C: " << newViewMatrix << std::endl;
+        newViewMatrix = _lookAt( centeredPosition_,
+                                 Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+                                 Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
+        //std::cout << "centeredViewMatrix: " << newViewMatrix << std::endl;
       }
       break;
 
@@ -262,7 +266,7 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
-  void CameraController::localTranslation( Eigen::Vector3f increment_ )
+  void CameraController::translate( Eigen::Vector3f increment_ )
   {
     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
 
@@ -274,7 +278,7 @@ namespace reto
 
         Eigen::Vector3f newPosition = currentPosition + increment_;
 
-        newViewMatrix = lookAt( newPosition, _camera->lookAt( ), _camera->up( ) );
+        newViewMatrix = _lookAt( newPosition, _camera->lookAt( ), _camera->up( ) );
       }
       break;
 
@@ -294,7 +298,7 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
-  void CameraController::moveUsingLookAtVector( float increment_ )
+  void CameraController::translateInLookAtVectorDirection( float increment_ )
   {
     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
 
@@ -308,7 +312,7 @@ namespace reto
 
         Eigen::Vector3f newPosition = currentPosition + increment_ * currentLookAt;
 
-        newViewMatrix = lookAt( newPosition, currentLookAt, _camera->up( ) );
+        newViewMatrix = _lookAt( newPosition, currentLookAt, _camera->up( ) );
       }
       break;
 
@@ -328,7 +332,41 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
-  void CameraController::moveUsingTangentVector( float increment_ )
+  void CameraController::translateInUpVectorDirection( float increment_ )
+  {
+    Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
+
+    switch( _cameraType )
+    {
+      case STANDARD :
+      {
+
+        Eigen::Vector3f currentPosition = _camera->position( );
+        Eigen::Vector3f currentUp = _camera->up( );
+
+        Eigen::Vector3f newPosition = currentPosition + increment_ * currentUp;
+
+        newViewMatrix = _lookAt( newPosition, _camera->lookAt( ), currentUp );
+      }
+      break;
+
+      case ORBITAL :
+      {
+        newViewMatrix = Eigen::Matrix4f::Identity( );
+
+        std::cerr << "Not implemented yet" << std::endl;
+      }
+      break;
+    }
+
+    _camera->viewMatrix( newViewMatrix );
+
+    Eigen::Matrix4f newViewProjMatrix = _camera->projMatrix( ) * newViewMatrix;
+
+    _camera->viewProjMatrix( newViewProjMatrix );
+  }
+
+  void CameraController::translateInRightVectorDirection( float increment_ )
   {
     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
 
@@ -339,12 +377,12 @@ namespace reto
         Eigen::Vector3f currentPosition = _camera->position( );
         Eigen::Vector3f currentLookAt = _camera->lookAt( );
         Eigen::Vector3f currentUp = _camera->up( );
-        Eigen::Vector3f currentTangent = currentLookAt.cross( currentUp );
-        currentTangent.normalize( );
+        Eigen::Vector3f currentRight = currentLookAt.cross( currentUp );
+        currentRight.normalize( );
 
-        Eigen::Vector3f newPosition = currentPosition + increment_ * currentTangent;
+        Eigen::Vector3f newPosition = currentPosition + increment_ * currentRight;
 
-        newViewMatrix = lookAt( newPosition, currentLookAt, currentUp );
+        newViewMatrix = _lookAt( newPosition, currentLookAt, currentUp );
       }
       break;
 
@@ -364,7 +402,7 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
-  void CameraController::localRotation( float yaw_, float pitch_ )
+  void CameraController::localOrientation( float yaw_, float pitch_ )
   {
     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
 
@@ -372,7 +410,7 @@ namespace reto
     {
       case STANDARD :
       {
-        // To radians.
+        // Angles to radians.
         float yawRadians = ( yaw_ * M_PI ) / 180.0f;
         float pitchRadians = ( pitch_ * M_PI ) / 180.0f;
 
@@ -382,7 +420,7 @@ namespace reto
         newLookAt( 2 ) = cos( pitchRadians ) * sin( yawRadians );
         newLookAt.normalize( );
 
-        newViewMatrix = lookAt( _camera->position( ), newLookAt, _camera->up( ) );
+        newViewMatrix = _lookAt( _camera->position( ), newLookAt, _camera->up( ) );
       }
       break;
 
@@ -400,14 +438,6 @@ namespace reto
     Eigen::Matrix4f newViewProjMatrix = _camera->projMatrix( ) * newViewMatrix;
 
     _camera->viewProjMatrix( newViewProjMatrix );
-  }
-
-  void CameraController::triggerAnimation( void )
-  {
-    _isAniming = true;
-    _animationFirstStep = true;
-    _currentT = _tStep;
-    _currentNodeId = 0;
   }
 
   bool CameraController::animate( void )
@@ -461,7 +491,6 @@ namespace reto
      else
      {
        Eigen::Vector3f displacement = diffPosition.normalized() * distance;
-       //std::cout << "displacement:" << displacement << std::endl;
        nextPosition = currentPosition + displacement;
        tForOrientation += _tStep * ( displacement.norm() / diffPosition.norm() );
      }
@@ -475,7 +504,7 @@ namespace reto
                                                  tForOrientation );
 
      Eigen::Matrix4f newViewMatrix =
-       lookAt( nextPosition, nextLookAt, nextUp );
+       _lookAt( nextPosition, nextLookAt, nextUp );
 
      // Updating matrices.
      _camera->viewMatrix( newViewMatrix );
@@ -523,7 +552,49 @@ namespace reto
     return false;
   }
 
-  Eigen::Matrix3f CameraController::generateRotationMatrix( float yaw_, float pitch_ )
+  void CameraController::triggerAnimation( void )
+  {
+    _isAniming = true;
+    _animationFirstStep = true;
+    _currentT = _tStep;
+    _currentNodeId = 0;
+  }
+
+  Eigen::Matrix4f CameraController::_lookAt( Eigen::Vector3f position_,
+                                             Eigen::Vector3f lookAt_,
+                                             Eigen::Vector3f up_ )
+  {
+    // Updating vectors.
+    Eigen::Vector3f eyeToCenter = lookAt_.normalized( );
+    Eigen::Vector3f upVector = up_ - up_.dot( eyeToCenter ) * eyeToCenter;
+    upVector.normalize( );
+    Eigen::Vector3f rightVector = eyeToCenter.cross( upVector );
+    rightVector.normalize( );
+
+    // Setting vectors.
+    _camera->position( position_ );
+    //std::cout << "position:" << position_ << std::endl;
+    _camera->lookAt( eyeToCenter );
+    std::cout << "eyeToCenter:" << eyeToCenter << std::endl;
+    _camera->up( upVector );
+    std::cout << "upVector:" << upVector << std::endl;
+    std::cout << std::endl;
+
+    // Relative position.
+    float x = -rightVector.dot( position_ );
+    float y = -upVector.dot( position_ );
+    float z = eyeToCenter.dot( position_ );
+
+    Eigen::Matrix4f toReturn;
+    toReturn << rightVector.x( ), rightVector.y( ), rightVector.z( ), x,
+                upVector.x( ), upVector.y( ), upVector.z( ), y,
+                -eyeToCenter.x( ), -eyeToCenter.y( ), -eyeToCenter.z( ), z,
+                0.0f, 0.0f, 0.0f, 1.0f;
+
+    return toReturn;
+  }
+
+  Eigen::Matrix3f CameraController::_generateRotationMatrix( float yaw_, float pitch_ )
   {
     Eigen::Matrix3f rot;
     Eigen::Matrix3f rYaw;
@@ -543,37 +614,4 @@ namespace reto
     return rot;
   }
 
-  Eigen::Matrix4f CameraController::lookAt( Eigen::Vector3f position_,
-                                            Eigen::Vector3f lookAt_,
-                                            Eigen::Vector3f up_ )
-  {
-    // Updating vectors.
-    Eigen::Vector3f eyeToCenter = lookAt_.normalized( );
-    Eigen::Vector3f upVector = up_ - up_.dot( eyeToCenter ) * eyeToCenter;
-    upVector.normalize( );
-    Eigen::Vector3f tangentVector = eyeToCenter.cross( upVector );
-    tangentVector.normalize( );
-
-    // Setting vectors.
-    _camera->position( position_ );
-    _camera->lookAt( eyeToCenter );
-    std::cout << "eyeToCenter:" << eyeToCenter << std::endl;
-    _camera->up( upVector );
-    std::cout << "upVector:" << upVector << std::endl;
-    std::cout << std::endl;
-
-    // Relative position.
-    float x = -tangentVector.dot( position_ );
-    float y = -upVector.dot( position_ );
-    float z = eyeToCenter.dot( position_ );
-
-    Eigen::Matrix4f toReturn;
-    toReturn << tangentVector.x( ), tangentVector.y( ), tangentVector.z( ), x,
-                upVector.x( ), upVector.y( ), upVector.z( ), y,
-                -eyeToCenter.x( ), -eyeToCenter.y( ), -eyeToCenter.z( ), z,
-                0.0f, 0.0f, 0.0f, 1.0f;
-
-    return toReturn;
-  }
-
-}
+} // end namespace reto

@@ -280,35 +280,48 @@ void keyboardFunc( unsigned char key, int, int )
       cameraController->triggerAnimation( );
       glutPostRedisplay( );
       break;
-
     case 'w':
     case 'W':
-      cameraController->moveUsingLookAtVector( 10.0f );
+      cameraController->translateInLookAtVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     case 's':
     case 'S':
     {
-      cameraController->moveUsingLookAtVector( -10.0f );
+      cameraController->translateInLookAtVectorDirection( -10.0f );
+      glutPostRedisplay( );
+      break;
+    }
+    case 'q':
+    case 'Q':
+      cameraController->translateInUpVectorDirection( 10.0f );
+      glutPostRedisplay( );
+      break;
+    case 'e':
+    case 'E':
+    {
+      cameraController->translateInUpVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'a':
     case 'A':
     {
-      cameraController->moveUsingTangentVector( -10.0f );
+      cameraController->translateInRightVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'd':
     case 'D':
     {
-      cameraController->moveUsingTangentVector( 10.0f );
+      cameraController->translateInRightVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'c':
     case 'C':
+      currentYaw = 90.0f;
+      currentPitch = 0.0f;
       cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ) );
       std::cout << "Camera centered." << std::endl;
       glutPostRedisplay( );
@@ -386,14 +399,14 @@ void mouseMotionFunc( int x, int y )
       if( currentPitch > 89.0f ) currentPitch = 89.0f;
       if( currentPitch < -89.0f ) currentPitch = -89.0f;
 
-      cameraController->localRotation( currentYaw, currentPitch );
+      cameraController->localOrientation( currentYaw, currentPitch );
     }
     if( traslation )
     {
       std::cout << "Please use WASD instead." << std::endl;
-      //cameraController->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-      //                                                      0.0f,
-      //                                                      deltaY * traslationScale ) );
+      //cameraController->translate( Eigen::Vector3f ( -deltaX * traslationScale,
+      //                                               0.0f,
+      //                                               deltaY * traslationScale ) );
     }
     previousX = x;
     previousY = y;
