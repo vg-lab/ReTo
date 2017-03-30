@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Juan Jose Garcia
- * Authors: Cristian Rodríguez Bernal
  * Authors: Juan Guerrero Martín
+ * Authors: Cristian Rodríguez Bernal
+ * Authors: Juan Jose Garcia
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -209,6 +209,4 @@ namespace reto
     _fov = fov_;
   }
 
-  /** END getters & setters **/
-
-} /* namespace nlvdm */
+} // end namespace reto
