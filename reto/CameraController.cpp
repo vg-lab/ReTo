@@ -71,7 +71,7 @@ namespace reto
       {
         float defaultFov = _camera->fov();
 
-        defaultFov *= ( M_PI / 360.0f );
+        defaultFov *= ( (float) M_PI / 360.0f );
 
         float f = 1.0f / tan( defaultFov );
 
@@ -185,7 +185,7 @@ namespace reto
         float currentFov = _camera->fov( );
         float newFov = currentFov * scale;
         _camera->fov( newFov );
-        newFov *= ( M_PI / 360.0f );
+        newFov *= ( (float) M_PI / 360.0f );
         float newF = 1.0f / tan( newFov );
 
         newProjMatrix = _camera->projMatrix( );
@@ -238,7 +238,7 @@ namespace reto
         float newRatio = width_ / height_;
 
         float currentFov = _camera->fov();
-        currentFov *= ( M_PI / 360.0f );
+        currentFov *= ( (float) M_PI / 360.0f );
         float f = 1.0f / tan( currentFov );
 
         newProjMatrix = _camera->projMatrix( );
@@ -410,8 +410,8 @@ namespace reto
       case STANDARD :
       {
         // Angles to radians.
-        float yawRadians = ( yaw_ * M_PI ) / 180.0f;
-        float pitchRadians = ( pitch_ * M_PI ) / 180.0f;
+        float yawRadians = ( yaw_ * (float) M_PI ) / 180.0f;
+        float pitchRadians = ( pitch_ * (float) M_PI ) / 180.0f;
 
         Eigen::Vector3f newLookAt;
         newLookAt( 0 ) = cos( pitchRadians ) * cos( yawRadians );

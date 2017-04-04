@@ -70,7 +70,7 @@ namespace reto
 
   unsigned int Path::nodesSize( void )
   {
-    return _positions.size( );
+    return (unsigned int) _positions.size( );
   }
 
   void Path::clearNodes( void )
@@ -94,7 +94,7 @@ namespace reto
   {
     Eigen::Vector3f evaluatedPosition( -1.0f, -1.0f, -1.0f );
 
-    unsigned int destinationNodeId = ( originNodeId_ == _positions.size() - 1 )
+    unsigned int destinationNodeId = ( originNodeId_ == _positions.size( ) - 1 )
                                      ? 0
                                      : originNodeId_ + 1;
 
@@ -117,7 +117,7 @@ namespace reto
       case CATMULL_ROM :
       {
         unsigned int preOriginNodeId = ( originNodeId_ == 0 )
-                                       ?  _positions.size( ) - 1
+                                       ?  (unsigned int) _positions.size( ) - 1
                                        :  originNodeId_ - 1;
 
         Eigen::Vector3f p0 = _positions[ preOriginNodeId ];
