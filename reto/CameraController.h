@@ -75,7 +75,9 @@ namespace reto
     void path( Path* path_ );
 
     RETO_API
-    void center( Eigen::Vector3f centeredPosition_ = Eigen::Vector3f( 0.0f ) );
+    void center( Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+                 Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+                 Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) );
 
     RETO_API
     void zoom( float increment_ );

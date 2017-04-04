@@ -39,6 +39,7 @@ using namespace reto;
 #include "MyCube.h"
 
 reto::CameraController* cameraController;
+reto::Path* path;
 
 unsigned int idleTimeCounter = 0;
 
@@ -88,13 +89,13 @@ int main( int argc, char** argv )
 
   cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
                                                  reto::CameraController::TCamera::STANDARD );
+  path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
 
   Eigen::Vector3f defaultCameraPosition = cameraController->_camera->position( );
   Eigen::Vector3f defaultCameraLookAt = cameraController->_camera->lookAt( );
   Eigen::Vector3f defaultCameraUp = cameraController->_camera->up( );
 
-  Path* path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
-
+  // Node 0.
   path->addNode( defaultCameraPosition, defaultCameraLookAt, defaultCameraUp );
 
   float yOffset = 200.0f;
@@ -103,17 +104,14 @@ int main( int argc, char** argv )
   path->addNode( Eigen::Vector3f( defaultCameraPosition.z( )*2.0f, yOffset, 0.0f ),
                  Eigen::Vector3f( -defaultCameraPosition.z( )*2.0f, -yOffset, 0.0f ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
-
   // Node 2.
   path->addNode( Eigen::Vector3f( defaultCameraPosition.z( ), -yOffset, -defaultCameraPosition.z( ) ),
                  Eigen::Vector3f( -defaultCameraPosition.z( ), yOffset, defaultCameraPosition.z( ) ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
-
   // Node 3.
   path->addNode( Eigen::Vector3f( 0.0f, yOffset, -defaultCameraPosition.z( )*2.0f ),
                  Eigen::Vector3f( 0.0f, -yOffset, defaultCameraPosition.z( )*2.0f ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
-
   // Node 4.
   path->addNode( Eigen::Vector3f( -defaultCameraPosition.z( ), -yOffset, 0.0f ),
                  Eigen::Vector3f( defaultCameraPosition.z( ), yOffset, 0.0f ),
@@ -277,9 +275,30 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'i':
     case 'I':
-      cameraController->triggerAnimation( );
+    {
+      if( !path->positions( ).empty( ) &&
+          !path->lookAts( ).empty( ) &&
+          !path->ups( ).empty( ) )
+      {
+        // We make sure that camera has path first node position and orientation.
+        currentYaw = 90.0f;
+        currentPitch = 0.0f;
+        Eigen::Vector3f initialPosition = path->positions( ).front( );
+        Eigen::Vector3f initialLookAt = path->lookAts( ).front( );
+        Eigen::Vector3f initialUp = path->ups( ).front( );
+        cameraController->center( initialPosition,
+                                  initialLookAt,
+                                  initialUp );
+        // Triggering camera animation.
+        cameraController->triggerAnimation( );
+      }
+      else
+      {
+        std::cerr << "A path has not been built." << std::endl;
+      }
       glutPostRedisplay( );
       break;
+    }
     case 'w':
     case 'W':
       cameraController->translateInLookAtVectorDirection( 10.0f );

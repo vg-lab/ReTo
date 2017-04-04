@@ -58,6 +58,15 @@ namespace reto
     virtual ~Path( void );
 
     RETO_API
+    std::vector< Eigen::Vector3f > positions( void ) const;
+
+    RETO_API
+    std::vector< Eigen::Vector3f > lookAts( void ) const;
+
+    RETO_API
+    std::vector< Eigen::Vector3f > ups( void ) const;
+
+    RETO_API
     bool empty( void );
 
     RETO_API

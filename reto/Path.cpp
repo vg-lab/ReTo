@@ -46,6 +46,21 @@ namespace reto
     clearNodes( );
   }
 
+  std::vector< Eigen::Vector3f > Path::positions( void ) const
+  {
+    return _positions;
+  }
+
+  std::vector< Eigen::Vector3f > Path::lookAts( void ) const
+  {
+    return _lookAts;
+  }
+
+  std::vector< Eigen::Vector3f > Path::ups( void ) const
+  {
+    return _ups;
+  }
+
   bool Path::empty( void )
   {
     return ( _positions.empty( ) &&

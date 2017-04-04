@@ -113,7 +113,7 @@ namespace reto
     _isAniming = false;
     _animationFirstStep = false;
     _animationSpeed = 0.1f;
-    _animationDuration = 10.0f;
+    _animationDuration = 5.0f;
     _animationPreviousTime = std::chrono::system_clock::now( );
     _tStep = 0.01f;
   }
@@ -134,7 +134,9 @@ namespace reto
     _path = path_;
   }
 
-  void CameraController::center( Eigen::Vector3f centeredPosition_ )
+  void CameraController::center( Eigen::Vector3f position_,
+                                 Eigen::Vector3f up_,
+                                 Eigen::Vector3f lookAt_ )
   {
 
     Eigen::Matrix4f newViewMatrix = Eigen::Matrix4f::Identity( );
@@ -143,9 +145,7 @@ namespace reto
     {
       case STANDARD :
       {
-        newViewMatrix = _lookAt( centeredPosition_,
-                                 Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
-                                 Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
+        newViewMatrix = _lookAt( position_, lookAt_, up_ );
         //std::cout << "centeredViewMatrix: " << newViewMatrix << std::endl;
       }
       break;
@@ -178,15 +178,12 @@ namespace reto
     {
       case PERSPECTIVE :
       {
-        float currentRatio = _camera->width( ) / _camera->height( );
+        float currentRatio = (float) _camera->width( ) / (float) _camera->height( );
+
         float currentFov = _camera->fov( );
-
         float newFov = currentFov * scale;
-
         _camera->fov( newFov );
-
         newFov *= ( M_PI / 360.0f );
-
         float newF = 1.0f / tan( newFov );
 
         newProjMatrix = _camera->projMatrix( );
@@ -463,13 +460,6 @@ namespace reto
 
      Eigen::Vector3f targetPosition = _path->evaluatePosition( _currentNodeId,
                                                                _currentT );
-     std::cout << "targetPosition: " << targetPosition << std::endl;
-
-     /**
-     std::cout << "targetPosition: (" << targetPosition.x() << ", "
-                                      << targetPosition.y() << ", "
-                                      << targetPosition.z() << ")" << std::endl;
-     **/
 
      Eigen::Vector3f diffPosition = targetPosition - currentPosition;
 
@@ -496,6 +486,7 @@ namespace reto
      }
 
      std::cout << "nextPosition:" << nextPosition << std::endl;
+     std::cout << "targetPosition: " << targetPosition << std::endl;
 
      Eigen::Vector3f nextLookAt = _path->evaluateLookAt( _currentNodeId,
                                                          tForOrientation );
@@ -575,9 +566,9 @@ namespace reto
     _camera->position( position_ );
     //std::cout << "position:" << position_ << std::endl;
     _camera->lookAt( eyeToCenter );
-    std::cout << "eyeToCenter:" << eyeToCenter << std::endl;
+    std::cout << "lookAt:" << eyeToCenter << std::endl;
     _camera->up( upVector );
-    std::cout << "upVector:" << upVector << std::endl;
+    std::cout << "up:" << upVector << std::endl;
     std::cout << std::endl;
 
     // Relative position.
