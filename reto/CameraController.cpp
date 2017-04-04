@@ -136,9 +136,9 @@ namespace reto
     _path = path_;
   }
 
-  void CameraController::center( Eigen::Vector3f position_,
-                                 Eigen::Vector3f up_,
-                                 Eigen::Vector3f lookAt_ )
+  void CameraController::center( const Eigen::Vector3f& position_,
+                                 const Eigen::Vector3f& up_,
+                                 const Eigen::Vector3f& lookAt_ )
   {
 
     Eigen::Matrix4f newViewMatrix = Eigen::Matrix4f::Identity( );
@@ -265,7 +265,7 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
-  void CameraController::translate( Eigen::Vector3f increment_ )
+  void CameraController::translate( const Eigen::Vector3f& increment_ )
   {
     Eigen::Matrix4f newViewMatrix = _camera->viewMatrix( );
 
@@ -553,9 +553,9 @@ namespace reto
     _currentNodeId = 0;
   }
 
-  Eigen::Matrix4f CameraController::_lookAt( Eigen::Vector3f position_,
-                                             Eigen::Vector3f lookAt_,
-                                             Eigen::Vector3f up_ )
+  Eigen::Matrix4f CameraController::_lookAt( const Eigen::Vector3f& position_,
+                                             const Eigen::Vector3f& lookAt_,
+                                             const Eigen::Vector3f& up_ )
   {
     // Updating vectors.
     Eigen::Vector3f eyeToCenter = lookAt_.normalized( );

@@ -77,9 +77,9 @@ namespace reto
     void path( Path* path_ );
 
     RETO_API
-    void center( Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
-                 Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
-                 Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) );
+    void center( const Eigen::Vector3f& position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+                 const Eigen::Vector3f& up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+                 const Eigen::Vector3f& lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) );
 
     RETO_API
     void zoom( float increment_ );
@@ -88,7 +88,7 @@ namespace reto
     void resize( float width_, float height_ );
 
     RETO_API
-    void translate( Eigen::Vector3f increment_ );
+    void translate( const Eigen::Vector3f& increment_ );
 
     RETO_API
     void translateInLookAtVectorDirection( float increment_ );
@@ -114,9 +114,9 @@ namespace reto
   private:
 
     RETO_API
-    Eigen::Matrix4f _lookAt( Eigen::Vector3f position_,
-                             Eigen::Vector3f lookAt_,
-                             Eigen::Vector3f up_ );
+    Eigen::Matrix4f _lookAt( const Eigen::Vector3f& position_,
+                             const Eigen::Vector3f& lookAt_,
+                             const Eigen::Vector3f& up_ );
 
     RETO_API
     Eigen::Matrix3f _generateRotationMatrix( float yaw_, float pitch_ );

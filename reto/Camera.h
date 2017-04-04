@@ -132,7 +132,7 @@ namespace reto
      * @param Eigen::Vector3f with the new camera position
      */
     RETO_API
-    void position( Eigen::Vector3f position_ );
+    void position( const Eigen::Vector3f& position_ );
 
     /**
      * Method to get camera up vector
@@ -146,7 +146,7 @@ namespace reto
      * @param Eigen::Vector3f with the new camera up vector
      */
     RETO_API
-    void up( Eigen::Vector3f up_ );
+    void up( const Eigen::Vector3f& up_ );
 
     /**
      * Method to get camera look-at vector
@@ -160,7 +160,7 @@ namespace reto
      * @param Eigen::Vector3f with the new camera look-at vector
      */
     RETO_API
-    void lookAt( Eigen::Vector3f lookAt );
+    void lookAt( const Eigen::Vector3f& lookAt_ );
 
     /**
      * Method to get camera view matrix
@@ -174,7 +174,7 @@ namespace reto
      * @param Eigen::Matrix4f with the new camera view matrix
      */
     RETO_API
-    void viewMatrix( Eigen::Matrix4f viewMatrix_ );
+    void viewMatrix( const Eigen::Matrix4f& viewMatrix_ );
 
     /**
      * Method to get camera projection matrix
@@ -188,7 +188,7 @@ namespace reto
      * @param Eigen::Matrix4f with the new camera projection matrix
      */
     RETO_API
-    void projMatrix( Eigen::Matrix4f projMatrix_ );
+    void projMatrix( const Eigen::Matrix4f& projMatrix_ );
 
     /**
      * Method to get camera view projection matrix: projMatrix * viewMatrix
@@ -202,7 +202,7 @@ namespace reto
      * @return Eigen::Matrix4f with the new camera view projection matrix
      */
     RETO_API
-    void viewProjMatrix( Eigen::Matrix4f viewProjMatrix_ );
+    void viewProjMatrix( const Eigen::Matrix4f& viewProjMatrix_ );
 
     /**
      * Method to get camera field of view (only if working with a perspective

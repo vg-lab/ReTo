@@ -92,10 +92,6 @@ namespace reto
     Eigen::Vector3f evaluateUp( unsigned int originNodeId_,
                                 float t_ );
 
-    //RETO_API
-    //Eigen::Matrix3f evaluateOrientation( unsigned int originNodeId_,
-    //                                     float t_ );
-
   private:
 
     // Interpolation methods.

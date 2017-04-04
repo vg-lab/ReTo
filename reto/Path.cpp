@@ -207,67 +207,6 @@ namespace reto
     return interpolatedUpVector;
   }
 
-  /**
-  Eigen::Matrix3f Path::evaluateOrientation( unsigned int originNodeId_,
-                                             float t_ )
-  {
-    unsigned int destinationNodeId = ( originNodeId_ == _positions.size() - 1 )
-                                       ? 0
-                                       : originNodeId_ + 1;
-
-    // Normalizing. Just in case.
-
-    // Origin node.
-    Eigen::Vector3f originLookAtVector = _lookAts[ originNodeId_ ];
-    originLookAtVector.normalize( );
-    Eigen::Vector3f originUpVector = _ups[ originNodeId_ ];
-    originUpVector.normalize( );
-    Eigen::Vector3f originTangentVector = originLookAtVector.cross( originUpVector );
-    originTangentVector.normalize( );
-    originUpVector = originTangentVector.cross( originLookAtVector );
-
-    // Destination node.
-    Eigen::Vector3f destinationLookAtVector = _lookAts[ destinationNodeId ];
-    destinationLookAtVector.normalize( );
-    Eigen::Vector3f destinationUpVector = _ups[ destinationNodeId ];
-    destinationUpVector.normalize( );
-    Eigen::Vector3f destinationTangentVector = destinationLookAtVector.cross( destinationUpVector );
-    destinationTangentVector.normalize( );
-    destinationUpVector = destinationTangentVector.cross( destinationLookAtVector );
-
-    // Interpolation method: slerp.
-
-    Eigen::Quaternionf baseQuaternion;
-    baseQuaternion = Eigen::Quaternionf::Identity();
-
-    // LookAt quaternion.
-    Eigen::Quaternionf lookAtQuaternion;
-    lookAtQuaternion.setFromTwoVectors( originLookAtVector, destinationLookAtVector );
-    Eigen::Vector3f interpolatedLookAtVector =
-     ( baseQuaternion.slerp( t_, lookAtQuaternion ) ) * originLookAtVector;
-
-    // Up quaternion.
-    Eigen::Quaternionf upQuaternion;
-    upQuaternion.setFromTwoVectors( originUpVector, destinationUpVector );
-    Eigen::Vector3f interpolatedUpVector =
-      ( baseQuaternion.slerp( t_, upQuaternion ) ) * originUpVector;
-
-    // Tangent quaternion.
-    Eigen::Quaternionf tangentQuaternion;
-    tangentQuaternion.setFromTwoVectors( originTangentVector, destinationTangentVector );
-    Eigen::Vector3f interpolatedTangentVector =
-      ( baseQuaternion.slerp( t_, tangentQuaternion ) ) * originTangentVector;
-
-    Eigen::Matrix3f interpolatedOrientation;
-    interpolatedOrientation
-    << interpolatedTangentVector.x( ), interpolatedUpVector.x( ), -interpolatedLookAtVector.x( ),
-       interpolatedTangentVector.y( ), interpolatedUpVector.y( ), -interpolatedLookAtVector.y( ),
-       interpolatedTangentVector.z( ), interpolatedUpVector.z( ), -interpolatedLookAtVector.z( );
-
-    return interpolatedOrientation;
-  }
-  **/
-
   float Path::_lerp( float p1, float p2, float t )
   {
     return ( p1 + t * ( p2 - p1 ) );

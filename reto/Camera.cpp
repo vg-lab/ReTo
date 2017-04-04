@@ -96,7 +96,7 @@ namespace reto
     return _position;
   }
 
-  void Camera::position( Eigen::Vector3f position_ )
+  void Camera::position( const Eigen::Vector3f& position_ )
   {
     _position = position_;
   }
@@ -106,7 +106,7 @@ namespace reto
     return _up;
   }
 
-  void Camera::up( Eigen::Vector3f up_ )
+  void Camera::up( const Eigen::Vector3f& up_ )
   {
     _up = up_;
   }
@@ -116,7 +116,7 @@ namespace reto
     return _lookAt;
   }
 
-  void Camera::lookAt( Eigen::Vector3f lookAt_ )
+  void Camera::lookAt( const Eigen::Vector3f& lookAt_ )
   {
     _lookAt = lookAt_;
   }
@@ -135,7 +135,7 @@ namespace reto
     return viewMatrix_;
   }
 
-  void Camera::viewMatrix( Eigen::Matrix4f viewMatrix_ )
+  void Camera::viewMatrix( const Eigen::Matrix4f& viewMatrix_ )
   {
     _viewMatrix( 0, 0 ) = viewMatrix_( 0, 0 ); _viewMatrix( 1, 0 ) = viewMatrix_( 1, 0 );
     _viewMatrix( 2, 0 ) = viewMatrix_( 2, 0 ); _viewMatrix( 3, 0 ) = viewMatrix_( 3, 0 );
@@ -161,7 +161,7 @@ namespace reto
     return projMatrix_;
   }
 
-  void Camera::projMatrix( Eigen::Matrix4f projMatrix_ )
+  void Camera::projMatrix( const Eigen::Matrix4f& projMatrix_ )
   {
     _projMatrix( 0, 0 ) = projMatrix_( 0, 0 ); _projMatrix( 1, 0 ) = projMatrix_( 1, 0 );
     _projMatrix( 2, 0 ) = projMatrix_( 2, 0 ); _projMatrix( 3, 0 ) = projMatrix_( 3, 0 );
@@ -187,7 +187,7 @@ namespace reto
     return viewProjMatrix_;
   }
 
-  void Camera::viewProjMatrix( Eigen::Matrix4f viewProjMatrix_ )
+  void Camera::viewProjMatrix( const Eigen::Matrix4f& viewProjMatrix_ )
   {
     _viewProjMatrix( 0, 0 ) = viewProjMatrix_( 0, 0 ); _viewProjMatrix( 1, 0 ) = viewProjMatrix_( 1, 0 );
     _viewProjMatrix( 2, 0 ) = viewProjMatrix_( 2, 0 ); _viewProjMatrix( 3, 0 ) = viewProjMatrix_( 3, 0 );
