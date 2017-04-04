@@ -92,7 +92,7 @@ namespace reto
   Eigen::Vector3f Path::evaluatePosition( unsigned int originNodeId_,
                                           float t_ )
   {
-    Eigen::Vector3f evaluatedPosition( -1.0f );
+    Eigen::Vector3f evaluatedPosition( -1.0f, -1.0f, -1.0f );
 
     unsigned int destinationNodeId = ( originNodeId_ == _positions.size() - 1 )
                                      ? 0

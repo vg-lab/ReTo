@@ -63,7 +63,9 @@ namespace reto
     RETO_API
     CameraController( TProjection projection_,
                       TCamera cameraType_,
-                      Path* path_ = new Path( Path::TInterpolationMethod::LERP ) );
+                      Path* path_ = new Path( Path::TInterpolationMethod::LERP ),
+                      float animationDuration_ = 5.0f,
+                      float tStep_ = 0.01f );
 
     RETO_API
     virtual ~CameraController( void );

@@ -55,9 +55,8 @@ bool rotation = false;
 bool traslation = false;
 
 // Constants.
-const float mouseWheelFactor = 1.2f;
 const float rotationScale = 0.1f;
-const float traslationScale = 0.2f;
+//const float traslationScale = 0.2f;
 
 // Euler angles.
 /**/
@@ -87,9 +86,10 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
-  cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
-                                                 reto::CameraController::TCamera::STANDARD );
   path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
+  cameraController = new reto::CameraController( reto::CameraController::TProjection::ORTHOGRAPHIC,
+                                                 reto::CameraController::TCamera::STANDARD,
+                                                 path, 5.0f, 0.01f );
 
   Eigen::Vector3f defaultCameraPosition = cameraController->_camera->position( );
   Eigen::Vector3f defaultCameraLookAt = cameraController->_camera->lookAt( );

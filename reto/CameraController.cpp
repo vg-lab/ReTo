@@ -27,7 +27,9 @@ namespace reto
 
   CameraController::CameraController( TProjection projection_,
                                       TCamera cameraType_,
-                                      Path* path_ )
+                                      Path* path_,
+                                      float animationDuration_,
+                                      float tStep_ )
   {
     // Creating camera with default values.
     _camera = new Camera( );
@@ -113,9 +115,9 @@ namespace reto
     _isAniming = false;
     _animationFirstStep = false;
     _animationSpeed = 0.1f;
-    _animationDuration = 5.0f;
+    _animationDuration = animationDuration_;
     _animationPreviousTime = std::chrono::system_clock::now( );
-    _tStep = 0.01f;
+    _tStep = tStep_;
   }
 
   CameraController::~CameraController( void )
