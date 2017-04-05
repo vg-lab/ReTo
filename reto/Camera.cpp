@@ -32,7 +32,9 @@ namespace reto
                   Eigen::Vector3f position_,
                   Eigen::Vector3f up_,
                   Eigen::Vector3f lookAt_,
-                  float fov_ )
+                  float fov_,
+                  Eigen::Vector3f pivot_,
+                  float radius_ )
   : _width( width_ )
   , _height( height_ )
   , _nearPlane( nearPlane_ )
@@ -41,6 +43,8 @@ namespace reto
   , _up( up_ )
   , _lookAt( lookAt_ )
   , _fov( fov_ )
+  , _pivot( pivot_ )
+  , _radius( radius_ )
   {
     _viewMatrix = Eigen::Matrix4f::Identity( );
     _projMatrix = Eigen::Matrix4f::Identity( );
@@ -207,6 +211,26 @@ namespace reto
   void Camera::fov( float fov_ )
   {
     _fov = fov_;
+  }
+
+  Eigen::Vector3f Camera::pivot( void ) const
+  {
+    return _pivot;
+  }
+
+  void Camera::pivot( const Eigen::Vector3f& pivot_ )
+  {
+    _pivot = pivot_;
+  }
+
+  float Camera::radius( void ) const
+  {
+    return _radius;
+  }
+
+  void Camera::radius( float radius_ )
+  {
+    _radius = radius_;
   }
 
 } // end namespace reto

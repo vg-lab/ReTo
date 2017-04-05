@@ -79,7 +79,9 @@ namespace reto
     RETO_API
     void center( const Eigen::Vector3f& position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
                  const Eigen::Vector3f& up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
-                 const Eigen::Vector3f& lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) );
+                 const Eigen::Vector3f& lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+                 const Eigen::Vector3f& pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                 float radius_ = 500.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
 
     RETO_API
     void zoom( float increment_ );
@@ -103,6 +105,9 @@ namespace reto
     void localOrientation( float yaw_, float pitch_ );
 
     RETO_API
+    void localRotation( float yaw_, float pitch_ );
+
+    RETO_API
     bool animate( void );
 
     RETO_API
@@ -110,6 +115,8 @@ namespace reto
 
     // Temporary.
     Camera* _camera;
+    TProjection _projection;
+    TCamera _cameraType;
 
   private:
 
@@ -119,10 +126,13 @@ namespace reto
                              const Eigen::Vector3f& up_ );
 
     RETO_API
-    Eigen::Matrix3f _generateRotationMatrix( float yaw_, float pitch_ );
+    Eigen::Matrix4f _orbital( const Eigen::Vector3f& pivot_, float radius_,
+                              const Eigen::Matrix3f& orientation_,
+                              const Eigen::Vector3f& up_ );
 
-    TProjection _projection;
-    TCamera _cameraType;
+    RETO_API
+    Eigen::Matrix3f _yawPitchRoll( float yaw_, float pitch_, float roll_ );
+
     Path* _path;
 
     bool _isAniming;

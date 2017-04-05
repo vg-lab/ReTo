@@ -49,6 +49,8 @@ namespace reto
      * @param up camera up vector
      * @param lookAt vector from camera position to target
      * @param fov field of view for a perspective camera
+     * @param pivot rotation pivot for an orbital camera
+     * @param radius distance from pivot for an orbital camera
      */
     RETO_API
     Camera( unsigned int width_ = 1920, unsigned int height_ = 1080,
@@ -56,7 +58,9 @@ namespace reto
             Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
             Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
             Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
-            float fov_ = 45.0f );
+            float fov_ = 45.0f,
+            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+            float radius_ = 500.0f );
 
     /**
      * Default destructor
@@ -199,7 +203,7 @@ namespace reto
 
     /**
      * Method to set camera view projection matrix: projMatrix * viewMatrix
-     * @return Eigen::Matrix4f with the new camera view projection matrix
+     * @param Eigen::Matrix4f with the new camera view projection matrix
      */
     RETO_API
     void viewProjMatrix( const Eigen::Matrix4f& viewProjMatrix_ );
@@ -215,10 +219,42 @@ namespace reto
     /**
      * Method to set camera field of view (only if working with a perspective
      * one)
-     * @return float with the new camera field of view
+     * @param float with the new camera field of view
      */
     RETO_API
     void fov( float fov_ );
+
+    /**
+     * Method to get camera rotation pivot (only if working with an orbital
+     * one)
+     * @return Eigen::Vector3f with camera rotation pivot
+     */
+    RETO_API
+    Eigen::Vector3f pivot( void ) const;
+
+    /**
+     * Method to set camera rotation pivot (only if working with an orbital
+     * one)
+     * @param Eigen::Vector3f with the new camera rotation pivot
+     */
+    RETO_API
+    void pivot( const Eigen::Vector3f& pivot_ );
+
+    /**
+     * Method to get camera distance from pivot (only if working with an orbital
+     * one)
+     * @return float with camera distance from pivot
+     */
+    RETO_API
+    float radius( void ) const;
+
+    /**
+     * Method to set camera distance from pivot (only if working with an orbital
+     * one)
+     * @param float with the new camera field of view
+     */
+    RETO_API
+    void radius( float radius_ );
 
 protected:
 
@@ -254,6 +290,12 @@ protected:
 
     //! Field of view (only if working with a perspective camera)
     float _fov;
+
+    //! Rotation pivot
+    Eigen::Vector3f _pivot;
+
+    //! Distance from pivot
+    float _radius;
 
   };
 

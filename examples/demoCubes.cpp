@@ -68,8 +68,7 @@ bool rotation = false;
 bool traslation = false;
 
 // Constants.
-const float rotationScale = 0.1f;
-//const float traslationScale = 0.2f;
+float rotationScale;
 
 // Euler angles.
 /**/
@@ -100,9 +99,20 @@ int main( int argc, char** argv )
   mycube = new MyCube( 4.5f );
 
   path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
-  cameraController = new reto::CameraController( reto::CameraController::TProjection::ORTHOGRAPHIC,
-                                                 reto::CameraController::TCamera::STANDARD,
+  cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
+                                                 reto::CameraController::TCamera::ORBITAL,
                                                  path, 5.0f, 0.01f );
+
+  switch( cameraController->_cameraType )
+  {
+    case reto::CameraController::STANDARD :
+      rotationScale = 0.1f;
+      break;
+
+    case reto::CameraController::ORBITAL :
+      rotationScale = 0.3f;
+      break;
+  }
 
   Eigen::Vector3f defaultCameraPosition = cameraController->_camera->position( );
   Eigen::Vector3f defaultCameraLookAt = cameraController->_camera->lookAt( );
@@ -271,8 +281,6 @@ void resizeFunc( int width, int height )
 
 void idleFunc( void )
 {
-  //static float angle = 0.0f;
-  //angle = ( angle > 2.0f * float( M_PI )) ? 0 : angle + 0.01f;
   if( idleTimeCounter > 5 && cameraController->animate( ) )
   {
     idleTimeCounter = 0;
@@ -289,72 +297,107 @@ void keyboardFunc( unsigned char key, int, int )
     case 'i':
     case 'I':
     {
-      if( !path->positions( ).empty( ) &&
-          !path->lookAts( ).empty( ) &&
-          !path->ups( ).empty( ) )
+      switch( cameraController->_cameraType )
       {
-        // We make sure that camera has path first node position and orientation.
-        currentYaw = 90.0f;
-        currentPitch = 0.0f;
-        Eigen::Vector3f initialPosition = path->positions( ).front( );
-        Eigen::Vector3f initialLookAt = path->lookAts( ).front( );
-        Eigen::Vector3f initialUp = path->ups( ).front( );
-        cameraController->center( initialPosition,
-                                  initialLookAt,
-                                  initialUp );
-        // Triggering camera animation.
-        cameraController->triggerAnimation( );
-      }
-      else
-      {
-        std::cerr << "A path has not been built." << std::endl;
+        case reto::CameraController::STANDARD :
+        {
+          if( !path->positions( ).empty( ) &&
+              !path->lookAts( ).empty( ) &&
+              !path->ups( ).empty( ) )
+          {
+            // We make sure that camera has path first node position and orientation.
+            currentYaw = 90.0f;
+            currentPitch = 0.0f;
+            Eigen::Vector3f initialPosition = path->positions( ).front( );
+            Eigen::Vector3f initialLookAt = path->lookAts( ).front( );
+            Eigen::Vector3f initialUp = path->ups( ).front( );
+            cameraController->center( initialPosition,
+                                      initialLookAt,
+                                      initialUp );
+            // Triggering camera animation.
+            cameraController->triggerAnimation( );
+          }
+          else
+          {
+            std::cerr << "A path has not been built." << std::endl;
+          }
+          break;
+        }
+        case reto::CameraController::ORBITAL :
+        {
+          std::cerr << "Animation for orbital camera not implemented." << std::endl;
+          break;
+        }
       }
       glutPostRedisplay( );
       break;
     }
     case 'w':
     case 'W':
-      cameraController->translateInLookAtVectorDirection( 10.0f );
+      if( cameraController->_projection == reto::CameraController::PERSPECTIVE )
+        cameraController->translateInLookAtVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     case 's':
     case 'S':
     {
-      cameraController->translateInLookAtVectorDirection( -10.0f );
+      if( cameraController->_projection == reto::CameraController::PERSPECTIVE )
+        cameraController->translateInLookAtVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'q':
     case 'Q':
-      cameraController->translateInUpVectorDirection( 10.0f );
+      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+        cameraController->translateInUpVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     case 'e':
     case 'E':
     {
-      cameraController->translateInUpVectorDirection( -10.0f );
+      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+        cameraController->translateInUpVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'a':
     case 'A':
     {
-      cameraController->translateInRightVectorDirection( -10.0f );
+      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+        cameraController->translateInRightVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'd':
     case 'D':
     {
-      cameraController->translateInRightVectorDirection( 10.0f );
+      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+        cameraController->translateInRightVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'c':
     case 'C':
-      currentYaw = 90.0f;
-      currentPitch = 0.0f;
-      cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ) );
+      switch( cameraController->_cameraType )
+      {
+        case reto::CameraController::STANDARD :
+          currentYaw = 90.0f;
+          currentPitch = 0.0f;
+          cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+                                    Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                                    500.0f, currentYaw, currentPitch );
+          break;
+
+        case reto::CameraController::ORBITAL :
+          cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+                                    Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                                    500.0f, 0.0f, 0.0f );
+          break;
+      }
       std::cout << "Camera centered." << std::endl;
       glutPostRedisplay( );
       break;
@@ -390,7 +433,6 @@ void mouseFunc( int button, int state, int x, int y )
     if( button == 1 ) traslation = true;
     if ( (button == 3) || (button == 4) )
     {
-      //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
       if( button == 3 )
         cameraController->zoom( -0.1f );
@@ -425,20 +467,29 @@ void mouseMotionFunc( int x, int y )
       deltaX *= rotationScale;
       deltaY *= rotationScale;
 
-      currentYaw += deltaX;
-      currentPitch -= deltaY;
+      switch( cameraController->_cameraType )
+      {
+        case reto::CameraController::STANDARD :
+        {
+          currentYaw += deltaX;
+          currentPitch -= deltaY;
 
-      if( currentPitch > 89.0f ) currentPitch = 89.0f;
-      if( currentPitch < -89.0f ) currentPitch = -89.0f;
+          currentYaw = fmod( currentYaw, 360.0f );
+          if( currentPitch > 89.0f ) currentPitch = 89.0f;
+          if( currentPitch < -89.0f ) currentPitch = -89.0f;
 
-      cameraController->localOrientation( currentYaw, currentPitch );
+          cameraController->localOrientation( currentYaw, currentPitch );
+        }
+        break;
+
+        case reto::CameraController::ORBITAL :
+          cameraController->localRotation( deltaX, deltaY );
+          break;
+      }
     }
     if( traslation )
     {
-      std::cout << "Please use WASD instead." << std::endl;
-      //cameraController->translate( Eigen::Vector3f ( -deltaX * traslationScale,
-      //                                               0.0f,
-      //                                               deltaY * traslationScale ) );
+      std::cout << "Please, use WASD instead." << std::endl;
     }
     previousX = x;
     previousY = y;
