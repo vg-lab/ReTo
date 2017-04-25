@@ -43,6 +43,9 @@ namespace reto
     float defaultNearPlane = _camera->nearPlane( );
     float defaultFarPlane = _camera->farPlane( );
 
+    _pivot = Eigen::Vector3f( 0.0f, 0.0f, 0.0f );
+    _radius = 500.0f;
+
     Eigen::Matrix4f viewMatrix;
     Eigen::Matrix4f projMatrix;
     Eigen::Matrix4f viewProjMatrix;
@@ -67,10 +70,8 @@ namespace reto
         Eigen::Matrix3f currentOrientation =
           _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
 
-        viewMatrix = _orbital( _camera->pivot( ),
-                               _camera->radius( ),
-                               currentOrientation,
-                               _camera->up( ) );
+        viewMatrix = _orbital( currentOrientation,
+                               defaultUp );
       }
       break;
     }
@@ -146,6 +147,26 @@ namespace reto
     _path = path_;
   }
 
+  Eigen::Vector3f CameraController::pivot( void ) const
+  {
+    return _pivot;
+  }
+
+  void CameraController::pivot( const Eigen::Vector3f& pivot_ )
+  {
+    _pivot = pivot_;
+  }
+
+  float CameraController::radius( void ) const
+  {
+    return _radius;
+  }
+
+  void CameraController::radius( float radius_ )
+  {
+    _radius = radius_;
+  }
+
   void CameraController::center( const Eigen::Vector3f& position_,
                                  const Eigen::Vector3f& up_,
                                  const Eigen::Vector3f& lookAt_,
@@ -165,6 +186,9 @@ namespace reto
 
       case ORBITAL :
       {
+        pivot( pivot_ );
+        radius( radius_ );
+
         // Angles to radians.
         float yawRadians = ( yaw_ * (float) M_PI ) / 180.0f;
         float pitchRadians = ( pitch_ * (float) M_PI ) / 180.0f;
@@ -172,9 +196,7 @@ namespace reto
         Eigen::Matrix3f currentOrientation =
           _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
 
-        newViewMatrix = _orbital( pivot_,
-                                  radius_,
-                                  currentOrientation,
+        newViewMatrix = _orbital( currentOrientation,
                                   up_ );
       }
       break;
@@ -302,18 +324,6 @@ namespace reto
 
       case ORBITAL :
       {
-        /**
-        Eigen::Matrix3f currentOrientation =
-          _camera->viewMatrix( ).block( 0, 0, 3, 3 );
-
-        Eigen::Vector3f newPivot = _camera->pivot( ) +
-          currentOrientation * increment_;
-
-        newViewMatrix = _orbital( newPivot,
-                                  _camera->radius( ),
-                                  currentOrientation,
-                                  _camera->up( ) );
-        **/
         std::cerr << "Not implemented yet." << std::endl;
       }
       break;
@@ -353,9 +363,9 @@ namespace reto
         // Ensure that radius has a positive minimum.
         if( newRadius < 10.0f ) newRadius = 10.0f;
 
-        newViewMatrix = _orbital( _camera->pivot( ),
-                                  newRadius,
-                                  currentOrientation,
+        radius( newRadius );
+
+        newViewMatrix = _orbital( currentOrientation,
                                   _camera->up( ) );
       }
       break;
@@ -387,20 +397,6 @@ namespace reto
 
       case ORBITAL :
       {
-        /**
-        Eigen::Vector3f incrementVector = newPosition - currentPosition;
-
-        Eigen::Matrix3f currentOrientation =
-          _camera->viewMatrix( ).block( 0, 0, 3, 3 );
-
-        Eigen::Vector3f newPivot = _camera->pivot( ) +
-          currentOrientation * incrementVector;
-
-        newViewMatrix = _orbital( newPivot,
-                                  _camera->radius( ),
-                                  currentOrientation,
-                                  _camera->up( ) );
-        **/
         std::cerr << "Not implemented yet." << std::endl;
       }
       break;
@@ -435,20 +431,6 @@ namespace reto
 
       case ORBITAL :
       {
-        /**
-        Eigen::Vector3f incrementVector = newPosition - currentPosition;
-
-        Eigen::Matrix3f currentOrientation =
-          _camera->viewMatrix( ).block( 0, 0, 3, 3 );
-
-        Eigen::Vector3f newPivot = _camera->pivot( ) +
-          currentOrientation * incrementVector;
-
-        newViewMatrix = _orbital( newPivot,
-                                  _camera->radius( ),
-                                  currentOrientation,
-                                  _camera->up( ) );
-        **/
         std::cerr << "Not implemented yet." << std::endl;
       }
       break;
@@ -486,7 +468,11 @@ namespace reto
 
       case ORBITAL :
       {
-        std::cerr << "Not implemented yet." << std::endl;
+        Eigen::Matrix3f currentOrientation =
+          _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
+
+        newViewMatrix = _orbital( currentOrientation,
+                                  _camera->up( ) );
       }
       break;
     }
@@ -510,6 +496,16 @@ namespace reto
     {
       case STANDARD :
       {
+        /**
+        Eigen::Matrix3f rotationMatrix =
+          _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
+
+        Eigen::Vector3f newLookAt =
+          rotationMatrix * _camera->lookAt( );
+        newLookAt.normalize( );
+
+        newViewMatrix = _lookAt( _camera->position( ), newLookAt, _camera->up( ) );
+        **/
         std::cerr << "Not implemented yet." << std::endl;
       }
       break;
@@ -525,9 +521,7 @@ namespace reto
         // This is key for orbital camera to work.
         currentOrientation = rotationMatrix * currentOrientation;
 
-        newViewMatrix = _orbital( _camera->pivot( ),
-                                  _camera->radius( ),
-                                  currentOrientation,
+        newViewMatrix = _orbital( currentOrientation,
                                   _camera->up( ) );
       }
       break;
@@ -704,26 +698,21 @@ namespace reto
     return toReturn;
   }
 
-  Eigen::Matrix4f CameraController::_orbital( const Eigen::Vector3f& pivot_,
-                                              float radius_,
-                                              const Eigen::Matrix3f& orientation_,
+  Eigen::Matrix4f CameraController::_orbital( const Eigen::Matrix3f& orientation_,
                                               const Eigen::Vector3f& up_ )
   {
-    Eigen::Vector3f newPosition = pivot_ +
-        orientation_.transpose( ) * Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) * radius_;
-    Eigen::Vector3f newLookAt = pivot_ - newPosition;
+    Eigen::Vector3f newPosition = _pivot +
+        orientation_.transpose( ) * Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) * _radius;
+    Eigen::Vector3f newLookAt = _pivot - newPosition;
     // Up vector will be orthogonalized in _lookAt function.
-
-    _camera->pivot( pivot_ );
-    _camera->radius( radius_ );
 
     // Feedback.
     /**/
     std::cout << "pivot: ("
-              << pivot_.x( ) << ", "
-              << pivot_.y( ) << ", "
-              << pivot_.z( ) << ")" << std::endl;
-    std::cout << "radius: " << radius_ << std::endl;
+              << _pivot.x( ) << ", "
+              << _pivot.y( ) << ", "
+              << _pivot.z( ) << ")" << std::endl;
+    std::cout << "radius: " << _radius << std::endl;
     /**/
 
     Eigen::Matrix4f toReturn = _lookAt( newPosition,

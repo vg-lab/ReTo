@@ -41,6 +41,8 @@ namespace reto
     projection matrices. With this class the user can do the following
     actions with the camera: centering, zooming, resizing, translating,
     rotating and animating.
+    @param pivot rotation pivot for an orbital camera
+    @param radius distance from pivot for an orbital camera
    */
   class CameraController
   {
@@ -75,6 +77,38 @@ namespace reto
 
     RETO_API
     void path( Path* path_ );
+
+    /**
+     * Method to get camera rotation pivot (only if working with an orbital
+     * one)
+     * @return Eigen::Vector3f with camera rotation pivot
+     */
+    RETO_API
+    Eigen::Vector3f pivot( void ) const;
+
+    /**
+     * Method to set camera rotation pivot (only if working with an orbital
+     * one)
+     * @param Eigen::Vector3f with the new camera rotation pivot
+     */
+    RETO_API
+    void pivot( const Eigen::Vector3f& pivot_ );
+
+    /**
+     * Method to get camera distance from pivot (only if working with an orbital
+     * one)
+     * @return float with camera distance from pivot
+     */
+    RETO_API
+    float radius( void ) const;
+
+    /**
+     * Method to set camera distance from pivot (only if working with an orbital
+     * one)
+     * @param float with the new camera field of view
+     */
+    RETO_API
+    void radius( float radius_ );
 
     RETO_API
     void center( const Eigen::Vector3f& position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
@@ -126,14 +160,19 @@ namespace reto
                              const Eigen::Vector3f& up_ );
 
     RETO_API
-    Eigen::Matrix4f _orbital( const Eigen::Vector3f& pivot_, float radius_,
-                              const Eigen::Matrix3f& orientation_,
+    Eigen::Matrix4f _orbital( const Eigen::Matrix3f& orientation_,
                               const Eigen::Vector3f& up_ );
 
     RETO_API
     Eigen::Matrix3f _yawPitchRoll( float yaw_, float pitch_, float roll_ );
 
     Path* _path;
+
+    //! Rotation pivot
+    Eigen::Vector3f _pivot;
+
+    //! Distance from pivot
+    float _radius;
 
     bool _isAniming;
     bool _animationFirstStep;
