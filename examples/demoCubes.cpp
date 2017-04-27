@@ -96,12 +96,36 @@ int main( int argc, char** argv )
   initContext( argc, argv );
   initOGL( );
 
+  /**/
+  if ( argc < 2 )
+  {
+    std::cout << "Usage: bin/meshFormatConversion zeqUri" << std::endl;
+    exit( 0 );
+  }
+  /**/
+
+  std::string zeqUri = "";
+
+#ifdef RETO_USE_ZEROEQ
+  zeqUri = std::string( argv[1] );
+#else
+  std::cerr << "ZeroEQ not supported." << std::endl;
+#endif
+
   mycube = new MyCube( 4.5f );
 
   path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
+
+#ifdef RETO_USE_ZEROEQ
+  cameraController = new reto::CameraController( zeqUri,
+                                                 reto::CameraController::TProjection::PERSPECTIVE,
+                                                 reto::CameraController::TCamera::ORBITAL,
+                                                 path, 5.0f, 0.01f );
+#else
   cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
                                                  reto::CameraController::TCamera::ORBITAL,
                                                  path, 5.0f, 0.01f );
+#endif
 
   switch( cameraController->_cameraType )
   {

@@ -131,6 +131,115 @@ namespace reto
     _tStep = tStep_;
   }
 
+#ifdef RETO_USE_ZEROEQ
+  CameraController::CameraController( const std::string& zeqSession,
+                                      TProjection projection_,
+                                      TCamera cameraType_,
+                                      Path* path_,
+                                      float animationDuration_,
+                                      float tStep_ )
+  {
+    // Creating camera with default values.
+    _camera = new Camera( zeqSession );
+    _projection = projection_;
+    _cameraType = cameraType_;
+
+    Eigen::Vector3f defaultPosition = _camera->position( );
+    Eigen::Vector3f defaultUp = _camera->up( );
+    Eigen::Vector3f defaultLookAt = _camera->lookAt( );
+
+    float defaultNearPlane = _camera->nearPlane( );
+    float defaultFarPlane = _camera->farPlane( );
+
+    _pivot = Eigen::Vector3f( 0.0f, 0.0f, 0.0f );
+    _radius = 500.0f;
+
+    Eigen::Matrix4f viewMatrix;
+    Eigen::Matrix4f projMatrix;
+    Eigen::Matrix4f viewProjMatrix;
+
+    switch( _cameraType )
+    {
+      case STANDARD :
+      {
+        viewMatrix = _lookAt( defaultPosition, defaultLookAt, defaultUp );
+      }
+      break;
+
+      case ORBITAL :
+      {
+        float defaultYaw = 0.0f;
+        float defaultPitch = 0.0f;
+
+        // Angles to radians.
+        float yawRadians = ( defaultYaw * (float) M_PI ) / 180.0f;
+        float pitchRadians = ( defaultPitch * (float) M_PI ) / 180.0f;
+
+        Eigen::Matrix3f currentOrientation =
+          _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
+
+        viewMatrix = _orbital( currentOrientation,
+                               defaultUp );
+      }
+      break;
+    }
+
+    switch( _projection )
+    {
+      case PERSPECTIVE :
+      {
+        float defaultFov = _camera->fov();
+
+        defaultFov *= ( (float) M_PI / 360.0f );
+
+        float f = 1.0f / tan( defaultFov );
+
+        float ratio = _camera->width( ) / _camera->height( );
+
+        float inverseOfNearMinusFar = 1.0f / ( defaultNearPlane - defaultFarPlane );
+
+        projMatrix
+        << f / ratio, 0.0f, 0.0f, 0.0f,
+           0.0f, f, 0.0f, 0.0f,
+           0.0f, 0.0f, ( defaultFarPlane + defaultNearPlane  ) * inverseOfNearMinusFar, ( 2.0f * defaultFarPlane * defaultNearPlane ) * inverseOfNearMinusFar,
+           0.0f, 0.0f, -1.0f, 0.0f;
+      }
+      break;
+
+      case ORTHOGRAPHIC :
+      {
+        float right = _camera->width( ) * 0.5f;
+        float top = _camera->height( ) * 0.5f;
+
+        projMatrix
+        << 1.0f / right, 0.0f, 0.0f, 0.0f,
+           0.0f, 1.0f / top, 0.0f, 0.0f,
+           0.0f, 0.0f, -2.0f / ( defaultFarPlane - defaultNearPlane ), -1.0f * ( defaultFarPlane + defaultNearPlane ) / ( defaultFarPlane - defaultNearPlane ),
+           0.0f, 0.0f, 0.0f, 1.0f;
+      }
+      break;
+    }
+
+    _camera->viewMatrix( viewMatrix );
+    _camera->projMatrix( projMatrix );
+
+    viewProjMatrix = projMatrix * viewMatrix;
+
+    _camera->viewProjMatrix( viewProjMatrix );
+
+    // Assigning path.
+    _path = path_;
+
+    // Animation attributes.
+    _isAniming = false;
+    _animationFirstStep = false;
+    _animationSpeed = 0.1f;
+    _animationDuration = animationDuration_;
+    _animationPreviousTime = std::chrono::system_clock::now( );
+    _tStep = tStep_;
+  }
+#endif
+
   CameraController::~CameraController( void )
   {
     delete _camera;
@@ -668,7 +777,7 @@ namespace reto
     _camera->up( upVector );
 
     // Feedback.
-    /**/
+    /**
     std::cout << "position: ("
               << position_.x( ) << ", "
               << position_.y( ) << ", "
@@ -682,7 +791,7 @@ namespace reto
               << upVector.y( ) << ", "
               << upVector.z( ) << ")" << std::endl;
     std::cout << std::endl;
-    /**/
+    **/
 
     // Relative position.
     float x = -rightVector.dot( position_ );
@@ -707,13 +816,13 @@ namespace reto
     // Up vector will be orthogonalized in _lookAt function.
 
     // Feedback.
-    /**/
+    /**
     std::cout << "pivot: ("
               << _pivot.x( ) << ", "
               << _pivot.y( ) << ", "
               << _pivot.z( ) << ")" << std::endl;
     std::cout << "radius: " << _radius << std::endl;
-    /**/
+    **/
 
     Eigen::Matrix4f toReturn = _lookAt( newPosition,
                                         newLookAt,

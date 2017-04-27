@@ -69,6 +69,16 @@ namespace reto
                       float animationDuration_ = 5.0f,
                       float tStep_ = 0.01f );
 
+#ifdef RETO_USE_ZEROEQ
+    RETO_API
+    CameraController( const std::string& zeqSession = "",
+                      TProjection projection_ = PERSPECTIVE,
+                      TCamera cameraType_ = STANDARD,
+                      Path* path_ = new Path( Path::TInterpolationMethod::LERP ),
+                      float animationDuration_ = 5.0f,
+                      float tStep_ = 0.01f );
+#endif
+
     RETO_API
     virtual ~CameraController( void );
 

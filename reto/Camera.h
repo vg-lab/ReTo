@@ -26,7 +26,23 @@
 #define __RETO_CAMERA__
 
 #include <Eigen/Dense>
+
 #include <reto/api.h>
+
+#ifdef RETO_USE_ZEROEQ
+#include <zeroeq/zeroeq.h>
+#include <servus/uri.h>
+
+#include <mutex>
+#include <boost/bind.hpp>
+
+#ifdef RETO_USE_LEXIS
+#include <lexis/lexis.h>
+#endif
+
+#include <thread>
+
+#endif
 
 namespace reto
 {
@@ -57,6 +73,30 @@ namespace reto
             Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
             Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
             float fov_ = 45.0f );
+
+#ifdef RETO_USE_ZEROEQ
+    /**
+     * Camera constructor
+     * @param session ZeroEq session to synchronize the camera with other
+     * applications
+     * @param width frustum width
+     * @param height frustum height
+     * @param nearPlane camera near plane
+     * @param farPlane camera far plane
+     * @param position camera position in global coordinates
+     * @param up camera up vector
+     * @param lookAt vector from camera position to target
+     * @param fov field of view for a perspective camera
+     */
+    RETO_API
+    Camera( const std::string& zeqSession_,
+            unsigned int width_ = 1920, unsigned int height_ = 1080,
+            float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
+            Eigen::Vector3f position_ = Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+            Eigen::Vector3f up_ = Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+            Eigen::Vector3f lookAt_ = Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+            float fov_ = 45.0f );
+#endif
 
     /**
      * Default destructor
@@ -220,6 +260,19 @@ namespace reto
     RETO_API
     void fov( float fov_ );
 
+#ifdef RETO_USE_ZEROEQ
+    /**
+     * Method to get the pointer to the camera subscriber used to synchronize
+     * the camera with other applications
+     * @return pointer to zeroeq::Subscriber
+     */
+    RETO_API
+    zeroeq::Subscriber* subscriber( void );
+
+    void viewMatrixAsVector( const std::vector<float>& viewMatrixAsVector_ );
+
+#endif
+
 protected:
 
     //! Frustum width
@@ -254,6 +307,38 @@ protected:
 
     //! Field of view (only if working with a perspective camera)
     float _fov;
+
+#ifdef RETO_USE_ZEROEQ
+    //! State of the ZeroEQ connection: 1 activated, 0 deactivated
+    bool _zeqConnection;
+
+    //! ZeroEQ session to synchronize the camera with other applications
+    std::string _zeroeqSession;
+
+    //! ZeroEQ publisher
+    zeroeq::Publisher* _publisher;
+
+    //! ZeroEQ subscriber
+    zeroeq::Subscriber* _subscriber;
+
+    //! Thread that runs the ZeroEQ subscriber
+    std::thread* _subscriberThread;
+
+    //! View matrix as a vector
+    std::vector< float > _viewMatrixAsVector;
+
+    //! Mutex to access to the camera view matrix
+    std::mutex _viewMatrixMutex;
+
+private:
+
+    std::vector< float > _matrix4fToVector( const Eigen::Matrix4f& matrix_ );
+
+    Eigen::Matrix4f _vectorToMatrix4f( const std::vector<float>& vector_  );
+
+    void _OnCameraEvent( lexis::render::ConstLookOutPtr event_ );
+
+#endif
 
   };
 
