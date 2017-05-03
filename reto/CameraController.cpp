@@ -25,135 +25,23 @@
 namespace reto
 {
 
-  CameraController::CameraController( TProjection projection_,
-                                      TCamera cameraType_,
+  CameraController::CameraController( Camera* camera_,
                                       Path* path_,
-                                      float animationDuration_,
-                                      float tStep_ )
-  {
-    // Creating camera with default values.
-    _camera = new Camera( );
-    _projection = projection_;
-    _cameraType = cameraType_;
-
-    Eigen::Vector3f defaultPosition = _camera->position( );
-    Eigen::Vector3f defaultUp = _camera->up( );
-    Eigen::Vector3f defaultLookAt = _camera->lookAt( );
-
-    float defaultNearPlane = _camera->nearPlane( );
-    float defaultFarPlane = _camera->farPlane( );
-
-    _pivot = Eigen::Vector3f( 0.0f, 0.0f, 0.0f );
-    _radius = 500.0f;
-
-    Eigen::Matrix4f viewMatrix;
-    Eigen::Matrix4f projMatrix;
-    Eigen::Matrix4f viewProjMatrix;
-
-    switch( _cameraType )
-    {
-      case STANDARD :
-      {
-        viewMatrix = _lookAt( defaultPosition, defaultLookAt, defaultUp );
-      }
-      break;
-
-      case ORBITAL :
-      {
-        float defaultYaw = 0.0f;
-        float defaultPitch = 0.0f;
-
-        // Angles to radians.
-        float yawRadians = ( defaultYaw * (float) M_PI ) / 180.0f;
-        float pitchRadians = ( defaultPitch * (float) M_PI ) / 180.0f;
-
-        Eigen::Matrix3f currentOrientation =
-          _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
-
-        viewMatrix = _orbital( currentOrientation,
-                               defaultUp );
-      }
-      break;
-    }
-
-    switch( _projection )
-    {
-      case PERSPECTIVE :
-      {
-        float defaultFov = _camera->fov();
-
-        defaultFov *= ( (float) M_PI / 360.0f );
-
-        float f = 1.0f / tan( defaultFov );
-
-        float ratio = _camera->width( ) / _camera->height( );
-
-        float inverseOfNearMinusFar = 1.0f / ( defaultNearPlane - defaultFarPlane );
-
-        projMatrix
-        << f / ratio, 0.0f, 0.0f, 0.0f,
-           0.0f, f, 0.0f, 0.0f,
-           0.0f, 0.0f, ( defaultFarPlane + defaultNearPlane  ) * inverseOfNearMinusFar, ( 2.0f * defaultFarPlane * defaultNearPlane ) * inverseOfNearMinusFar,
-           0.0f, 0.0f, -1.0f, 0.0f;
-      }
-      break;
-
-      case ORTHOGRAPHIC :
-      {
-        float right = _camera->width( ) * 0.5f;
-        float top = _camera->height( ) * 0.5f;
-
-        projMatrix
-        << 1.0f / right, 0.0f, 0.0f, 0.0f,
-           0.0f, 1.0f / top, 0.0f, 0.0f,
-           0.0f, 0.0f, -2.0f / ( defaultFarPlane - defaultNearPlane ), -1.0f * ( defaultFarPlane + defaultNearPlane ) / ( defaultFarPlane - defaultNearPlane ),
-           0.0f, 0.0f, 0.0f, 1.0f;
-      }
-      break;
-    }
-
-    _camera->viewMatrix( viewMatrix );
-    _camera->projMatrix( projMatrix );
-
-    viewProjMatrix = projMatrix * viewMatrix;
-
-    _camera->viewProjMatrix( viewProjMatrix );
-
-    // Assigning path.
-    _path = path_;
-
-    // Animation attributes.
-    _isAniming = false;
-    _animationFirstStep = false;
-    _animationSpeed = 0.1f;
-    _animationDuration = animationDuration_;
-    _animationPreviousTime = std::chrono::system_clock::now( );
-    _tStep = tStep_;
-  }
-
-#ifdef RETO_USE_ZEROEQ
-  CameraController::CameraController( const std::string& zeqSession,
                                       TProjection projection_,
                                       TCamera cameraType_,
-                                      Path* path_,
+                                      Eigen::Vector3f pivot_,
+                                      float radius_,
                                       float animationDuration_,
                                       float tStep_ )
+  : _camera( camera_ )
+  , _path( path_ )
+  , _projection( projection_ )
+  , _cameraType( cameraType_ )
+  , _pivot( pivot_ )
+  , _radius( radius_ )
+  , _animationDuration( animationDuration_ )
+  , _tStep( tStep_ )
   {
-    // Creating camera with default values.
-    _camera = new Camera( zeqSession );
-    _projection = projection_;
-    _cameraType = cameraType_;
-
-    Eigen::Vector3f defaultPosition = _camera->position( );
-    Eigen::Vector3f defaultUp = _camera->up( );
-    Eigen::Vector3f defaultLookAt = _camera->lookAt( );
-
-    float defaultNearPlane = _camera->nearPlane( );
-    float defaultFarPlane = _camera->farPlane( );
-
-    _pivot = Eigen::Vector3f( 0.0f, 0.0f, 0.0f );
-    _radius = 500.0f;
-
     Eigen::Matrix4f viewMatrix;
     Eigen::Matrix4f projMatrix;
     Eigen::Matrix4f viewProjMatrix;
@@ -162,7 +50,9 @@ namespace reto
     {
       case STANDARD :
       {
-        viewMatrix = _lookAt( defaultPosition, defaultLookAt, defaultUp );
+        viewMatrix = _lookAt( _camera->position( ),
+                              _camera->lookAt( ),
+                              _camera->up( ) );
       }
       break;
 
@@ -179,7 +69,7 @@ namespace reto
           _yawPitchRoll( 0.0f, yawRadians, pitchRadians );
 
         viewMatrix = _orbital( currentOrientation,
-                               defaultUp );
+                               _camera->up( ) );
       }
       break;
     }
@@ -196,12 +86,12 @@ namespace reto
 
         float ratio = _camera->width( ) / _camera->height( );
 
-        float inverseOfNearMinusFar = 1.0f / ( defaultNearPlane - defaultFarPlane );
+        float inverseOfNearMinusFar = 1.0f / ( _camera->nearPlane( ) - _camera->farPlane( ) );
 
         projMatrix
         << f / ratio, 0.0f, 0.0f, 0.0f,
            0.0f, f, 0.0f, 0.0f,
-           0.0f, 0.0f, ( defaultFarPlane + defaultNearPlane  ) * inverseOfNearMinusFar, ( 2.0f * defaultFarPlane * defaultNearPlane ) * inverseOfNearMinusFar,
+           0.0f, 0.0f, ( _camera->farPlane( ) + _camera->nearPlane( )  ) * inverseOfNearMinusFar, ( 2.0f * _camera->farPlane( ) * _camera->nearPlane( ) ) * inverseOfNearMinusFar,
            0.0f, 0.0f, -1.0f, 0.0f;
       }
       break;
@@ -214,7 +104,7 @@ namespace reto
         projMatrix
         << 1.0f / right, 0.0f, 0.0f, 0.0f,
            0.0f, 1.0f / top, 0.0f, 0.0f,
-           0.0f, 0.0f, -2.0f / ( defaultFarPlane - defaultNearPlane ), -1.0f * ( defaultFarPlane + defaultNearPlane ) / ( defaultFarPlane - defaultNearPlane ),
+           0.0f, 0.0f, -2.0f / ( _camera->farPlane( ) - _camera->nearPlane( ) ), -1.0f * ( _camera->farPlane( ) + _camera->nearPlane( ) ) / ( _camera->farPlane( ) - _camera->nearPlane( ) ),
            0.0f, 0.0f, 0.0f, 1.0f;
       }
       break;
@@ -227,18 +117,12 @@ namespace reto
 
     _camera->viewProjMatrix( viewProjMatrix );
 
-    // Assigning path.
-    _path = path_;
-
     // Animation attributes.
     _isAniming = false;
     _animationFirstStep = false;
     _animationSpeed = 0.1f;
-    _animationDuration = animationDuration_;
     _animationPreviousTime = std::chrono::system_clock::now( );
-    _tStep = tStep_;
   }
-#endif
 
   CameraController::~CameraController( void )
   {
@@ -246,7 +130,17 @@ namespace reto
     delete _path;
   }
 
-  Path* CameraController::path( void )
+  Camera* CameraController::camera( void ) const
+  {
+    return _camera;
+  }
+
+  void CameraController::camera( Camera* camera_ )
+  {
+    _camera = camera_;
+  }
+
+  Path* CameraController::path( void ) const
   {
     return _path;
   }
@@ -254,6 +148,16 @@ namespace reto
   void CameraController::path( Path* path_ )
   {
     _path = path_;
+  }
+
+  CameraController::TProjection CameraController::projection( void ) const
+  {
+    return _projection;
+  }
+
+  CameraController::TCamera CameraController::cameraType( void ) const
+  {
+    return _cameraType;
   }
 
   Eigen::Vector3f CameraController::pivot( void ) const
@@ -274,6 +178,26 @@ namespace reto
   void CameraController::radius( float radius_ )
   {
     _radius = radius_;
+  }
+
+  float CameraController::animationDuration( void ) const
+  {
+    return _animationDuration;
+  }
+
+  void CameraController::animationDuration( float animationDuration_ )
+  {
+    _animationDuration = animationDuration_;
+  }
+
+  float CameraController::tStep( void ) const
+  {
+    return _tStep;
+  }
+
+  void CameraController::tStep( float tStep_ )
+  {
+    _tStep = tStep_;
   }
 
   void CameraController::center( const Eigen::Vector3f& position_,
@@ -314,103 +238,6 @@ namespace reto
     _camera->viewMatrix( newViewMatrix );
 
     Eigen::Matrix4f newViewProjMatrix = _camera->projMatrix( ) * newViewMatrix;
-
-    _camera->viewProjMatrix( newViewProjMatrix );
-  }
-
-  void CameraController::zoom( float increment_ )
-  {
-
-    Eigen::Matrix4f newProjMatrix = Eigen::Matrix4f::Identity( );
-
-    float scale = 1.0f;
-    scale += increment_;
-
-    switch( _projection )
-    {
-      case PERSPECTIVE :
-      {
-        float currentRatio = (float) _camera->width( ) / (float) _camera->height( );
-
-        float currentFov = _camera->fov( );
-        float newFov = currentFov * scale;
-        _camera->fov( newFov );
-        newFov *= ( (float) M_PI / 360.0f );
-        float newF = 1.0f / tan( newFov );
-
-        newProjMatrix = _camera->projMatrix( );
-        newProjMatrix( 0, 0 ) = newF / currentRatio;
-        newProjMatrix( 1, 1 ) = newF;
-      }
-      break;
-
-      case ORTHOGRAPHIC :
-      {
-        float currentWidth = _camera->width( );
-        float currentHeight = _camera->height( );
-
-        float newWidth = currentWidth * scale;
-        float newHeight = currentHeight * scale;
-
-        _camera->width( newWidth );
-        _camera->height( newHeight );
-
-        float newRight = newWidth * 0.5f;
-        float newTop = newHeight * 0.5f;
-
-        newProjMatrix = _camera->projMatrix( );
-        newProjMatrix( 0, 0 ) = 1.0f / newRight;
-        newProjMatrix( 1, 1 ) = 1.0f / newTop;
-      }
-      break;
-    }
-
-    _camera->projMatrix( newProjMatrix );
-
-    Eigen::Matrix4f newViewProjMatrix = newProjMatrix * _camera->viewMatrix( );
-
-    _camera->viewProjMatrix( newViewProjMatrix );
-  }
-
-  void CameraController::resize( float width_, float height_ )
-  {
-
-    Eigen::Matrix4f newProjMatrix = Eigen::Matrix4f::Identity( );
-
-    // Setting new width and height.
-    _camera->width( width_ );
-    _camera->height( height_ );
-
-    switch( _projection )
-    {
-      case PERSPECTIVE :
-      {
-        float newRatio = width_ / height_;
-
-        float currentFov = _camera->fov();
-        currentFov *= ( (float) M_PI / 360.0f );
-        float f = 1.0f / tan( currentFov );
-
-        newProjMatrix = _camera->projMatrix( );
-        newProjMatrix( 0, 0 ) = f / newRatio;
-      }
-      break;
-
-      case ORTHOGRAPHIC :
-      {
-        float newRight = width_ * 0.5f;
-        float newTop = height_ * 0.5f;
-
-        newProjMatrix = _camera->projMatrix( );
-        newProjMatrix( 0, 0 ) = 1.0f / newRight;
-        newProjMatrix( 1, 1 ) = 1.0f / newTop;
-      }
-      break;
-    }
-
-    _camera->projMatrix( newProjMatrix );
-
-    Eigen::Matrix4f newViewProjMatrix = newProjMatrix * _camera->viewMatrix( );
 
     _camera->viewProjMatrix( newViewProjMatrix );
   }
@@ -643,6 +470,103 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
+  void CameraController::zoom( float increment_ )
+  {
+
+    Eigen::Matrix4f newProjMatrix = Eigen::Matrix4f::Identity( );
+
+    float scale = 1.0f;
+    scale += increment_;
+
+    switch( _projection )
+    {
+      case PERSPECTIVE :
+      {
+        float currentRatio = (float) _camera->width( ) / (float) _camera->height( );
+
+        float currentFov = _camera->fov( );
+        float newFov = currentFov * scale;
+        _camera->fov( newFov );
+        newFov *= ( (float) M_PI / 360.0f );
+        float newF = 1.0f / tan( newFov );
+
+        newProjMatrix = _camera->projMatrix( );
+        newProjMatrix( 0, 0 ) = newF / currentRatio;
+        newProjMatrix( 1, 1 ) = newF;
+      }
+      break;
+
+      case ORTHOGRAPHIC :
+      {
+        float currentWidth = _camera->width( );
+        float currentHeight = _camera->height( );
+
+        float newWidth = currentWidth * scale;
+        float newHeight = currentHeight * scale;
+
+        _camera->width( newWidth );
+        _camera->height( newHeight );
+
+        float newRight = newWidth * 0.5f;
+        float newTop = newHeight * 0.5f;
+
+        newProjMatrix = _camera->projMatrix( );
+        newProjMatrix( 0, 0 ) = 1.0f / newRight;
+        newProjMatrix( 1, 1 ) = 1.0f / newTop;
+      }
+      break;
+    }
+
+    _camera->projMatrix( newProjMatrix );
+
+    Eigen::Matrix4f newViewProjMatrix = newProjMatrix * _camera->viewMatrix( );
+
+    _camera->viewProjMatrix( newViewProjMatrix );
+  }
+
+  void CameraController::resize( float width_, float height_ )
+  {
+
+    Eigen::Matrix4f newProjMatrix = Eigen::Matrix4f::Identity( );
+
+    // Setting new width and height.
+    _camera->width( width_ );
+    _camera->height( height_ );
+
+    switch( _projection )
+    {
+      case PERSPECTIVE :
+      {
+        float newRatio = width_ / height_;
+
+        float currentFov = _camera->fov();
+        currentFov *= ( (float) M_PI / 360.0f );
+        float f = 1.0f / tan( currentFov );
+
+        newProjMatrix = _camera->projMatrix( );
+        newProjMatrix( 0, 0 ) = f / newRatio;
+      }
+      break;
+
+      case ORTHOGRAPHIC :
+      {
+        float newRight = width_ * 0.5f;
+        float newTop = height_ * 0.5f;
+
+        newProjMatrix = _camera->projMatrix( );
+        newProjMatrix( 0, 0 ) = 1.0f / newRight;
+        newProjMatrix( 1, 1 ) = 1.0f / newTop;
+      }
+      break;
+    }
+
+    _camera->projMatrix( newProjMatrix );
+
+    Eigen::Matrix4f newViewProjMatrix = newProjMatrix * _camera->viewMatrix( );
+
+    _camera->viewProjMatrix( newViewProjMatrix );
+  }
+
   bool CameraController::animate( void )
   {
     if( _path->empty( ) )
@@ -811,7 +735,7 @@ namespace reto
                                               const Eigen::Vector3f& up_ )
   {
     Eigen::Vector3f newPosition = _pivot +
-        orientation_.transpose( ) * Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) * _radius;
+      orientation_.transpose( ) * Eigen::Vector3f( 0.0f, 0.0f, 1.0f ) * _radius;
     Eigen::Vector3f newLookAt = _pivot - newPosition;
     // Up vector will be orthogonalized in _lookAt function.
 

@@ -46,13 +46,13 @@ namespace reto
     };
 
     RETO_API
-    Path( TInterpolationMethod interpolationMethod_ );
+    Path( TInterpolationMethod interpolationMethod_ = LERP );
 
     RETO_API
     Path( const std::vector< Eigen::Vector3f >& positions_,
           const std::vector< Eigen::Vector3f >& lookAts_,
           const std::vector< Eigen::Vector3f >& ups_,
-          TInterpolationMethod interpolationMethod_ );
+          TInterpolationMethod interpolationMethod_ = LERP );
 
     RETO_API
     virtual ~Path( void );
@@ -65,6 +65,12 @@ namespace reto
 
     RETO_API
     std::vector< Eigen::Vector3f > ups( void ) const;
+
+    RETO_API
+    TInterpolationMethod interpolationMethod( void ) const;
+
+    RETO_API
+    void interpolationMethod( TInterpolationMethod interpolationMethod_ );
 
     RETO_API
     bool empty( void );
@@ -105,6 +111,6 @@ namespace reto
 
   };
 
-}
+} // end namespace reto
 
-#endif
+#endif // __RETO_PATH__

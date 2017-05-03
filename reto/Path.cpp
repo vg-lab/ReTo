@@ -61,6 +61,16 @@ namespace reto
     return _ups;
   }
 
+  Path::TInterpolationMethod Path::interpolationMethod( void ) const
+  {
+    return _interpolationMethod;
+  }
+
+  void Path::interpolationMethod( TInterpolationMethod interpolationMethod_ )
+  {
+    _interpolationMethod = interpolationMethod_;
+  }
+
   bool Path::empty( void )
   {
     return ( _positions.empty( ) &&

@@ -5,7 +5,7 @@ if (${Boost_FOUND})
 	set(TEST_LIBRARIES
 		${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
 		ReTo
-    ${GLUT_LIBRARIES}
+        ${GLUT_LIBRARIES}
 	)
 	include(CommonCTest)
 endif()

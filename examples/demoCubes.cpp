@@ -52,6 +52,7 @@ using namespace reto;
 #include "MyCube.h"
 
 reto::CameraController* cameraController;
+reto::Camera* camera;
 reto::Path* path;
 
 unsigned int idleTimeCounter = 0;
@@ -114,33 +115,17 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
-  path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
-
 #ifdef RETO_USE_ZEROEQ
-  cameraController = new reto::CameraController( zeqUri,
-                                                 reto::CameraController::TProjection::PERSPECTIVE,
-                                                 reto::CameraController::TCamera::ORBITAL,
-                                                 path, 5.0f, 0.01f );
+  camera = new Camera( zeqUri );
 #else
-  cameraController = new reto::CameraController( reto::CameraController::TProjection::PERSPECTIVE,
-                                                 reto::CameraController::TCamera::ORBITAL,
-                                                 path, 5.0f, 0.01f );
+  camera = new Camera( );
 #endif
 
-  switch( cameraController->_cameraType )
-  {
-    case reto::CameraController::STANDARD :
-      rotationScale = 0.1f;
-      break;
+  path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
 
-    case reto::CameraController::ORBITAL :
-      rotationScale = 0.3f;
-      break;
-  }
-
-  Eigen::Vector3f defaultCameraPosition = cameraController->_camera->position( );
-  Eigen::Vector3f defaultCameraLookAt = cameraController->_camera->lookAt( );
-  Eigen::Vector3f defaultCameraUp = cameraController->_camera->up( );
+  Eigen::Vector3f defaultCameraPosition = camera->position( );
+  Eigen::Vector3f defaultCameraLookAt = camera->lookAt( );
+  Eigen::Vector3f defaultCameraUp = camera->up( );
 
   // Node 0.
   path->addNode( defaultCameraPosition, defaultCameraLookAt, defaultCameraUp );
@@ -164,7 +149,25 @@ int main( int argc, char** argv )
                  Eigen::Vector3f( defaultCameraPosition.z( ), yOffset, 0.0f ),
                  Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
 
-  cameraController->path( path );
+  // Creating the camera controller.
+  cameraController = new reto::CameraController( camera,
+                                                 path,
+                                                 reto::CameraController::TProjection::PERSPECTIVE,
+                                                 reto::CameraController::TCamera::STANDARD,
+                                                 Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                                                 500.0f,
+                                                 5.0f, 0.01f );
+
+  switch( cameraController->cameraType( ) )
+  {
+    case reto::CameraController::STANDARD :
+      rotationScale = 0.1f;
+      break;
+
+    case reto::CameraController::ORBITAL :
+      rotationScale = 0.3f;
+      break;
+  }
 
   glutMainLoop( );
   destroy( );
@@ -255,8 +258,8 @@ void renderFunc( void )
 
   // std::cout << "DRAW" << std::endl;
   prog.use( );
-  prog.sendUniform4m("proj", matrix4fToVector16f( cameraController->_camera->projMatrix( ) ));
-  prog.sendUniform4m("view", matrix4fToVector16f( cameraController->_camera->viewMatrix( ) ));
+  prog.sendUniform4m("proj", matrix4fToVector16f( cameraController->camera( )->projMatrix( ) ));
+  prog.sendUniform4m("view", matrix4fToVector16f( cameraController->camera( )->viewMatrix( ) ));
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
     for (auto j = -MAX; j <= MAX; j+= 5)
@@ -321,7 +324,7 @@ void keyboardFunc( unsigned char key, int, int )
     case 'i':
     case 'I':
     {
-      switch( cameraController->_cameraType )
+      switch( cameraController->cameraType( ) )
       {
         case reto::CameraController::STANDARD :
         {
@@ -358,28 +361,28 @@ void keyboardFunc( unsigned char key, int, int )
     }
     case 'w':
     case 'W':
-      if( cameraController->_projection == reto::CameraController::PERSPECTIVE )
+      if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
         cameraController->translateInLookAtVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     case 's':
     case 'S':
     {
-      if( cameraController->_projection == reto::CameraController::PERSPECTIVE )
+      if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
         cameraController->translateInLookAtVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'q':
     case 'Q':
-      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+      if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
         cameraController->translateInUpVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     case 'e':
     case 'E':
     {
-      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+      if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
         cameraController->translateInUpVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
@@ -387,7 +390,7 @@ void keyboardFunc( unsigned char key, int, int )
     case 'a':
     case 'A':
     {
-      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+      if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
         cameraController->translateInRightVectorDirection( -10.0f );
       glutPostRedisplay( );
       break;
@@ -395,14 +398,14 @@ void keyboardFunc( unsigned char key, int, int )
     case 'd':
     case 'D':
     {
-      if( cameraController->_cameraType == reto::CameraController::STANDARD )
+      if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
         cameraController->translateInRightVectorDirection( 10.0f );
       glutPostRedisplay( );
       break;
     }
     case 'c':
     case 'C':
-      switch( cameraController->_cameraType )
+      switch( cameraController->cameraType( ) )
       {
         case reto::CameraController::STANDARD :
           currentYaw = 90.0f;
@@ -491,7 +494,7 @@ void mouseMotionFunc( int x, int y )
       deltaX *= rotationScale;
       deltaY *= rotationScale;
 
-      switch( cameraController->_cameraType )
+      switch( cameraController->cameraType( ) )
       {
         case reto::CameraController::STANDARD :
         {
