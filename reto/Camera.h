@@ -25,9 +25,8 @@
 #ifndef __RETO_CAMERA__
 #define __RETO_CAMERA__
 
-#include <Eigen/Dense>
-
 #include <reto/api.h>
+#include <Eigen/Dense>
 
 #ifdef RETO_USE_ZEROEQ
 #include <zeroeq/zeroeq.h>
@@ -269,7 +268,11 @@ namespace reto
     RETO_API
     zeroeq::Subscriber* subscriber( void );
 
-    void viewMatrixAsVector( const std::vector<float>& viewMatrixAsVector_ );
+    /**
+     * Method to set camera view matrix represented as a vector of floats
+     * @param std::vector< float > with the new camera view matrix represented as a vector of floats
+     */
+    void viewMatrixAsVector( const std::vector< float >& viewMatrixAsVector_ );
 
 #endif
 
@@ -324,7 +327,7 @@ protected:
     //! Thread that runs the ZeroEQ subscriber
     std::thread* _subscriberThread;
 
-    //! View matrix as a vector
+    //! View matrix represented as a vector of floats
     std::vector< float > _viewMatrixAsVector;
 
     //! Mutex to access to the camera view matrix
@@ -332,10 +335,23 @@ protected:
 
 private:
 
+    /**
+     * Auxiliary method to transform a Eigen::Matrix4f into a vector of floats
+     * @param Eigen::Matrix4f as the input matrix
+     * @return std::vector< float > as the output vector of floats
+     */
     std::vector< float > _matrix4fToVector( const Eigen::Matrix4f& matrix_ );
 
+    /**
+     * Auxiliary method to transform a vector of floats into a Eigen::Matrix4f
+     * @param std::vector< float > as the input vector of floats
+     * @return Eigen::Matrix4f as the output matrix
+     */
     Eigen::Matrix4f _vectorToMatrix4f( const std::vector<float>& vector_  );
 
+    /**
+     * Method that triggers when a camera event occurs
+     */
     void _OnCameraEvent( lexis::render::ConstLookOutPtr event_ );
 
 #endif
