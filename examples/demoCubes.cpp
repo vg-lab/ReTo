@@ -69,6 +69,8 @@ bool rotation = false;
 bool traslation = false;
 
 // Constants.
+const float mouseWheelFactor = 0.1f;
+const float traslationScale = 10.0f;
 float rotationScale;
 
 // Euler angles.
@@ -100,7 +102,7 @@ int main( int argc, char** argv )
   /**/
   if ( argc < 2 )
   {
-    std::cout << "Usage: bin/meshFormatConversion zeqUri" << std::endl;
+    std::cout << "Usage: bin/ReToDemoCubes zeqUri" << std::endl;
     exit( 0 );
   }
   /**/
@@ -362,28 +364,28 @@ void keyboardFunc( unsigned char key, int, int )
     case 'w':
     case 'W':
       if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
-        cameraController->translateInLookAtVectorDirection( 10.0f );
+        cameraController->translateInLookAtVectorDirection( traslationScale );
       glutPostRedisplay( );
       break;
     case 's':
     case 'S':
     {
       if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
-        cameraController->translateInLookAtVectorDirection( -10.0f );
+        cameraController->translateInLookAtVectorDirection( -traslationScale );
       glutPostRedisplay( );
       break;
     }
     case 'q':
     case 'Q':
       if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-        cameraController->translateInUpVectorDirection( 10.0f );
+        cameraController->translateInUpVectorDirection( traslationScale );
       glutPostRedisplay( );
       break;
     case 'e':
     case 'E':
     {
       if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-        cameraController->translateInUpVectorDirection( -10.0f );
+        cameraController->translateInUpVectorDirection( -traslationScale );
       glutPostRedisplay( );
       break;
     }
@@ -391,7 +393,7 @@ void keyboardFunc( unsigned char key, int, int )
     case 'A':
     {
       if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-        cameraController->translateInRightVectorDirection( -10.0f );
+        cameraController->translateInRightVectorDirection( -traslationScale );
       glutPostRedisplay( );
       break;
     }
@@ -399,7 +401,7 @@ void keyboardFunc( unsigned char key, int, int )
     case 'D':
     {
       if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-        cameraController->translateInRightVectorDirection( 10.0f );
+        cameraController->translateInRightVectorDirection( traslationScale );
       glutPostRedisplay( );
       break;
     }
@@ -462,9 +464,9 @@ void mouseFunc( int button, int state, int x, int y )
     {
       mouseScrolling = true;
       if( button == 3 )
-        cameraController->zoom( -0.1f );
+        cameraController->zoom( -mouseWheelFactor );
       else
-        cameraController->zoom( 0.1f );
+        cameraController->zoom( mouseWheelFactor );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.

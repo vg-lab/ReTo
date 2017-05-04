@@ -1,10 +1,9 @@
 /**
- * @file    spinesStats.cpp
+ * @file    pickDemo2.cpp
  * @brief
- * @author  Juan Guerrero Martín <juan.guerrero@urjc.es>
- *          Juan Guerrero Martín <juan.guerrero@urjc.es>
- * @date    2016
- * @remarks Copyright (c) 2016 GMRV/URJC. All rights reserved.
+ * @author  Cristian Rodríguez Bernal
+ * @date    2017
+ * @remarks Copyright (c) 2017 GMRV/URJC. All rights reserved.
  * Do not distribute without further notice.
  */
 
@@ -37,7 +36,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
-reto::Camera* camera;
+reto::CameraController* cameraController;
 
 // X Y mouse position.
 int previousX;
@@ -51,10 +50,17 @@ bool rotation = false;
 bool traslation = false;
 
 // Constants.
+const float mouseWheelFactor = 0.1f;
+const float traslationScale = 10.0f;
+float rotationScale;
 
-const float mouseWheelFactor = 1.2f;
-const float rotationScale = 0.01f;
-const float traslationScale = 0.2f;
+// Euler angles.
+/**/
+float currentYaw = 90.0f;
+float currentPitch = 0.0f;
+/**/
+
+std::vector< float > matrix4fToVector16f( const Eigen::Matrix4f& inputMatrix );
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -76,7 +82,24 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.0f );
 
-  camera = new reto::Camera( );
+  cameraController = new reto::CameraController( new reto::Camera( ),
+                                                 new reto::Path( ),
+                                                 reto::CameraController::TProjection::PERSPECTIVE,
+                                                 reto::CameraController::TCamera::STANDARD,
+                                                 Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                                                 500.0f,
+                                                 5.0f, 0.01f );
+
+  switch( cameraController->cameraType( ) )
+  {
+    case reto::CameraController::STANDARD :
+      rotationScale = 0.1f;
+      break;
+
+    case reto::CameraController::ORBITAL :
+      rotationScale = 0.3f;
+      break;
+  }
 
   glutMainLoop( );
   destroy( );
@@ -183,14 +206,41 @@ void destroy( void )
 {
 }
 
+std::vector< float > matrix4fToVector16f( const Eigen::Matrix4f& inputMatrix )
+{
+  std::vector< float > toReturn;
+
+  toReturn.push_back( inputMatrix( 0, 0 ) );
+  toReturn.push_back( inputMatrix( 1, 0 ) );
+  toReturn.push_back( inputMatrix( 2, 0 ) );
+  toReturn.push_back( inputMatrix( 3, 0 ) );
+
+  toReturn.push_back( inputMatrix( 0, 1 ) );
+  toReturn.push_back( inputMatrix( 1, 1 ) );
+  toReturn.push_back( inputMatrix( 2, 1 ) );
+  toReturn.push_back( inputMatrix( 3, 1 ) );
+
+  toReturn.push_back( inputMatrix( 0, 2 ) );
+  toReturn.push_back( inputMatrix( 1, 2 ) );
+  toReturn.push_back( inputMatrix( 2, 2 ) );
+  toReturn.push_back( inputMatrix( 3, 2 ) );
+
+  toReturn.push_back( inputMatrix( 0, 3 ) );
+  toReturn.push_back( inputMatrix( 1, 3 ) );
+  toReturn.push_back( inputMatrix( 2, 3 ) );
+  toReturn.push_back( inputMatrix( 3, 3 ) );
+
+  return toReturn;
+}
+
 int pickX, pickY;
 bool comprobar = false;
 
 void updateMatrix( reto::ShaderProgram& ss )
 {
   ss.use( );
-  ss.sendUniform4m("proj", camera->projectionMatrix( ));
-  ss.sendUniform4m("view", camera->viewMatrix( ));
+  ss.sendUniform4m("proj", matrix4fToVector16f( cameraController->camera( )->projMatrix( ) ));
+  ss.sendUniform4m("view", matrix4fToVector16f( cameraController->camera( )->viewMatrix( ) ));
 }
 
 void renderFunc( void )
@@ -230,10 +280,8 @@ void renderFunc( void )
 
 void resizeFunc( int w, int h )
 {
-  width = w;
-  height = h;
-  camera->ratio((( double ) width ) / height );
-  glViewport( 0, 0, width, height );
+  cameraController->resize( w, h );
+  glViewport( 0, 0, w, h );
 }
 
 void idleFunc( void )
@@ -250,12 +298,73 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
-      std::cout << "Centering." << std::endl;
+      switch( cameraController->cameraType( ) )
+      {
+        case reto::CameraController::STANDARD :
+          currentYaw = 90.0f;
+          currentPitch = 0.0f;
+          cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+                                    Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                                    500.0f, currentYaw, currentPitch );
+          break;
+
+        case reto::CameraController::ORBITAL :
+          cameraController->center( Eigen::Vector3f( 0.0f, 0.0f, -500.0f ),
+                                    Eigen::Vector3f( 0.0f, 1.0f, 0.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 1.0f ),
+                                    Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                                    500.0f, 0.0f, 0.0f );
+          break;
+      }
+      std::cout << "Camera centered." << std::endl;
       glutPostRedisplay( );
       break;
+      case 'w':
+      case 'W':
+        if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
+          cameraController->translateInLookAtVectorDirection( traslationScale );
+        glutPostRedisplay( );
+        break;
+      case 's':
+      case 'S':
+      {
+        if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
+          cameraController->translateInLookAtVectorDirection( -traslationScale );
+        glutPostRedisplay( );
+        break;
+      }
+      case 'q':
+      case 'Q':
+        if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
+          cameraController->translateInUpVectorDirection( traslationScale );
+        glutPostRedisplay( );
+        break;
+      case 'e':
+      case 'E':
+      {
+        if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
+          cameraController->translateInUpVectorDirection( -traslationScale );
+        glutPostRedisplay( );
+        break;
+      }
+      case 'a':
+      case 'A':
+      {
+        if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
+          cameraController->translateInRightVectorDirection( -traslationScale );
+        glutPostRedisplay( );
+        break;
+      }
+      case 'd':
+      case 'D':
+      {
+        if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
+          cameraController->translateInRightVectorDirection( traslationScale );
+        glutPostRedisplay( );
+        break;
+      }
     case 'm':
     case 'M':
       wireframe = !wireframe;
@@ -295,12 +404,11 @@ void mouseFunc( int button, int state, int x, int y )
     }
     if ( (button == 3) || (button == 4) )
     {
-      //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
-      float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+      if( button == 3 )
+        cameraController->zoom( -mouseWheelFactor );
+      else
+        cameraController->zoom( mouseWheelFactor );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.
@@ -327,14 +435,32 @@ void mouseMotionFunc( int x, int y )
     float deltaY = y - previousY;
     if( rotation )
     {
-      camera->localRotation( deltaX * rotationScale,
-                             deltaY * rotationScale );
+      deltaX *= rotationScale;
+      deltaY *= rotationScale;
+
+      switch( cameraController->cameraType( ) )
+      {
+        case reto::CameraController::STANDARD :
+        {
+          currentYaw += deltaX;
+          currentPitch -= deltaY;
+
+          currentYaw = fmod( currentYaw, 360.0f );
+          if( currentPitch > 89.0f ) currentPitch = 89.0f;
+          if( currentPitch < -89.0f ) currentPitch = -89.0f;
+
+          cameraController->localOrientation( currentYaw, currentPitch );
+        }
+        break;
+
+        case reto::CameraController::ORBITAL :
+          cameraController->localRotation( deltaX, deltaY );
+          break;
+      }
     }
     if( traslation )
     {
-      camera->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-                                                  deltaY * traslationScale,
-                                                  0.0f ) );
+      std::cout << "Please, use WASD instead." << std::endl;
     }
     previousX = x;
     previousY = y;

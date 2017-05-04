@@ -8,7 +8,6 @@ set(RETO_PUBLIC_HEADERS
   Path.h
   Pickable.h
   PickingSystem.h
-  Spline.h
   TextureManager.h
 )
 
@@ -22,7 +21,6 @@ set(RETO_SOURCES
   Path.cpp
   Pickable.cpp
   PickingSystem.cpp
-  Spline.cpp
   TextureManager.cpp
 )
 
