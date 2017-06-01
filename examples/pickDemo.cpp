@@ -62,8 +62,6 @@ float currentYaw = 90.0f;
 float currentPitch = 0.0f;
 /**/
 
-std::vector< float > matrix4fToVector16f( const Eigen::Matrix4f& inputMatrix );
-
 void renderFunc( void );
 void resizeFunc( int width, int height );
 void idleFunc( void );
@@ -207,33 +205,6 @@ void destroy( void )
 {
 }
 
-std::vector< float > matrix4fToVector16f( const Eigen::Matrix4f& inputMatrix )
-{
-  std::vector< float > toReturn;
-
-  toReturn.push_back( inputMatrix( 0, 0 ) );
-  toReturn.push_back( inputMatrix( 1, 0 ) );
-  toReturn.push_back( inputMatrix( 2, 0 ) );
-  toReturn.push_back( inputMatrix( 3, 0 ) );
-
-  toReturn.push_back( inputMatrix( 0, 1 ) );
-  toReturn.push_back( inputMatrix( 1, 1 ) );
-  toReturn.push_back( inputMatrix( 2, 1 ) );
-  toReturn.push_back( inputMatrix( 3, 1 ) );
-
-  toReturn.push_back( inputMatrix( 0, 2 ) );
-  toReturn.push_back( inputMatrix( 1, 2 ) );
-  toReturn.push_back( inputMatrix( 2, 2 ) );
-  toReturn.push_back( inputMatrix( 3, 2 ) );
-
-  toReturn.push_back( inputMatrix( 0, 3 ) );
-  toReturn.push_back( inputMatrix( 1, 3 ) );
-  toReturn.push_back( inputMatrix( 2, 3 ) );
-  toReturn.push_back( inputMatrix( 3, 3 ) );
-
-  return toReturn;
-}
-
 int pickX, pickY;
 bool comprobar = false;
 
@@ -251,13 +222,13 @@ void renderFunc( void )
   if (comprobar)
   {
     progPick.use( );
-    progPick.sendUniform4m("proj", matrix4fToVector16f( cameraController->camera( )->projMatrix( ) ));
-    progPick.sendUniform4m("view", matrix4fToVector16f( cameraController->camera( )->viewMatrix( ) ));
+    progPick.sendUniform4m("proj", cameraController->camera( )->projMatrixData( ) );
+    progPick.sendUniform4m("view", cameraController->camera( )->viewMatrixData( ) );
   } else
   {
     prog.use( );
-    prog.sendUniform4m("proj", matrix4fToVector16f( cameraController->camera( )->projMatrix( ) ));
-    prog.sendUniform4m("view", matrix4fToVector16f( cameraController->camera( )->viewMatrix( ) ));
+    prog.sendUniform4m("proj", cameraController->camera( )->projMatrixData( ) );
+    prog.sendUniform4m("view", cameraController->camera( )->viewMatrixData( ) );
   }
   // std::cout << "DRAW" << std::endl;
   // TODO: SEND MODEL

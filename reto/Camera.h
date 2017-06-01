@@ -216,6 +216,14 @@ namespace reto
     void viewMatrix( const Eigen::Matrix4f& viewMatrix_ );
 
     /**
+     * Method to get a pointer to view matrix vectorized
+     * in columns
+     * @return float* with column-vectorized view matrix
+     */
+    RETO_API
+    float* viewMatrixData( void );
+
+    /**
      * Method to get camera projection matrix
      * @return Eigen::Matrix4f with camera projection matrix
      */
@@ -230,6 +238,14 @@ namespace reto
     void projMatrix( const Eigen::Matrix4f& projMatrix_ );
 
     /**
+     * Method to get a pointer to projection matrix vectorized
+     * in columns
+     * @return float* with column-vectorized projection matrix
+     */
+    RETO_API
+    float* projMatrixData( void );
+
+    /**
      * Method to get camera view projection matrix: projMatrix * viewMatrix
      * @return Eigen::Matrix4f with camera view projection matrix
      */
@@ -242,6 +258,14 @@ namespace reto
      */
     RETO_API
     void viewProjMatrix( const Eigen::Matrix4f& viewProjMatrix_ );
+
+    /**
+     * Method to get a pointer to view projection matrix vectorized
+     * in columns
+     * @return float* with column-vectorized view projection matrix
+     */
+    RETO_API
+    float* viewProjMatrixData( void );
 
     /**
      * Method to get camera field of view (only if working with a perspective

@@ -473,7 +473,7 @@ namespace reto
   void CameraController::zoom( float increment_ )
   {
 
-    Eigen::Matrix4f newProjMatrix = Eigen::Matrix4f::Identity( );
+    Eigen::Matrix4f newProjMatrix = _camera->projMatrix( );
 
     float scale = 1.0f;
     scale += increment_;
@@ -490,7 +490,6 @@ namespace reto
         newFov *= ( (float) M_PI / 360.0f );
         float newF = 1.0f / tan( newFov );
 
-        newProjMatrix = _camera->projMatrix( );
         newProjMatrix( 0, 0 ) = newF / currentRatio;
         newProjMatrix( 1, 1 ) = newF;
       }
@@ -510,7 +509,6 @@ namespace reto
         float newRight = newWidth * 0.5f;
         float newTop = newHeight * 0.5f;
 
-        newProjMatrix = _camera->projMatrix( );
         newProjMatrix( 0, 0 ) = 1.0f / newRight;
         newProjMatrix( 1, 1 ) = 1.0f / newTop;
       }
@@ -527,7 +525,7 @@ namespace reto
   void CameraController::resize( float width_, float height_ )
   {
 
-    Eigen::Matrix4f newProjMatrix = Eigen::Matrix4f::Identity( );
+    Eigen::Matrix4f newProjMatrix = _camera->projMatrix( );
 
     // Setting new width and height.
     _camera->width( width_ );
@@ -543,7 +541,6 @@ namespace reto
         currentFov *= ( (float) M_PI / 360.0f );
         float f = 1.0f / tan( currentFov );
 
-        newProjMatrix = _camera->projMatrix( );
         newProjMatrix( 0, 0 ) = f / newRatio;
       }
       break;
@@ -553,7 +550,6 @@ namespace reto
         float newRight = width_ * 0.5f;
         float newTop = height_ * 0.5f;
 
-        newProjMatrix = _camera->projMatrix( );
         newProjMatrix( 0, 0 ) = 1.0f / newRight;
         newProjMatrix( 1, 1 ) = 1.0f / newTop;
       }

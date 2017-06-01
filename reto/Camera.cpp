@@ -169,28 +169,12 @@ namespace reto
 
   Eigen::Matrix4f Camera::viewMatrix( void ) const
   {
-    Eigen::Matrix4f viewMatrix_ = Eigen::Matrix4f::Identity( );
-    viewMatrix_( 0, 0 ) = _viewMatrix( 0, 0 ); viewMatrix_( 1, 0 ) = _viewMatrix( 1, 0 );
-    viewMatrix_( 2, 0 ) = _viewMatrix( 2, 0 ); viewMatrix_( 3, 0 ) = _viewMatrix( 3, 0 );
-    viewMatrix_( 0, 1 ) = _viewMatrix( 0, 1 ); viewMatrix_( 1, 1 ) = _viewMatrix( 1, 1 );
-    viewMatrix_( 2, 1 ) = _viewMatrix( 2, 1 ); viewMatrix_( 3, 1 ) = _viewMatrix( 3, 1 );
-    viewMatrix_( 0, 2 ) = _viewMatrix( 0, 2 ); viewMatrix_( 1, 2 ) = _viewMatrix( 1, 2 );
-    viewMatrix_( 2, 2 ) = _viewMatrix( 2, 2 ); viewMatrix_( 3, 2 ) = _viewMatrix( 3, 2 );
-    viewMatrix_( 0, 3 ) = _viewMatrix( 0, 3 ); viewMatrix_( 1, 3 ) = _viewMatrix( 1, 3 );
-    viewMatrix_( 2, 3 ) = _viewMatrix( 2, 3 ); viewMatrix_( 3, 3 ) = _viewMatrix( 3, 3 );
-    return viewMatrix_;
+    return _viewMatrix;
   }
 
   void Camera::viewMatrix( const Eigen::Matrix4f& viewMatrix_ )
   {
-    _viewMatrix( 0, 0 ) = viewMatrix_( 0, 0 ); _viewMatrix( 1, 0 ) = viewMatrix_( 1, 0 );
-    _viewMatrix( 2, 0 ) = viewMatrix_( 2, 0 ); _viewMatrix( 3, 0 ) = viewMatrix_( 3, 0 );
-    _viewMatrix( 0, 1 ) = viewMatrix_( 0, 1 ); _viewMatrix( 1, 1 ) = viewMatrix_( 1, 1 );
-    _viewMatrix( 2, 1 ) = viewMatrix_( 2, 1 ); _viewMatrix( 3, 1 ) = viewMatrix_( 3, 1 );
-    _viewMatrix( 0, 2 ) = viewMatrix_( 0, 2 ); _viewMatrix( 1, 2 ) = viewMatrix_( 1, 2 );
-    _viewMatrix( 2, 2 ) = viewMatrix_( 2, 2 ); _viewMatrix( 3, 2 ) = viewMatrix_( 3, 2 );
-    _viewMatrix( 0, 3 ) = viewMatrix_( 0, 3 ); _viewMatrix( 1, 3 ) = viewMatrix_( 1, 3 );
-    _viewMatrix( 2, 3 ) = viewMatrix_( 2, 3 ); _viewMatrix( 3, 3 ) = viewMatrix_( 3, 3 );
+    _viewMatrix = viewMatrix_;
 
 #ifdef RETO_USE_ZEROEQ
     // Each time view matrix is changed then it is published.
@@ -210,56 +194,39 @@ namespace reto
 #endif
   }
 
+  float* Camera::viewMatrixData( void )
+  {
+    return _viewMatrix.data( );
+  }
+
   Eigen::Matrix4f Camera::projMatrix( void ) const
   {
-    Eigen::Matrix4f projMatrix_ = Eigen::Matrix4f::Identity( );
-    projMatrix_( 0, 0 ) = _projMatrix( 0, 0 ); projMatrix_( 1, 0 ) = _projMatrix( 1, 0 );
-    projMatrix_( 2, 0 ) = _projMatrix( 2, 0 ); projMatrix_( 3, 0 ) = _projMatrix( 3, 0 );
-    projMatrix_( 0, 1 ) = _projMatrix( 0, 1 ); projMatrix_( 1, 1 ) = _projMatrix( 1, 1 );
-    projMatrix_( 2, 1 ) = _projMatrix( 2, 1 ); projMatrix_( 3, 1 ) = _projMatrix( 3, 1 );
-    projMatrix_( 0, 2 ) = _projMatrix( 0, 2 ); projMatrix_( 1, 2 ) = _projMatrix( 1, 2 );
-    projMatrix_( 2, 2 ) = _projMatrix( 2, 2 ); projMatrix_( 3, 2 ) = _projMatrix( 3, 2 );
-    projMatrix_( 0, 3 ) = _projMatrix( 0, 3 ); projMatrix_( 1, 3 ) = _projMatrix( 1, 3 );
-    projMatrix_( 2, 3 ) = _projMatrix( 2, 3 ); projMatrix_( 3, 3 ) = _projMatrix( 3, 3 );
-    return projMatrix_;
+    return _projMatrix;
   }
 
   void Camera::projMatrix( const Eigen::Matrix4f& projMatrix_ )
   {
-    _projMatrix( 0, 0 ) = projMatrix_( 0, 0 ); _projMatrix( 1, 0 ) = projMatrix_( 1, 0 );
-    _projMatrix( 2, 0 ) = projMatrix_( 2, 0 ); _projMatrix( 3, 0 ) = projMatrix_( 3, 0 );
-    _projMatrix( 0, 1 ) = projMatrix_( 0, 1 ); _projMatrix( 1, 1 ) = projMatrix_( 1, 1 );
-    _projMatrix( 2, 1 ) = projMatrix_( 2, 1 ); _projMatrix( 3, 1 ) = projMatrix_( 3, 1 );
-    _projMatrix( 0, 2 ) = projMatrix_( 0, 2 ); _projMatrix( 1, 2 ) = projMatrix_( 1, 2 );
-    _projMatrix( 2, 2 ) = projMatrix_( 2, 2 ); _projMatrix( 3, 2 ) = projMatrix_( 3, 2 );
-    _projMatrix( 0, 3 ) = projMatrix_( 0, 3 ); _projMatrix( 1, 3 ) = projMatrix_( 1, 3 );
-    _projMatrix( 2, 3 ) = projMatrix_( 2, 3 ); _projMatrix( 3, 3 ) = projMatrix_( 3, 3 );
+    _projMatrix = projMatrix_;
+  }
+
+  float* Camera::projMatrixData( void )
+  {
+    return _projMatrix.data( );
   }
 
   Eigen::Matrix4f Camera::viewProjMatrix( void ) const
   {
-    Eigen::Matrix4f viewProjMatrix_ = Eigen::Matrix4f::Identity( );
-    viewProjMatrix_( 0, 0 ) = _viewProjMatrix( 0, 0 ); viewProjMatrix_( 1, 0 ) = _viewProjMatrix( 1, 0 );
-    viewProjMatrix_( 2, 0 ) = _viewProjMatrix( 2, 0 ); viewProjMatrix_( 3, 0 ) = _viewProjMatrix( 3, 0 );
-    viewProjMatrix_( 0, 1 ) = _viewProjMatrix( 0, 1 ); viewProjMatrix_( 1, 1 ) = _viewProjMatrix( 1, 1 );
-    viewProjMatrix_( 2, 1 ) = _viewProjMatrix( 2, 1 ); viewProjMatrix_( 3, 1 ) = _viewProjMatrix( 3, 1 );
-    viewProjMatrix_( 0, 2 ) = _viewProjMatrix( 0, 2 ); viewProjMatrix_( 1, 2 ) = _viewProjMatrix( 1, 2 );
-    viewProjMatrix_( 2, 2 ) = _viewProjMatrix( 2, 2 ); viewProjMatrix_( 3, 2 ) = _viewProjMatrix( 3, 2 );
-    viewProjMatrix_( 0, 3 ) = _viewProjMatrix( 0, 3 ); viewProjMatrix_( 1, 3 ) = _viewProjMatrix( 1, 3 );
-    viewProjMatrix_( 2, 3 ) = _viewProjMatrix( 2, 3 ); viewProjMatrix_( 3, 3 ) = _viewProjMatrix( 3, 3 );
-    return viewProjMatrix_;
+    return _viewProjMatrix;
   }
 
   void Camera::viewProjMatrix( const Eigen::Matrix4f& viewProjMatrix_ )
   {
-    _viewProjMatrix( 0, 0 ) = viewProjMatrix_( 0, 0 ); _viewProjMatrix( 1, 0 ) = viewProjMatrix_( 1, 0 );
-    _viewProjMatrix( 2, 0 ) = viewProjMatrix_( 2, 0 ); _viewProjMatrix( 3, 0 ) = viewProjMatrix_( 3, 0 );
-    _viewProjMatrix( 0, 1 ) = viewProjMatrix_( 0, 1 ); _viewProjMatrix( 1, 1 ) = viewProjMatrix_( 1, 1 );
-    _viewProjMatrix( 2, 1 ) = viewProjMatrix_( 2, 1 ); _viewProjMatrix( 3, 1 ) = viewProjMatrix_( 3, 1 );
-    _viewProjMatrix( 0, 2 ) = viewProjMatrix_( 0, 2 ); _viewProjMatrix( 1, 2 ) = viewProjMatrix_( 1, 2 );
-    _viewProjMatrix( 2, 2 ) = viewProjMatrix_( 2, 2 ); _viewProjMatrix( 3, 2 ) = viewProjMatrix_( 3, 2 );
-    _viewProjMatrix( 0, 3 ) = viewProjMatrix_( 0, 3 ); _viewProjMatrix( 1, 3 ) = viewProjMatrix_( 1, 3 );
-    _viewProjMatrix( 2, 3 ) = viewProjMatrix_( 2, 3 ); _viewProjMatrix( 3, 3 ) = viewProjMatrix_( 3, 3 );
+    _viewProjMatrix = viewProjMatrix_;
+  }
+
+  float* Camera::viewProjMatrixData( void )
+  {
+    return _viewProjMatrix.data( );
   }
 
   float Camera::fov( void ) const
