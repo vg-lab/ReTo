@@ -1,9 +1,10 @@
 /**
- * @file    spinesStats.cpp
+ * @file    textureReader.cpp
  * @brief
- * @author  Juan Guerrero Martín <juan.guerrero@urjc.es>
- * @date    2016
- * @remarks Copyright (c) 2016 GMRV/URJC. All rights reserved.
+ * @author  Cristian Rodríguez Bernal
+ * @author  Juan Guerrero Martín
+ * @date    2017
+ * @remarks Copyright (c) 2017 GMRV/URJC. All rights reserved.
  * Do not distribute without further notice.
  */
 
@@ -36,7 +37,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
-reto::CameraController* cameraController;
+reto::CameraController* cameraController = nullptr;
 
 // X Y mouse position.
 int previousX;
@@ -48,10 +49,12 @@ bool mouseDown = false;
 bool mouseScrolling = false;
 bool rotation = false;
 bool traslation = false;
+bool zTraslation = false;
 
 // Constants.
 const float mouseWheelFactor = 0.1f;
-const float traslationScale = 10.0f;
+const float traslationScale = 0.2f;
+const float traslationIncrement = 10.0f;
 float rotationScale;
 
 // Euler angles.
@@ -322,28 +325,28 @@ void keyboardFunc( unsigned char key, int, int )
       case 'w':
       case 'W':
         if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
-          cameraController->translateInLookAtVectorDirection( traslationScale );
+          cameraController->translateInLookAtVectorDirection( traslationIncrement );
         glutPostRedisplay( );
         break;
       case 's':
       case 'S':
       {
         if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
-          cameraController->translateInLookAtVectorDirection( -traslationScale );
+          cameraController->translateInLookAtVectorDirection( -traslationIncrement );
         glutPostRedisplay( );
         break;
       }
       case 'q':
       case 'Q':
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInUpVectorDirection( traslationScale );
+          cameraController->translateInUpVectorDirection( traslationIncrement );
         glutPostRedisplay( );
         break;
       case 'e':
       case 'E':
       {
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInUpVectorDirection( -traslationScale );
+          cameraController->translateInUpVectorDirection( -traslationIncrement );
         glutPostRedisplay( );
         break;
       }
@@ -351,7 +354,7 @@ void keyboardFunc( unsigned char key, int, int )
       case 'A':
       {
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInRightVectorDirection( -traslationScale );
+          cameraController->translateInRightVectorDirection( -traslationIncrement );
         glutPostRedisplay( );
         break;
       }
@@ -359,7 +362,7 @@ void keyboardFunc( unsigned char key, int, int )
       case 'D':
       {
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInRightVectorDirection( traslationScale );
+          cameraController->translateInRightVectorDirection( traslationIncrement );
         glutPostRedisplay( );
         break;
       }
@@ -393,6 +396,7 @@ void mouseFunc( int button, int state, int x, int y )
     mouseDown = true;
     if( button == 0 ) rotation = true;
     if( button == 1 ) traslation = true;
+    if( button == 2 ) zTraslation = true;
     if ( (button == 3) || (button == 4) )
     {
       mouseScrolling = true;
@@ -411,6 +415,7 @@ void mouseFunc( int button, int state, int x, int y )
     mouseDown = false;
     if( button == 0 ) rotation = false;
     if( button == 1 ) traslation = false;
+    if( button == 2 ) zTraslation = false;
     if ( (button == 3) || (button == 4) )
     {
       mouseScrolling = false;
@@ -451,7 +456,21 @@ void mouseMotionFunc( int x, int y )
     }
     if( traslation )
     {
-      std::cout << "Please, use WASD instead." << std::endl;
+      if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
+      {
+        deltaX *= traslationScale;
+        deltaY *= traslationScale;
+        cameraController->translateInUpVectorDirection( deltaY );
+        cameraController->translateInRightVectorDirection( -deltaX );
+      }
+    }
+    if( zTraslation )
+    {
+      if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
+      {
+        deltaY *= traslationScale;
+        cameraController->translateInLookAtVectorDirection( deltaY );
+      }
     }
     previousX = x;
     previousY = y;

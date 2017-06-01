@@ -2,6 +2,7 @@
  * @file    pickDemo2_.cpp
  * @brief
  * @author  Cristian Rodríguez Bernal
+ * @author  Juan Guerrero Martín
  * @date    2017
  * @remarks Copyright (c) 2017 GMRV/URJC. All rights reserved.
  * Do not distribute without further notice.
@@ -36,7 +37,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
-reto::CameraController* cameraController;
+reto::CameraController* cameraController = nullptr;
 
 // X Y mouse position.
 int previousX;
@@ -51,7 +52,8 @@ bool traslation = false;
 
 // Constants.
 const float mouseWheelFactor = 0.1f;
-const float traslationScale = 10.0f;
+const float traslationScale = 0.2f;
+const float traslationIncrement = 10.0f;
 float rotationScale;
 
 // Euler angles.
@@ -314,28 +316,28 @@ void keyboardFunc( unsigned char key, int, int )
       case 'w':
       case 'W':
         if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
-          cameraController->translateInLookAtVectorDirection( traslationScale );
+          cameraController->translateInLookAtVectorDirection( traslationIncrement );
         glutPostRedisplay( );
         break;
       case 's':
       case 'S':
       {
         if( cameraController->projection( ) == reto::CameraController::PERSPECTIVE )
-          cameraController->translateInLookAtVectorDirection( -traslationScale );
+          cameraController->translateInLookAtVectorDirection( -traslationIncrement );
         glutPostRedisplay( );
         break;
       }
       case 'q':
       case 'Q':
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInUpVectorDirection( traslationScale );
+          cameraController->translateInUpVectorDirection( traslationIncrement );
         glutPostRedisplay( );
         break;
       case 'e':
       case 'E':
       {
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInUpVectorDirection( -traslationScale );
+          cameraController->translateInUpVectorDirection( -traslationIncrement );
         glutPostRedisplay( );
         break;
       }
@@ -343,7 +345,7 @@ void keyboardFunc( unsigned char key, int, int )
       case 'A':
       {
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInRightVectorDirection( -traslationScale );
+          cameraController->translateInRightVectorDirection( -traslationIncrement );
         glutPostRedisplay( );
         break;
       }
@@ -351,7 +353,7 @@ void keyboardFunc( unsigned char key, int, int )
       case 'D':
       {
         if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
-          cameraController->translateInRightVectorDirection( traslationScale );
+          cameraController->translateInRightVectorDirection( traslationIncrement );
         glutPostRedisplay( );
         break;
       }
@@ -450,7 +452,13 @@ void mouseMotionFunc( int x, int y )
     }
     if( traslation )
     {
-      std::cout << "Please, use WASD instead." << std::endl;
+      if( cameraController->cameraType( ) == reto::CameraController::STANDARD )
+      {
+        deltaX *= traslationScale;
+        deltaY *= traslationScale;
+        cameraController->translateInUpVectorDirection( deltaY );
+        cameraController->translateInRightVectorDirection( -deltaX );
+      }
     }
     previousX = x;
     previousY = y;

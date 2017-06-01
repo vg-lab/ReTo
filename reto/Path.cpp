@@ -34,11 +34,11 @@ namespace reto
               const std::vector< Eigen::Vector3f >& lookAts_,
               const std::vector< Eigen::Vector3f >& ups_,
               TInterpolationMethod interpolationMethod_ )
+  : _positions( positions_ )
+  , _lookAts( lookAts_ )
+  , _ups( ups_ )
+  , _interpolationMethod( interpolationMethod_ )
   {
-    _positions = positions_;
-    _lookAts = lookAts_;
-    _ups = ups_;
-    _interpolationMethod = interpolationMethod_;
   }
 
   Path::~Path( void )
