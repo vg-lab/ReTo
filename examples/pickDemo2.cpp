@@ -353,6 +353,11 @@ void keyboardFunc( unsigned char key, int, int )
       }
       glutPostRedisplay( );
       break;
+    case 't':
+    case 'T':
+      cameraController->toggleProjectionType( );
+      glutPostRedisplay( );
+      break;
   }
 }
 

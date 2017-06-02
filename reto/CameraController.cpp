@@ -563,6 +563,67 @@ namespace reto
     _camera->viewProjMatrix( newViewProjMatrix );
   }
 
+  void CameraController::toggleProjectionType( void )
+  {
+    _projection = ( _projection == PERSPECTIVE )
+                  ? ORTHOGRAPHIC
+                  : PERSPECTIVE;
+
+    Eigen::Matrix4f newProjMatrix;
+
+    switch( _projection )
+    {
+      case PERSPECTIVE :
+      {
+        float currentFov = _camera->fov();
+        currentFov *= ( (float) M_PI / 360.0f );
+        float f = 1.0f / tan( currentFov );
+
+        float ratio = _camera->width( ) / _camera->height( );
+
+        float inverseOfNearMinusFar = 1.0f / ( _camera->nearPlane( ) - _camera->farPlane( ) );
+
+        newProjMatrix
+        << f / ratio, 0.0f, 0.0f, 0.0f,
+           0.0f, f, 0.0f, 0.0f,
+           0.0f, 0.0f, ( _camera->farPlane( ) + _camera->nearPlane( )  ) * inverseOfNearMinusFar, ( 2.0f * _camera->farPlane( ) * _camera->nearPlane( ) ) * inverseOfNearMinusFar,
+           0.0f, 0.0f, -1.0f, 0.0f;
+
+        // Feedback.
+        std::cout << "Current projection mode: PERSPECTIVE." << std::endl;
+      }
+      break;
+
+      case ORTHOGRAPHIC :
+      {
+        float right = _camera->width( ) * 0.5f;
+        float top = _camera->height( ) * 0.5f;
+
+        newProjMatrix
+        << 1.0f / right, 0.0f, 0.0f, 0.0f,
+           0.0f, 1.0f / top, 0.0f, 0.0f,
+           0.0f, 0.0f, -2.0f / ( _camera->farPlane( ) - _camera->nearPlane( ) ), -1.0f * ( _camera->farPlane( ) + _camera->nearPlane( ) ) / ( _camera->farPlane( ) - _camera->nearPlane( ) ),
+           0.0f, 0.0f, 0.0f, 1.0f;
+
+        // Feedback.
+        std::cout << "Current projection mode: ORTHOGRAPHIC." << std::endl;
+      }
+      break;
+
+      default:
+        newProjMatrix = _camera->projMatrix( );
+    }
+
+    _camera->projMatrix( newProjMatrix );
+
+    Eigen::Matrix4f newViewProjMatrix = newProjMatrix * _camera->viewMatrix( );
+
+    _camera->viewProjMatrix( newViewProjMatrix );
+
+    // Adapting to screen size.
+    resize( _camera->width( ), _camera->height( ) );
+  }
+
   bool CameraController::animate( void )
   {
     if( _path->empty( ) )

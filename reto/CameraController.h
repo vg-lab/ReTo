@@ -276,6 +276,12 @@ namespace reto
     void resize( float width_, float height_ );
 
     /**
+     * Method to alternate between projection modes
+     */
+    RETO_API
+    void toggleProjectionType( void );
+
+    /**
      * Method that moves the camera along the path
      * @return bool indicating whether the camera has completed the path
      */
