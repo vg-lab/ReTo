@@ -229,14 +229,28 @@ namespace reto {
   public:
     RETO_API
     static TextureManager& getInstance( void );
+    /**
+     * Method to add new texture to TextureManager
+     * @param alias: Texture alias
+     * @param tex: Texture pointer
+     */
     RETO_API
     void add( const std::string& alias, Texture* tex );
+    /**
+     * Method to remove a texture from TextureManager
+     * @param alias: Texture alias
+     */
     RETO_API
     void remove( const std::string& alias );
+    /**
+     * Method to get a texture from TextureManager
+     * @param alias: Texture alias
+     * @return Texture pointer
+     */
     RETO_API
     Texture* get( const std::string& alias );
-    RETO_API
-    protected:
+  protected:
+    TextureManager( void ) { }
     ~TextureManager( void );
   protected:
     std::unordered_map< std::string, Texture* > _textures;
