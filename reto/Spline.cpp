@@ -23,6 +23,7 @@
 #include "Spline.h"
 #include <stdexcept>
 #include <iostream>
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 namespace reto

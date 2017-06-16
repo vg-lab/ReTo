@@ -30,6 +30,9 @@
 using Eigen::MatrixXf;
 using Eigen::VectorXf;
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 // From libraries.
 #include <reto/reto.h>
 using namespace reto;
