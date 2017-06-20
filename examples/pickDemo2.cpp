@@ -35,6 +35,9 @@ using Eigen::VectorXf;
 #include <reto/reto.h>
 using namespace reto;
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 #include "MyCube.h"
 
 reto::Camera* camera;

@@ -96,6 +96,13 @@ namespace reto {
 
   void Texture1D::load( void )
   { }
+  void Texture1D::update(void* data, unsigned int width)
+  {
+    _width = width;
+    bind( );
+    configTexture( data );
+    unbind( );
+  }
   void Texture1D::configTexture( void* data )
   {
     if (_packAlignment > 0)

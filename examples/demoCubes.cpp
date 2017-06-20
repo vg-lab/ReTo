@@ -25,6 +25,9 @@
   #include <GL/freeglut.h>
 #endif
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 // Eigen.
 #include <Eigen/Dense>
 using Eigen::MatrixXf;

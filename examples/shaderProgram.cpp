@@ -40,10 +40,11 @@
 using namespace reto;
 
 #ifndef RETO_GEOMETRY_SHADERS
-int main( int, char** )
+int main(int, char**)
 {
   std::cerr << "ReTo not built with geometry shaders" << std::endl;
   return -1;
+}
 #else
 int main( int argc, char** argv )
 {

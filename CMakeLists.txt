@@ -7,8 +7,8 @@
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
-project( ReTo VERSION 0.1.0 )
-set( ReTo_VERSION_ABI 1)
+project( ReTo VERSION 0.2.0 )
+set( ReTo_VERSION_ABI 3)
 
 # Disable in source building
 if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )
@@ -34,7 +34,7 @@ set( CMAKECOMMONTEMPLATE_DESCRIPTION "ReTo - Render Tools" )
 set( COMMON_PROJECT_DOMAIN gmrv.es )
 
 
-option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" OFF )
+option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" ON )
 
 option( RETO_WITH_COMPUTE_SHADERS "enabling/disabling compute shaders" ON )
 option( RETO_WITH_GEOMETRY_SHADERS "enabling/disabling geometry shaders" ON )

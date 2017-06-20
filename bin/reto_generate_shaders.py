@@ -27,13 +27,13 @@ import os, re, io
 from string import Template
 from imp import reload
 
+nmtags = ""
 tmpl = """#ifndef $header
 #define $header
 
-namespace $namespace
-{
+$nmbody_begin
 $tmpl
-};
+$nmbody_end
 
 #endif /* $header */
 """
@@ -83,15 +83,15 @@ def read_file( root, file, path, import_file ):
     print("'" + file + "' not found")
     return []
 
-  content = '\\n"\n  "'.join( content )
+  content = ('\\n"\n  ' + nmtags + '"').join( content )
   if not import_file:
     var_name = first_lower( var_name )
     if var_name in set_vars:
-      #raise ValueError("Var_name exist")
-      print( var_name + " repeated ..." )
+      raise ValueError( var_name + " repeated ..." )
+      #print( var_name + " repeated ..." )
       return []
     set_vars.add( var_name )
-    list.append( "  const char* const " + var_name + " = " )
+    list.append( nmtags + "const char* const " + var_name + " = " )
     list.append( '"' + content + '";' )
     list.append( "\n\n" )
   else:
@@ -119,7 +119,6 @@ def parse_cli( ):
       print (k + " undefined")
       all_none = True
 
-
   if all_none:
     print( 'python reto_generate_shaders.py -r "route" -n "namespace"  '\
            '-d "RETO" -f "file.h"' )
@@ -130,10 +129,18 @@ def parse_cli( ):
 if __name__ == "__main__":
   if sys.version[0] == '2':
     reload(sys)
-    sys.setdefaultencoding('utf8')
+    sys.setdefaultencoding("utf-8")
 
   opts = parse_cli( )
   src = Template( tmpl )
+
+  namespaces = opts["namespace"].split( "::" )
+  nmbody_begin = ""
+  nmbody_end = ""
+  for namespace in namespaces:
+    nmbody_begin += nmtags + "namespace " + namespace + "\n" + nmtags + "{\n"
+    nmbody_end = nmtags + "}\n" + nmbody_end
+    nmtags += "  "
 
   list = recreateFile( opts["route"] )
 
@@ -143,12 +150,11 @@ if __name__ == "__main__":
 
   d = {
     "tmpl": str_,
-    "namespace": opts["namespace"],
+    "nmbody_begin": nmbody_begin,
+    "nmbody_end": nmbody_end,
     "header" : header.upper( )
   }
   code = src.substitute( d )
-
-
 
   if os.path.exists( opts["fileOutput"] ):
     try:
