@@ -217,7 +217,7 @@ namespace reto
       delete [ ] infoLog;
       return false;
     }
-    delete source;
+    delete[] source;
 
     // Add to shaders in use
     _shaders.push_back( shader );
