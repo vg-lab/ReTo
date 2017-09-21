@@ -449,7 +449,7 @@ namespace reto
 #ifdef RETO_USE_ZEROEQ
   void Camera::_OnCameraEvent( lexis::render::ConstLookOutPtr lookoutPtr_ )
   {
-    std::vector< double > aux = std::move( lookoutPtr_->getMatrixVector( ));
+    const auto& aux = lookoutPtr_->getMatrixVector( );
     std::vector<float> viewMatrixVec( aux.begin( ), aux.end( ));
     _ViewMatrixVectorized( viewMatrixVec );
 
