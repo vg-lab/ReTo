@@ -30,7 +30,7 @@ namespace reto
   {
   }
 
-  std::string ObjParser::loadFile( std::string& filename )
+  std::string ObjParser::loadFile( const std::string& filename )
   {
     std::ifstream file( filename.c_str( ) );
     std::stringstream buffer;
@@ -105,7 +105,7 @@ namespace reto
     return values;
   }
 
-  Model ObjParser::loadObj( std::string& filename, bool calculateTangAndBi )
+  Model ObjParser::loadObj( const std::string& filename, bool calculateTangAndBi )
   {
     Model m;
     m.vertices.clear( );
@@ -308,7 +308,7 @@ namespace reto
       tangents.clear( );
       bitangents.clear( );
     }
-    
+
     return m;
   }
 };

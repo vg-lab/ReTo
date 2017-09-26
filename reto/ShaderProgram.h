@@ -44,7 +44,7 @@
 
 namespace reto
 {
-
+  //! Class to manage shaders and programs
   class ShaderProgram
   {
   public:

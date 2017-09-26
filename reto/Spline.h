@@ -30,7 +30,7 @@
 namespace reto
 {
   /**
-   * Spline class
+   * Class to manage spline structs
    * @class Spline
    */
   class Spline
@@ -79,7 +79,7 @@ namespace reto
       float angleBetweenPoints( float dt0, float dt1 );
     protected:
       /**
-       * Evalate catmull rom spline with 4 given values and time
+       * Evaluate catmull rom spline with 4 given values and time
        * @param p0 First value
        * @param p1 Second value
        * @param p2 Third value
@@ -91,9 +91,9 @@ namespace reto
 
       //! List of points who defineds the spline
       std::vector< Eigen::Vector3f > _points;
-      //!Current time used (default = 0)
+      //!Current time used (default = 0.0f)
       float _currentdt;
-      //! Last time used (default = 0)
+      //! Last time used (default = 0.0f)
       float _olddt;
   }; // class Spline
 }; // namespace reto
