@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez Bernal <cristian.rodriguez@urjc.es>
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -19,6 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
+
 #include <limits.h>
 #include <reto/reto.h>
 #include "retoTests.h"
@@ -73,8 +74,6 @@ BOOST_AUTO_TEST_CASE( texture_example )
   BOOST_CHECK_EQUAL( config.format, GL_RGBA );
   BOOST_CHECK_EQUAL( config.wrapR, GL_CLAMP_TO_EDGE );
 
-  BOOST_CHECK( &TextureManager::getInstance( ) != nullptr );
-
   float values[ ] = { 1.0f, 1.0f, 1.0f, 1.0f };
   Texture1D* tex1 = new Texture1D( config, values, 1 );
   tex1->update( values, 1 );
@@ -92,7 +91,11 @@ BOOST_AUTO_TEST_CASE( texture_example )
   BOOST_CHECK( TextureManager::getInstance( ).get( "example2D" ) == tex2 );
   BOOST_CHECK( TextureManager::getInstance( ).get( "hello" ) == nullptr );
 
+  TextureManager::getInstance( ).remove( "example1D" );
   TextureManager::getInstance( ).remove( "example2D" );
+
+  delete tex1;
+  delete tex2;
 
   BOOST_CHECK( TextureManager::getInstance( ).get( "example2D" ) == nullptr );
 

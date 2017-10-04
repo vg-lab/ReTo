@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez Bernal <cristian.rodriguez@urjc.es>
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -19,6 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
+
 #include <limits.h>
 #include <reto/reto.h>
 #include "retoTests.h"

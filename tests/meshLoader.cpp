@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez Bernal <cristian.rodriguez@urjc.es>
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -19,9 +19,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
+
 #include <limits.h>
 #include <reto/reto.h>
 #include "retoTests.h"
+
+#include <testData.h>
 
 using namespace reto;
 
@@ -29,7 +32,7 @@ BOOST_AUTO_TEST_CASE( parse_obj_example )
 {
   ObjParser obj;
   Model m = obj.loadObj(
-    "/home/crodriguez/Documents/nuevos_proyectos/ReTo/testData/cube.obj_",
+    OBJ_MODEL_TEST_DATA,
     true );
   BOOST_CHECK_EQUAL( m.vertices.size( ), 8 * 3 * 3 );
   BOOST_CHECK_EQUAL( m.normals.size( ), 8 * 3 * 3 );
@@ -43,7 +46,7 @@ BOOST_AUTO_TEST_CASE( parse_obj_example2 )
 {
   ObjParser obj;
   Model m = obj.loadObj(
-    "/home/crodriguez/Documents/nuevos_proyectos/ReTo/testData/cube.obj_",
+    OBJ_MODEL_TEST_DATA,
     false );
   BOOST_CHECK_EQUAL( m.vertices.size( ), 8 * 3 * 3 );
   BOOST_CHECK_EQUAL( m.normals.size( ), 8 * 3 * 3 );

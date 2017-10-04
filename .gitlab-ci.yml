@@ -35,7 +35,7 @@ Win7:
   # - set RUN_TESTS=1
   - set CMAKE_EXTRA_ARGS=-DGLEW_INCLUDE_DIR=c:\libs\glew-1.11.0\include -DGLEW_LIBRARY=c:\libs\glew-1.11.0\lib\Release/x64/glew32.lib -DGLUT_glut_LIBRARY=c:\libs\freeglut\lib\x64\freeglut.lib -DGLUT_INCLUDE_DIR=c:\libs\freeglut\include
   - set BUILD_GENERATOR=Visual Studio 12 Win64
-  - set PATH=%PATH%;"c:\\Program Files (x86)\\Git\\bin"
+  - set PATH=%PATH%;"c:\\Program Files\\Git\\bin"
   - bash.exe --login .gitlabci.sh
  tags:
   - win7

@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez Bernal (crodriguez)
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -182,7 +182,9 @@ namespace reto
   class Texture1D: public Texture
   {
   public:
+    RETO_API
     Texture1D( const TextureConfig& options, void* data, unsigned int width );
+    RETO_API
     virtual ~Texture1D( void );
     /**
      * Method to update texture content
