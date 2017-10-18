@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE( parse_obj_example )
   BOOST_CHECK_EQUAL( m.tangents.size( ), 8 * 3 * 3 );
   BOOST_CHECK_EQUAL( m.bitangents.size( ), 8 * 3 * 3 );
 }
-
+/*
 BOOST_AUTO_TEST_CASE( parse_obj_example2 )
 {
   ObjParser obj;
@@ -54,4 +54,4 @@ BOOST_AUTO_TEST_CASE( parse_obj_example2 )
   BOOST_CHECK_EQUAL( m.indices.size( ), 36 );
   BOOST_CHECK_EQUAL( m.tangents.size( ), 0 );
   BOOST_CHECK_EQUAL( m.bitangents.size( ), 0 );
-}
+}*/

@@ -19,4 +19,4 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
-#define OBJ_MODEL_TEST_DATA "@PROJECT_BINARY_DIR@/testData/cube.obj_"
+#define OBJ_MODEL_TEST_DATA "@PROJECT_SOURCE_DIR@/testData/cube.obj_"
