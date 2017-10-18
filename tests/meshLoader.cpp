@@ -24,29 +24,34 @@
 #include <reto/reto.h>
 #include "retoTests.h"
 
+#include <testData.h>
+
 using namespace reto;
 
-BOOST_AUTO_TEST_CASE( test_camera )
+BOOST_AUTO_TEST_CASE( parse_obj_example )
 {
-  Camera* c = new Camera( );
-
-  c->localTranslation( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ) );
-  c->localRotation( 0.0f, 0.0f );
-
-  BOOST_CHECK_EQUAL( c->fov( ), 0.392699093f );
-  BOOST_CHECK_EQUAL( c->position( )[ 0 ], 0.0f );
-
-  c->radius( 5.0f );
-  BOOST_CHECK_EQUAL( c->radius( ), 5.0f );
-
-  c->pivot( Eigen::Vector3f( 0.0f, 1.0f, 0.0f ) );
-
-  BOOST_CHECK_EQUAL( c->pivot( )[ 1 ], 1.0f );
-
-  c->setWindowSize( 1000, 1000 );
-
-  BOOST_CHECK_EQUAL( c->width( ), 1000 );
-  BOOST_CHECK_EQUAL( c->height( ), 1000 );
-
-  delete c;
+  ObjParser obj;
+  Model m = obj.loadObj(
+    OBJ_MODEL_TEST_DATA,
+    true );
+  BOOST_CHECK_EQUAL( m.vertices.size( ), 8 * 3 * 3 );
+  BOOST_CHECK_EQUAL( m.normals.size( ), 8 * 3 * 3 );
+  BOOST_CHECK_EQUAL( m.texCoords.size( ), 4 * 6 * 2 );
+  BOOST_CHECK_EQUAL( m.indices.size( ), 36 );
+  BOOST_CHECK_EQUAL( m.tangents.size( ), 8 * 3 * 3 );
+  BOOST_CHECK_EQUAL( m.bitangents.size( ), 8 * 3 * 3 );
 }
+/*
+BOOST_AUTO_TEST_CASE( parse_obj_example2 )
+{
+  ObjParser obj;
+  Model m = obj.loadObj(
+    OBJ_MODEL_TEST_DATA,
+    false );
+  BOOST_CHECK_EQUAL( m.vertices.size( ), 8 * 3 * 3 );
+  BOOST_CHECK_EQUAL( m.normals.size( ), 8 * 3 * 3 );
+  BOOST_CHECK_EQUAL( m.texCoords.size( ), 4 * 6 * 2 );
+  BOOST_CHECK_EQUAL( m.indices.size( ), 36 );
+  BOOST_CHECK_EQUAL( m.tangents.size( ), 0 );
+  BOOST_CHECK_EQUAL( m.bitangents.size( ), 0 );
+}*/

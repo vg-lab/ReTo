@@ -1,13 +1,14 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 #   ReTo
-#   2016 (c) GMRV / Universidad Rey Juan Carlos
+#   2017 (c) GMRV / Universidad Rey Juan Carlos
 #   gmrv@gmrv.es
 #   www.gmrv.es
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
-project( ReTo VERSION 0.2.0 )
+project( ReTo VERSION 0.2.1 )
 set( ReTo_VERSION_ABI 3)
 
 # Disable in source building
@@ -116,4 +117,11 @@ install( FILES CMake/reto_generate_shaders.cmake
   DESTINATION ${CMAKE_MODULE_INSTALL_PATH} COMPONENT dev )
 
 include( CPackConfig )
+
+set( DOCS README.md LICENSE.txt )
+install( FILES ${DOCS} DESTINATION share/ReTo COMPONENT dev )
+
+set( DOXYGEN_MAINPAGE_MD README.md )
+set( DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md )
+
 include( DoxygenRule )

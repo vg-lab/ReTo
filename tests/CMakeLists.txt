@@ -1,5 +1,9 @@
-include_directories( ${CMAKE_BINARY_DIR}/include )
-include_directories( ${PROJECT_SOURCE_DIR} )
+
+configure_file(${PROJECT_SOURCE_DIR}/tests/testData.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/testData.h)
+
+include_directories( ${CMAKE_CURRENT_BINARY_DIR} )
+
 
 if (${Boost_FOUND})
   if (${GLUT_FOUND})

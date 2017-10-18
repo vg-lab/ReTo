@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -27,8 +27,8 @@
 
 using namespace reto;
 
-int main() {
-
+int main( void )
+{
   std::vector<Eigen::Vector3f> v;
   v.push_back(Eigen::Vector3f{0.0, 0.0, 0.0});
   v.push_back(Eigen::Vector3f{0.0, 200.0, 0.0});
@@ -49,7 +49,8 @@ int main() {
     dt += 0.1f;
     std::cout << "dt = " << dt << " { x: " << p(0) << ", y: "
         << p(1) << ", z: " << p(2) << "}" << std::endl;
-    if (dt > 1.0f) {
+    if ( dt > 1.0f )
+    {
       tries--;
       dt = 0.0f;
     }

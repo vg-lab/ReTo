@@ -1,7 +1,8 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: TBD
+ * Authors: Juan Jose Garcia Cantero <juanjose.garcia@urjc.es>
+ *          Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -19,6 +20,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  */
+
 #include "Camera.h"
 #define _USE_MATH_DEFINES
 #include <math.h>

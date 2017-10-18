@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodriguez Bernal (crodriguez)
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -34,8 +34,11 @@
 #include <iostream>
 #include <fstream>
 
-namespace reto {
-  struct TextureConfig {
+namespace reto
+{
+  //! Auxiliar struct that contains sampler texture configuration
+  struct TextureConfig
+  {
     unsigned int internalFormat = GL_RGBA;
     unsigned int format = GL_RGBA;
     unsigned int border = 0;
@@ -49,6 +52,7 @@ namespace reto {
     unsigned int packAlignment = 0;
     unsigned int unpackAlignment = 0;
   };
+  //! Abstract class to manage texture
   class Texture
   {
   public:
@@ -134,6 +138,7 @@ namespace reto {
     unsigned int _packAlignment;
     unsigned int _unpackAlignment;
   };
+  //! Class to manage 2D textures
   class Texture2D: public Texture
   {
   public:
@@ -173,10 +178,13 @@ namespace reto {
     unsigned int _width;
     unsigned int _height;
   };
+  //! Class to manage 1D textures
   class Texture1D: public Texture
   {
   public:
+    RETO_API
     Texture1D( const TextureConfig& options, void* data, unsigned int width );
+    RETO_API
     virtual ~Texture1D( void );
     /**
      * Method to update texture content
@@ -191,6 +199,7 @@ namespace reto {
     void configTexture( void* data = nullptr );
     virtual void load( void );
   };
+  //! Class to manage 2D array textures
   class Texture2DArray: public Texture
   {
   public:
@@ -203,6 +212,7 @@ namespace reto {
   protected:
     virtual void load( void );
   };
+  //! Class to manage 3D textures
   class Texture3D: public Texture
   {
   public:
@@ -224,6 +234,7 @@ namespace reto {
   protected:
     virtual void load( void );
   };
+  //! Class to manage all textures from application
   class TextureManager
   {
   public:

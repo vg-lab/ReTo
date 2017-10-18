@@ -1,7 +1,7 @@
 /*
- * Copyright (c) 2014-2016 GMRV/URJC.
+ * Copyright (c) 2014-2017 GMRV/URJC.
  *
- * Authors: Cristian Rodríguez Bernal
+ * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *
  * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
  *
@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
     oss4 << model.indices.back( );
   }
   fout << "\tindices: [" << oss4.str( ) << "]" << std::endl;
-  
+
   fout << "}" << std::endl;
   std::cout << fout.str() << std::endl;
 
