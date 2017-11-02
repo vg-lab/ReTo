@@ -36,7 +36,7 @@ namespace reto
     , _farPlane( farPlane_ )
     , _pivot( pivot_ )
     , _radius( radius_ )
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
     , _zeqConnection( false )
 #endif
     , _isAniming( false )
@@ -57,7 +57,7 @@ namespace reto
     _BuildViewProjectionMatrix( );
   }
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
   Camera::Camera( const std::string& session_, float fov_, float ratio_,
                   float nearPlane_, float farPlane_, Eigen::Vector3f pivot_,
                   float radius_, float yaw_, float pitch_ )
@@ -217,7 +217,7 @@ namespace reto
     return _positionVec.data( );
   }
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
   zeroeq::Subscriber* Camera::subscriber( void )
   {
     return _subscriber;
@@ -396,7 +396,7 @@ namespace reto
 
     _ViewMatrixVectorized( viewVec );
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
     if ( _zeqConnection )
     {
       std::vector< double > viewm ( viewVec.begin( ), viewVec.end( ));
@@ -448,7 +448,7 @@ namespace reto
 
   }
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
   void Camera::_OnCameraEvent( lexis::render::ConstLookOutPtr lookoutPtr_ )
   {
     const auto& aux = lookoutPtr_->getMatrixVector( );
@@ -500,7 +500,7 @@ namespace reto
 
     // PRIVATE
 
-#ifndef RETO_USE_ZEROEQ
+#ifndef RETO_USE_LEXIS
 
   void Camera::_PositionVectorized( const std::vector<float>& positionVec_ )
   {

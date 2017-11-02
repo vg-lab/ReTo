@@ -35,7 +35,7 @@
 
 #include <reto/api.h>
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
 #include <zeroeq/zeroeq.h>
 #include <servus/uri.h>
 
@@ -79,7 +79,7 @@ namespace reto
             Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
             float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
     /**
      * Camera constructor
      * @param session ZeroEq session to synchronize the camera with other
@@ -205,7 +205,7 @@ namespace reto
     RETO_API
     float* position( void );
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
     /**
      * Method to get the pointer to the camera subscriber used to sinchronize
      * the camera with other applications
@@ -315,7 +315,7 @@ private:
 
     void _BuildViewProjectionMatrix( void );
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
     void _OnCameraEvent( lexis::render::ConstLookOutPtr event_ );
 #endif
 
@@ -367,7 +367,7 @@ private:
     //! Target distance between the camera an the pivot pin
     float _targetRadius;
 
-#ifdef RETO_USE_ZEROEQ
+#ifdef RETO_USE_LEXIS
 
     //! State of the zeq connection: 1 activated, 0 desactivated
     bool _zeqConnection;
