@@ -100,28 +100,16 @@ int main( int argc, char** argv )
   initOGL( );
 
   /**/
-  if ( argc < 2 )
+  if ( argc < 1 )
   {
-    std::cout << "Usage: bin/ReToDemoCubes zeqUri" << std::endl;
+    std::cout << "Usage: bin/ReToDemoCubes" << std::endl;
     exit( 0 );
   }
   /**/
 
-  std::string zeqUri = "";
-
-#ifdef RETO_USE_ZEROEQ
-  zeqUri = std::string( argv[1] );
-#else
-  std::cerr << "ZeroEQ not supported." << std::endl;
-#endif
-
   mycube = new MyCube( 4.5f );
 
-#ifdef RETO_USE_ZEROEQ
-  camera = new Camera( zeqUri );
-#else
   camera = new Camera( );
-#endif
 
   path = new Path( Path::TInterpolationMethod::CATMULL_ROM );
 
