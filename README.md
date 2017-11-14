@@ -35,8 +35,14 @@ Yosemite and Windows 7/8 (Visual Studio 2013 Win64). The following steps
 should be enough to build it:
 
 ```bash
-git clone https://gitlab.gmrv.com/nsviz/ReTo.git
+git clone --recursive https://gitlab.gmrv.com/nsviz/ReTo.git
 mkdir ReTo/build && cd ReTo/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 ```
+
+## Documentation
+
+You can access the online API documentation generated from the source
+(using [Doxygen](http://doxygen.org/)) in
+https://gmrvvis.github.io/doc/ReTo/
