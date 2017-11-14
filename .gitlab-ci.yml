@@ -1,6 +1,22 @@
 stages:
  - build
 
+Ubuntu-master:
+ stage: build
+ script:
+  - date
+  - hostname
+  - uname -a
+  # - export CMAKE_EXTRA_TARGETS="test"
+  - export BUILD_GENERATOR="Ninja"
+  - export DEPLOY_DOC_REPO="git@github.com:gmrvvis/gmrvvis.github.io"
+  - export GITHUB_MIRROR_URL="git@github.com:gmrvvis/ReTo"
+  - bash .gitlabci.sh
+ only:
+  - master
+ tags:
+  - ubuntu
+
 Ubuntu:
  stage: build
  script:
@@ -8,8 +24,10 @@ Ubuntu:
   - hostname
   - uname -a
   # - export CMAKE_EXTRA_TARGETS="test"
-  - export BUILD_GENERATOR="Unix Makefiles"
+  - export BUILD_GENERATOR="Ninja"
   - bash .gitlabci.sh
+ except:
+  - master
  tags:
   - ubuntu
 
@@ -21,7 +39,7 @@ OSX:
   - uname -a
   # - export CMAKE_EXTRA_TARGETS="test"
   - export CMAKE_EXTRA_ARGS=-DGLUT_glut_LIBRARY=/usr/local/Cellar/freeglut/3.0.0/lib/libglut.dylib
-  - export BUILD_GENERATOR="Unix Makefiles"
+  - export BUILD_GENERATOR="Ninja"
   - bash .gitlabci.sh
  tags:
   - osx-sierra

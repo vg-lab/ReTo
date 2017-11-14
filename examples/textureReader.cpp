@@ -23,7 +23,6 @@
 
 // std.
 #include <string>
-#include <glutExampleShaders.h>
 
 // OpenGL, GLEW, GLUT.
 #include <GL/glew.h>
@@ -81,11 +80,20 @@ void initOGL( void );
 void destroy( void);
 
 MyCube* mycube;
+std::string textureFile;
 
 int main( int argc, char** argv )
 {
   initContext( argc, argv );
   initOGL( );
+
+  if ( argc < 2 )
+  {
+    std::cerr << "Error: A texture file must be provided." << std::endl;
+    return -1;
+  }
+
+  textureFile = std::string( argv[1] );
 
   mycube = new MyCube( 4.5f );
 
@@ -132,8 +140,12 @@ void initOGL( void )
   glEnable( GL_DEPTH_TEST );
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
-  prog.load( RETO_EXAMPLE_SHADER_TEXTURE_VERT,
-              RETO_EXAMPLE_SHADER_TEXTURE_FRAG );
+  const auto path = std::getenv( "RETO_SHADERS_PATH" );
+  std::string shadersPath;
+  if ( path )
+    shadersPath = std::string( path ) + std::string( "/" );
+
+  prog.load( shadersPath + "texture.vert", shadersPath + "texture.frag" );
   prog.compileAndLink( );
   prog.autocatching( );
 
@@ -177,7 +189,7 @@ void initOGL( void )
   reto::TextureConfig opts2;
   reto::TextureManager::getInstance( ).add(
     "gmrv",
-    new reto::Texture2D( opts2, RETO_EXAMPLE_TEXTURE) );
+    new reto::Texture2D( opts2, textureFile ) );
 }
 
 void destroy( void )
