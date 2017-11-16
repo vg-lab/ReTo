@@ -7,6 +7,5 @@ doc/latex
 .*.swp
 #*
 *#*
-CMake/common
 build
 commonsrc

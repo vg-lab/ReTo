@@ -8,7 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
-project( ReTo VERSION 0.2.1 )
+project( ReTo VERSION 0.3.0 )
 set( ReTo_VERSION_ABI 3)
 
 # Disable in source building
@@ -19,6 +19,10 @@ endif()
 list( APPEND CMAKE_MODULE_PATH
   ${PROJECT_SOURCE_DIR}/CMake
   ${CMAKE_SOURCE_DIR}/CMake/common )
+
+if(NOT EXISTS ${CMAKE_SOURCE_DIR}/CMake/common/Common.cmake)
+  message(FATAL_ERROR "CMake/common missing, run: git submodule update --init")
+endif()
 
 # Default build type is Debug
 if( NOT CMAKE_BUILD_TYPE )

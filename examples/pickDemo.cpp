@@ -23,7 +23,6 @@
 
 // std.
 #include <string>
-#include <glutExampleShaders.h>
 
 // OpenGL, GLEW, GLUT.
 #include <GL/glew.h>
@@ -141,13 +140,16 @@ void initOGL( void )
   glEnable( GL_DEPTH_TEST );
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
-  prog.load( RETO_EXAMPLE_SHADER_COLOR_VERT,
-              RETO_EXAMPLE_SHADER_COLOR_FRAG );
+  const auto path = std::getenv( "RETO_SHADERS_PATH" );
+  std::string shadersPath;
+  if ( path )
+    shadersPath = std::string( path ) + std::string( "/" );
+
+  prog.load( shadersPath + "color.vert", shadersPath + "color.frag" );
   prog.compileAndLink( );
   prog.autocatching( );
 
-  progPick.load( RETO_EXAMPLE_SHADERS_PICK_VERT,
-              RETO_EXAMPLE_SHADERS_PICK_FRAG );
+  progPick.load( shadersPath + "pick.vert", shadersPath + "pick.frag" );
   progPick.compileAndLink( );
   progPick.autocatching( );
 
