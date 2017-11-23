@@ -188,7 +188,7 @@ namespace reto
     virtual ~Texture1D( void );
     /**
      * Method to update texture content
-     * @param w: New width
+     * @param width: New width
      * @param data: New texture data
      */
     RETO_API

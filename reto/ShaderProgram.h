@@ -55,22 +55,22 @@ namespace reto
 
     /**
      * Method to load and add a vertex and fragment shaders from file
-     * @param source: Vertex shader file source
-     * @param source: Fragment shader source
+     * @param vsFile: Vertex shader file source
+     * @param fsFile: Fragment shader source
      * @return Shader loaded
      */
     RETO_API
     bool load( const std::string& vsFile, const std::string& fsFile );
     /**
      * Method to load and add a vertex shader from file
-     * @param source: Shader file source
+     * @param file: Shader file source
      * @return Shader loaded
      */
     RETO_API
     bool loadVertexShader( const std::string& file );
     /**
      * Method to load and add a fragment shader from file
-     * @param source: Shader file source
+     * @param file: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -78,7 +78,7 @@ namespace reto
 #ifdef RETO_GEOMETRY_SHADERS
     /**
      * Method to load and add a geometry shader from file
-     * @param source: Shader file source
+     * @param file: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -87,14 +87,14 @@ namespace reto
 #ifdef RETO_TESSELATION_SHADERS
     /**
      * Method to load and add a tesselation evaluation shader from file
-     * @param source: Shader file source
+     * @param file: Shader file source
      * @return Shader loaded
      */
     RETO_API
     bool loadTesselationEvaluationShader( const std::string& file );
     /**
      * Method to load and add a tesselation control shader from file
-     * @param source: Shader file source
+     * @param file: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -103,7 +103,7 @@ namespace reto
 #ifdef RETO_COMPUTE_SHADERS
     /**
      * Method to load and add a computer shader from file
-     * @param source: Shader file source
+     * @param file: Shader file source
      * @return Shader loaded
      */
     RETO_API
@@ -111,8 +111,8 @@ namespace reto
 #endif
     /**
      * Method to load and add a vertex and fragment shaders from text
-     * @param source: Vertex shader source
-     * @param source: Fragment shader source
+     * @param vsSource: Vertex shader source
+     * @param fsSource: Fragment shader source
      * @return Shader loaded
      */
     RETO_API
@@ -234,28 +234,28 @@ namespace reto
      * @param index: Uniform index
      */
     RETO_API
-    void bindUniform( const std::string& unifs, unsigned int index );
+    void bindUniform( const std::string& unif, unsigned int index );
 
     /**
      * Method to check if uniform exist (only check in uniform cache)
-     * @param uniform: Uniform name
+     * @param unif: Uniform name
      * @return bool
      */
     RETO_API
     bool isUniformCached( const std::string& unif );
     /**
      * Method to check if attribute exist (only check in attribute cache)
-     * @param attribute: Attribute name
+     * @param attr: Attribute name
      * @return bool
      */
     RETO_API
     bool isAttributeCached( const std::string& attr );
     /**
      * Method to catching an uniform buffer object
-     * @param _ubo: Uniform Buffer Object name
+     * @param ubo: Uniform Buffer Object name
      */
     RETO_API
-    void addUbo( const std::string& _ubo );
+    void addUbo( const std::string& ubo );
 
 #ifdef RETO_SUBPROGRAMS
     /**
@@ -283,11 +283,11 @@ namespace reto
     int uniform( const std::string& _unif );
     /**
      * Method to get a Uniform Buffer Object index in cache
-     * @param _ubo: Uniform Buffer Object name
+     * @param ubo: Uniform Buffer Object name
      * @return Uniform Buffer Object index
      */
     RETO_API
-    int ubo( const std::string& _ubo );
+    int ubo( const std::string& ubo );
     /**
      * Method to get a subprogram index of a specific kind of shader
      *    in cache
@@ -322,7 +322,7 @@ namespace reto
     /**
      * Method to send an integer
      * @param uniform: Uniform name
-     * @param v: Int data
+     * @param val: Int data
      */
     RETO_API
     void sendUniformi( const std::string& uniform, int val );
@@ -404,7 +404,7 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform2iv( const std::string& uniformName,
+    void sendUniform2iv( const std::string& uniform,
       const unsigned int* data );
     /**
      * Method to send a ivec2
@@ -412,7 +412,7 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform2iv( const std::string& uniformName,
+    void sendUniform2iv( const std::string& uniform,
       const std::vector< unsigned int > & data );
     /**
      * Method to send a ivec3
@@ -420,7 +420,7 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform3iv( const std::string& uniformName,
+    void sendUniform3iv( const std::string& uniform,
       const unsigned int* data );
     /**
      * Method to send a ivec3
@@ -428,7 +428,7 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform3iv( const std::string& uniformName,
+    void sendUniform3iv( const std::string& uniform,
       const std::vector< unsigned int > & data );
     /**
      * Method to send a ivec4
@@ -436,7 +436,7 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform4iv( const std::string& uniformName,
+    void sendUniform4iv( const std::string& uniform,
       const unsigned int* data );
     /**
      * Method to send a ivec4
@@ -444,7 +444,7 @@ namespace reto
      * @param data: Data
      */
     RETO_API
-    void sendUniform4iv( const std::string& uniformName,
+    void sendUniform4iv( const std::string& uniform,
       const std::vector< unsigned int > & data );
     /**
      * Method to send a mat3
@@ -471,7 +471,7 @@ namespace reto
      */
     RETO_API
     void sendUniform4m( const std::string& uniform,
-                        const std::vector< float > & m,
+                        const std::vector< float > & data,
                         bool inverse = false );
     /**
      * Method to send a mat4
@@ -482,7 +482,7 @@ namespace reto
      */
     RETO_API
     void sendUniform4m( const std::string& uniform,
-                        const float* m,
+                        const float* data,
                         bool inverse = false );
 
 #ifdef RETO_SUBPROGRAMS
@@ -498,6 +498,7 @@ namespace reto
 #ifdef RETO_OCC_QUERY
     /**
      * Method to check if object is visible in frustrum
+     * @param renderFunc: Function callback
      * @return object is visible
      */
     RETO_API
