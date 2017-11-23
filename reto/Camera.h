@@ -67,17 +67,17 @@ namespace reto
      * @param fov camera field of view
      * @param ratio camera ratio
      * @param nearPlane camera near plane
-     * @param farPlan camera far plane
+     * @param farPlane camera far plane
      * @param pivot camera rotation pivot
      * @param radius camera distance from the camera pivot
      * @param yaw camera rotation of y exe
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    Camera( float fov_ = 45.0f, float ratio_ = ((float)16)/9,
-            float nearPlane_ = 0.1f, float farPlane_ = 10000.0f,
-            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
-            float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
+    Camera( float fov = 45.0f, float ratio = ((float)16)/9,
+            float nearPlane = 0.1f, float farPlane = 10000.0f,
+            Eigen::Vector3f pivot = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+            float radius = 1000.0f, float yaw = 0.0f, float pitch = 0.0f );
 
 #ifdef RETO_USE_LEXIS
     /**
@@ -94,11 +94,11 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    Camera( const std::string& session_, float fov_ = 45.0f,
-            float ratio_ = ((float)16)/9, float nearPlane_ = 0.1f,
-            float farPlane_ = 10000.0f,
-            Eigen::Vector3f pivot_ = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
-            float radius_ = 1000.0f, float yaw_ = 0.0f, float pitch_ = 0.0f );
+    Camera( const std::string& session, float fov = 45.0f,
+            float ratio = ((float)16)/9, float nearPlane = 0.1f,
+            float farPlane = 10000.0f,
+            Eigen::Vector3f pivot = Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+            float radius = 1000.0f, float yaw = 0.0f, float pitch = 0.0f );
 #endif
 
     /**
@@ -120,7 +120,7 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    void localRotation( const float yaw_, const float pitch_ );
+    void localRotation( const float yaw, const float pitch );
 
     /**
      * Method to if there is a target pivot move the camera to this target pivot
@@ -220,21 +220,21 @@ namespace reto
      * @param ratio camera projection ratio
      */
     RETO_API
-    void ratio( float ratio_ );
+    void ratio( float ratio );
 
     /**
      * Method to set the camera pivot pin
      * @param pivot new camera pivot pin
      */
     RETO_API
-    void pivot( Eigen::Vector3f pivot_ );
+    void pivot( Eigen::Vector3f pivot );
 
     /**
      * Method to set the distance between the camera and the pivot pin
      * @param radius distance between the camera and the pivot pin
      */
     RETO_API
-    void radius( const float radius_ );
+    void radius( const float radius );
 
     /**
      * Method to set the rotation of the camera
@@ -242,14 +242,14 @@ namespace reto
      * @param pitch camera rotation of x exe
      */
     RETO_API
-    void rotation( const float yaw_, const float pitch_ );
+    void rotation( const float yaw, const float pitch );
 
     /**
      * Method to set the target pivot of the camera
      * @param targetPivot camera target pivot pin
      */
     RETO_API
-    void targetPivot( Eigen::Vector3f targetPivot_ );
+    void targetPivot( Eigen::Vector3f targetPivot );
 
     /**
      * Method to set the target camera distance between the camera and the pivot
@@ -258,7 +258,7 @@ namespace reto
      * pivot pin
      */
     RETO_API
-    void targetRadius( const float targetRadius_ );
+    void targetRadius( const float targetRadius );
 
     /**
      * Method to set the target pivot pin a nd the target camera distance
@@ -268,23 +268,23 @@ namespace reto
      * pivot pin
      */
     RETO_API
-    void targetPivotRadius( Eigen::Vector3f targetPivot_,
-                            const float targetRadius_ );
+    void targetPivotRadius( Eigen::Vector3f targetPivot,
+                            const float targetRadius );
 
     /**
      * Method to set the anim duration of the camera movement from actual pivot
      * and radius to the target pivot and radius
      */
     RETO_API
-    void animDuration( const float animDuration_ );
+    void animDuration( const float animDuration );
 
     /**
      * Method to set window size
-     * @param w: Window width
-     * @param h: Window height
+     * @param width: Window width
+     * @param height: Window height
      */
     RETO_API
-    void setWindowSize( const int width_, const int height_ );
+    void setWindowSize( const int width, const int height );
 
     /**
      * Method to get window width size
