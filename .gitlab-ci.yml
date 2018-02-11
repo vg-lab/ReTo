@@ -44,16 +44,17 @@ OSX:
  tags:
   - osx-sierra
 
-Win7:
+Win7-Subproject-vs14:
  stage: build
  script:
-  - call %ENVFILESDIR%\Boost-1.56-vs12-x64.bat
+  - call %ENVFILESDIR%\Boost-1.64-vs14-x64.bat
   - call %ENVFILESDIR%\eigen-3.1.2-vs12-x64.bat
   # - set CMAKE_EXTRA_TARGETS=RUN_TESTS
   # - set RUN_TESTS=1
   - set CMAKE_EXTRA_ARGS=-DGLEW_INCLUDE_DIR=c:\libs\glew-1.11.0\include -DGLEW_LIBRARY=c:\libs\glew-1.11.0\lib\Release/x64/glew32.lib -DGLUT_glut_LIBRARY=c:\libs\freeglut\lib\x64\freeglut.lib -DGLUT_INCLUDE_DIR=c:\libs\freeglut\include
-  - set BUILD_GENERATOR=Visual Studio 12 Win64
-  - set PATH=%PATH%;"c:\\Program Files\\Git\\bin"
-  - bash.exe --login .gitlabci.sh
+  - set BUILD_GENERATOR=Visual Studio 14 Win64
+  - set GENERATOR_EXTRA_OPTIONS=
+  - '"c:\Program Files\Git\bin\bash.exe" --login  .gitlabci.sh'
+  - set PATH=%PATH%;"c:\Program Files\Git\bin"
  tags:
   - win7
