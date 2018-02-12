@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
   {
     // Convert all but the last element to avoid a trailing ","
     std::copy(model.indices.begin( ), model.indices.end( ) - 1,
-      std::ostream_iterator< float >( oss4, "," ) );
+      std::ostream_iterator< int >( oss4, "," ) );
 
     // Now add the last element with no delimiter
     oss4 << model.indices.back( );
