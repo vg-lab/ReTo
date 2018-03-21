@@ -177,9 +177,43 @@ namespace reto
 
   // GETTERS
 
-  float Camera::fov( void )
+  float Camera::fov( void ) const
   {
     return _fov;
+  }
+
+  void Camera::fov( float fieldOfView )
+  {
+    _fov = fieldOfView;
+    _f = 1.0f / tan( _fov );
+
+    _BuildProjectionMatrix( );
+    _BuildViewProjectionMatrix( );
+  }
+
+  float Camera::nearPlane( void ) const
+  {
+    return _nearPlane;
+  }
+
+  RETO_API
+  void Camera::nearPlane( float near )
+  {
+    _nearPlane = near;
+    _BuildProjectionMatrix( );
+    _BuildViewProjectionMatrix( );
+  }
+
+  float Camera::farPlane( void ) const
+  {
+    return _farPlane;
+  }
+
+  void Camera::farPlane( float far )
+  {
+    _farPlane = far;
+    _BuildProjectionMatrix( );
+    _BuildViewProjectionMatrix( );
   }
 
   Eigen::Vector3f Camera::pivot( void )
