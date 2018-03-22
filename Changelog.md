@@ -2,8 +2,11 @@
 
 ## git master
 
-## 0.2.0
+## 0.3.0
+	* [!39] Added setters for several camera attributes.
 	* [!36] Release 0.3. Updated README.md. Changed CMake/common to submodule. Fixed examples shaders path.
+
+## 0.2.0
 	* [!35] Fixed Camera code with no ZeroEQ. RETO_USE_ZEROEQ renamed to RETO_USE_LEXIS
 	* [!34] Improving tests
 	* [!33] Fixed OSX clang warnings

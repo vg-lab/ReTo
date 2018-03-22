@@ -134,17 +134,45 @@ namespace reto
      * @return float with the field of view of the camera
      */
     RETO_API
-    float fov( void );
+    float fov( void ) const;
+
+    /**
+     * Method to modify the current field of view of the camera
+     * @param fieldOfView new value for field of view
+     * Note: This will modify projection and view-projection matrices
+     */
+    RETO_API
+    void fov( float fieldOfView );
+
+    /**
+     * Method to get the current near plane of the camera
+     * @return float with the near plane distance from camera
+     */
+    RETO_API
+    float nearPlane( void ) const;
+
+    /**
+     * Method to set the near plane of the camera
+     * Note: This will modify projection and view-projection matrices
+     * @param near new value for near plane
+     */
+    RETO_API
+    void nearPlane( float near );
 
     /**
      * Method to get and set the far plane of the camera
-     * @return the reference to a float with the far plane attrib of the camera
+     * @return the far plane attribute of the camera
      */
     RETO_API
-    float& farPlane( void )
-    {
-      return _farPlane;
-    }
+    float farPlane( void ) const;
+
+    /**
+     * Method to set the near plane of the camera
+     * Note: This will modify projection and view-projection matrices
+     * @param near new value for near plane
+     */
+    RETO_API
+    void farPlane( float far );
 
     /**
      * Method to get the actual pivot pin of the camera
@@ -154,9 +182,9 @@ namespace reto
     Eigen::Vector3f pivot( void );
 
     /**
-     * Method to get the actual distance between the camera and the pivot pin
-     * aka camera radius
-     * @return float with the distance between the camera and the pivot pin
+     * Method to get the actual distance between the camera and the pivot positions.
+     * This distance is the actual radius from camera's orbit over pivot.
+     * @return float with the distance between the camera and the pivot position.
      */
     RETO_API
     float radius( void );
@@ -190,9 +218,9 @@ namespace reto
     float* viewMatrix( void );
 
     /**
-     * Method to get the pointer to projectionview matrix of the camera
+     * Method to get the pointer to view-projection matrix of the camera
      * vectorized in columns
-     * @return pointer to float whit the column vectorized projectionview
+     * @return pointer to float whit the column vectorized view-projection
      * matrix of the camera
      */
     RETO_API
