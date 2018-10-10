@@ -8,11 +8,13 @@ set(RETO_PUBLIC_HEADERS
   PickingSystem.h
   Spline.h
   TextureManager.h
+  FrameRecorderWidget.h
 )
 
 set(RETO_HEADERS )
 
 set(RETO_SOURCES
+  resources.qrc
   ObjParser.cpp
   Camera.cpp
   ShaderProgram.cpp
@@ -20,12 +22,23 @@ set(RETO_SOURCES
   PickingSystem.cpp
   Spline.cpp
   TextureManager.cpp
+  FrameRecorderWidget.cpp
 )
 
 set(RETO_LINK_LIBRARIES
   ${OPENGL_LIBRARIES}
   ${GLEW_LIBRARIES}
   ${FREEIMAGE_LIBRARIES}
+  Qt5::Core
+  Qt5::Widgets
+  x264
+  x265
+  swscale
+  avutil
+  avformat
+  avcodec
+  ${FFMPEG_LIBRARIES}
+  ${SDL_LIBRARY}
 )
 
 if ( ZEROEQ_FOUND )
