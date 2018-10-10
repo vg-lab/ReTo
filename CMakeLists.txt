@@ -83,6 +83,17 @@ common_find_package(GLUT SYSTEM)
 common_find_package(Qt5Core 5.4 SYSTEM REQUIRED)
 common_find_package(Qt5Widgets 5.4 SYSTEM REQUIRED)
 common_find_package(Boost COMPONENTS unit_test_framework)
+common_find_package(SDL REQUIRED)
+include_directories(${SDL_INCLUDE_DIRS})
+
+common_find_package(x264 REQUIRED)
+common_find_package(x265 REQUIRED)
+common_find_package(FFmpeg REQUIRED)
+
+include_directories(${FFMPEG_INCLUDE_DIR})
+include_directories(${X264_INCLUDE_DIRS})
+include_directories(${X265_INCLUDE_DIRS})
+
 common_find_package(ZeroEQ)
 common_find_package(Lexis)
 common_find_package(FreeImage)
@@ -131,24 +142,3 @@ set( DOXYGEN_MAINPAGE_MD README.md )
 set( DOXYGEN_EXTRA_INPUT ${PROJECT_SOURCE_DIR}/README.md )
 
 include( DoxygenRule )
-
-#SDL
-find_package(SDL REQUIRED sdl)
-include_directories(${SDL_INCLUDE_DIRS})
-
-#FFMPEG
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules)
-find_package(x264 REQUIRED)
-find_package(x265 REQUIRED)
-
-find_package(FFmpeg REQUIRED)
-if (FFMPEG_FOUND)
-  message("Found FFMPEG/LibAV libraries")
-  include_directories(${FFMPEG_INCLUDE_DIR})
-  include_directories(${X264_INCLUDE_DIRS})
-  include_directories(${X265_INCLUDE_DIRS})
-  #include_directories(${VPX_INCLUDE_DIRS})
-
-else (FFMPEG_FOUND)
-  message("Can't find libavcodec, libavformat or libavutil. Add them!")
-endif (FFMPEG_FOUND)

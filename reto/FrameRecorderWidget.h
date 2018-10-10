@@ -37,41 +37,41 @@ class QLineEdit;	// Text field to choose framerate
 
 namespace reto
 {
-	class FrameRecorderWidget : public QWidget
-	{
-		Q_OBJECT
+  class FrameRecorderWidget : public QWidget
+  {
+    Q_OBJECT
 
-	private:
-		QWidget * dataSource;
-		QLineEdit * inputFrameRateEL;
-		QLineEdit * fileWidthEL;
-		QLineEdit * fileHeightEL;
-		QToolButton * recordButton;
-		QToolButton * stopRecordButton;
+  private:
+    QWidget * dataSource;
+    QLineEdit * inputFrameRateEL;
+    QLineEdit * fileWidthEL;
+    QLineEdit * fileHeightEL;
+    QToolButton * recordButton;
+    QToolButton * stopRecordButton;
 
-		char filename[0xff];
-		QScreen * screen;
-		std::queue<QImage> frameQueue;
-		std::mutex mtx;
-		std::condition_variable monitor;
-		bool recording;
-		int frameWidth, frameHeigth;
-		double frameRate;
-		std::vector<std::thread> threads;
-		
-	public:
-		FrameRecorderWidget(QWidget * frameSource = 0, QWidget * parent = 0);
-		void setFrameSource(QWidget * frameSource);
-		
-	private slots:
-		void startRecordingClicked();
-		void stopRecordingClicked();
+    char filename[0xff];
+    QScreen * screen;
+    std::queue<QImage> frameQueue;
+    std::mutex mtx;
+    std::condition_variable monitor;
+    bool recording;
+    int frameWidth, frameHeigth;
+    double frameRate;
+    std::vector<std::thread> threads;
 
-	private:
-		QToolButton * createButton(const QString & text, const char * slotMember);
-		void produceFrame();
-		void consumeFrame();
-	};
+  public:
+    FrameRecorderWidget(QWidget * frameSource = 0, QWidget * parent = 0);
+    void setFrameSource(QWidget * frameSource);
+
+  private slots:
+    void startRecordingClicked();
+    void stopRecordingClicked();
+
+  private:
+    QToolButton * createButton(const QString & text, const char * slotMember);
+    void produceFrame();
+    void consumeFrame();
+  };
 }
 
 #endif

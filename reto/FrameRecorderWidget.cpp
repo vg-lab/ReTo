@@ -77,14 +77,14 @@ namespace reto
 		
 		recordButton = createButton(tr("Record"), SLOT(startRecordingClicked()));
 		recordButton->setFixedSize(QSize(30,30));
-		recordButton->setIcon(QIcon(QString::fromUtf8(":/icons/record_icon.png")));
+		recordButton->setIcon(QIcon(QString::fromUtf8(":/icons/record.svg")));
 		QSize currentIconSize = recordButton->iconSize();
 		currentIconSize = currentIconSize / 1.5;
 		recordButton->setIconSize(currentIconSize);
 
 		stopRecordButton = createButton(tr("Stop"), SLOT(stopRecordingClicked()));
 		stopRecordButton->setFixedSize(QSize(30,30));
-		stopRecordButton->setIcon(QIcon(QString::fromUtf8(":/icons/stop_record_icon.png")));
+		stopRecordButton->setIcon(QIcon(QString::fromUtf8(":/icons/stop.svg")));
 		stopRecordButton->setIconSize(currentIconSize);
 		stopRecordButton->setEnabled(false);
 

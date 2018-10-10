@@ -23,6 +23,7 @@ set(RETO_SOURCES
   Spline.cpp
   TextureManager.cpp
   FrameRecorderWidget.cpp
+  resources.qrc
 )
 
 set(RETO_LINK_LIBRARIES
@@ -48,5 +49,7 @@ endif( )
 if ( LEXIS_FOUND )
   set(RETO_LINK_LIBRARIES ${RETO_LINK_LIBRARIES} Lexis )
 endif( )
+
+add_definitions( -DRETO_SHARED )
 
 common_library( ReTo )
