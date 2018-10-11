@@ -49,7 +49,7 @@ namespace reto
     QToolButton * recordButton;
     QToolButton * stopRecordButton;
 
-    char filename[0xff];
+    QString filename;
     QScreen * screen;
     std::queue<QImage> frameQueue;
     std::mutex mtx;

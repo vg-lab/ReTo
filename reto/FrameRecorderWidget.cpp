@@ -185,9 +185,7 @@ namespace reto
 			qtFileName = qtFileName.append(".mp4");
 		}
 
-		QByteArray ba = qtFileName.toLatin1();
-		const char * cStr = ba.data();
-		strcpy(filename, cStr);
+		filename = qtFileName;
 
 		QRect rect = dataSource->rect();
 		frameWidth = rect.width();
@@ -276,6 +274,9 @@ namespace reto
 
 	void FrameRecorderWidget::consumeFrame()
 	{
+		QByteArray ba = filename.toLatin1();
+		const char * filenameCstr = ba.data();
+
 		av_register_all ( );
 
 		 // Shut up ffmepg
@@ -291,7 +292,7 @@ namespace reto
 		//sprintf(filename, "GeneratedVideo.%s", fmtext);
 		AVOutputFormat * fmt = av_guess_format("mp4", NULL, NULL);
 		AVFormatContext *oc = NULL;
-		avformat_alloc_output_context2(&oc, NULL, NULL, filename);
+		avformat_alloc_output_context2(&oc, NULL, NULL, filenameCstr);
 		AVStream * stream = avformat_new_stream(oc, 0);
 		AVCodec *codec=NULL;
 		AVCodecContext *c= NULL;
@@ -315,8 +316,8 @@ namespace reto
 		av_dict_free(&opt);
 		stream->time_base=(AVRational){1, 25};
 		stream->codec=c; // Once the codec is set up, we need to let the container know which codec are the streams using, in this case the only (video) stream.
-		av_dump_format(oc, 0, filename, 1);
-		avio_open(&oc->pb, filename, AVIO_FLAG_WRITE);
+		av_dump_format(oc, 0, filenameCstr, 1);
+		avio_open(&oc->pb, filenameCstr, AVIO_FLAG_WRITE);
 		ret=avformat_write_header(oc, &opt);
 		av_dict_free(&opt); 
 
