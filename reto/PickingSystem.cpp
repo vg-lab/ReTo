@@ -87,11 +87,15 @@ namespace reto
       "}\n"
 
       "vec3 unpackColor(float f) {\n"
-      "  vec3 color;\n"
+      /*"  vec3 color;\n"
       "  color.b = floor(f / (256 * 256));\n"
       "  color.g = floor((f - color.b * 256 * 256) / 256);\n"
       "  color.r = floor(module(f, 256.0));\n"
-      "  return color / 255.0;\n"
+      "  return color / 255.0;\n"*/
+      "  vec3 color = fract(vec3(1.0/255.0, 1.0/(255.0*255.0), 1.0/(255.0*255.0*255.0)) * f);\n"
+      "  color -= color.xxy * vec3(0.0, 1.0/255.0, 1.0/255.0);\n"
+
+      "  return color;\n"
       "}\n"
 
       "void main( ) {\n"
@@ -109,11 +113,16 @@ namespace reto
     //std::set< reto::Pickable* >::iterator it;
     for ( const auto& object : _objects )
     {
-      currentId = object->sendId( currentId );
+      std::cout << "Current id: " << currentId << std::endl;
       // WARNING: SEND ID (OR ANOTHER VALUE) HERE!
       this->_program->sendUniformf("id", currentId);
       object->render( this->_program );
+      currentId = object->sendId( currentId );
     }
+    glFlush( );
+    glFinish( ); 
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   }
 
   PickingSystem::~PickingSystem( void )
@@ -133,7 +142,7 @@ namespace reto
     GLubyte color[4];
     glReadPixels(point.first, point.second, 1, 1,
       GL_RGBA, GL_UNSIGNED_BYTE, color);
-    int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
+    int value = color[0] + color[1] * 255 + color[2] * 255 * 255;
     if (value < 3355443) {
        std::cout << value << std::endl;
     }
@@ -165,8 +174,7 @@ namespace reto
       {
         glReadPixels( x, y, 1, 1, GL_RGBA,
                       GL_UNSIGNED_BYTE, color );
-        value = ( unsigned int )( color[2] + color[1] * 256 +
-                              color[0] * 256 * 256 );
+        value = color[0] + color[1] * 255 + color[2] * 255 * 255;
         if( value < _objects.size( ))
         {
           ret.insert( value );

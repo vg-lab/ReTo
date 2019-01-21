@@ -135,7 +135,7 @@ reto::PickingSystem *ps;
 
 std::vector<MyCube*> cubes;
 
-int MAX = 25;
+int MAX = 5;
 void initOGL( void )
 {
   glEnable( GL_DEPTH_TEST );
@@ -145,6 +145,8 @@ void initOGL( void )
   std::string shadersPath;
   if ( path )
     shadersPath = std::string( path ) + std::string( "/" );
+  else 
+    shadersPath = "/home/crodriguezbe/Desktop/Projects/qtcarbonic/ReTo/examples/";
 
   prog.load( shadersPath + "color.vert", shadersPath + "color.frag" );
   prog.compileAndLink( );
@@ -164,6 +166,9 @@ void initOGL( void )
     {
       for (auto k = -MAX; k <= MAX; k+= 5)
       {
+        if( i == j ) continue;
+        if( i == k ) continue;
+        if( j == k ) continue;
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);
@@ -211,7 +216,7 @@ void updateMatrix( reto::ShaderProgram& ss )
   ss.sendUniform4m("proj", camera->projectionMatrix( ));
   ss.sendUniform4m("view", camera->viewMatrix( ));
 }
-
+int selected = -1;
 void renderFunc( void )
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -227,7 +232,7 @@ void renderFunc( void )
   {
     updateMatrix( progPick );
     std::cout << "PICK" << std::endl;
-    int selected = ps->click( reto::Point( { pickX, pickY } ) );
+    selected = ps->click( reto::Point( { pickX, pickY } ) );
     std::cout << selected << std::endl;
 
     comprobar = false;
@@ -239,6 +244,14 @@ void renderFunc( void )
     for (auto cube: cubes)
     {
       prog.sendUniformf("id", id);
+      if( id != selected )
+      {
+        prog.sendUniform( "color", 0.0f, 0.0f, 0.0f );
+      }
+      else
+      {
+        prog.sendUniform( "color", 1.0f, 1.0f, 1.0f );
+      }
       cube->render( &prog );
       id += 1.0f;
     }

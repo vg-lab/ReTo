@@ -54,6 +54,8 @@ using namespace reto;
 
 reto::Camera* camera;
 
+int selected = -1;
+
 // X Y mouse position.
 int previousX;
 int previousY;
@@ -134,7 +136,7 @@ reto::ShaderProgram prog, progPick;
 
 std::vector<MyCube*> cubes;
 
-int MAX = 25;
+int MAX = 5;
 void initOGL( void )
 {
   glEnable( GL_DEPTH_TEST );
@@ -144,6 +146,8 @@ void initOGL( void )
   std::string shadersPath;
   if ( path )
     shadersPath = std::string( path ) + std::string( "/" );
+  else 
+    shadersPath = "/home/crodriguezbe/Desktop/Projects/qtcarbonic/ReTo/examples/";
 
   prog.load( shadersPath + "color.vert", shadersPath + "color.frag" );
   prog.compileAndLink( );
@@ -158,12 +162,15 @@ void initOGL( void )
 
   glEnable( GL_CULL_FACE );
 
-  for (auto i = -MAX; i <= MAX; i+= 5)
+  for(auto i = -MAX; i <= MAX; i+= 5)
   {
-    for (auto j = -MAX; j <= MAX; j+= 5)
+    for(auto j = -MAX; j <= MAX; j+= 5)
     {
-      for (auto k = -MAX; k <= MAX; k+= 5)
+      for(auto k = -MAX; k <= MAX; k+= 5)
       {
+        if( i == j ) continue;
+        if( i == k ) continue;
+        if( j == k ) continue;
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);
@@ -229,16 +236,27 @@ void renderFunc( void )
   // TODO: SEND MODEL
   float id = 0.0f;
 
+  glDisable( GL_CULL_FACE );
+  
   for( auto obj: cubes )
   {
     if (comprobar)
     {
       progPick.sendUniformf("id", id);
+      std::cout << "PICKING: " << id << std::endl;
       obj->render( &progPick );
     }
     else
     {
       prog.sendUniformf("id", id);
+      if( id != selected )
+      {
+        prog.sendUniform( "color", 0.0f, 0.0f, 0.0f );
+      }
+      else
+      {
+        prog.sendUniform( "color", 1.0f, 1.0f, 1.0f );
+      }
       obj->render( &prog );
     }
     id += 1.0f;
@@ -246,13 +264,17 @@ void renderFunc( void )
 
   if ( comprobar )
   {
-    int selected = -1;
     glDisable(GL_SCISSOR_TEST);
+
+    glFlush( );
+    glFinish( ); 
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     GLubyte color[4];
     glReadPixels(pickX, pickY, 1, 1,
       GL_RGBA, GL_UNSIGNED_BYTE, color);
-    int value = color[0] + color[1] * 256 + color[2] * 256 * 256;
+    int value = color[0] + color[1] * 255 + color[2] * 255 * 255;
     if (value < 3355443) {
        std::cout << value << std::endl;
     }
