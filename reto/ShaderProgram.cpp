@@ -507,9 +507,19 @@ namespace reto
         glGetActiveUniform( this->_program, (GLuint)i, bufSize, &length,
             &size, &type, name );
 
-        this->addUniform( name );
-
-        //printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+        if ( size > 1 )
+        {
+          std::string baseName = std::string( name ).substr( 0, length - 3 );
+          for ( auto j = 0; j < size; ++j )
+          {
+            std::string arrayName = baseName + "[" + std::to_string( j ) + "]";
+            this->addUniform( arrayName );
+          }
+        }
+        else
+        {
+          this->addUniform( name );
+        }
       }
 
     }
