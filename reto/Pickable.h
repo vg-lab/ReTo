@@ -50,9 +50,30 @@ namespace reto
     RETO_API
     virtual void render ( reto::ShaderProgram* ) = 0;
 
+    RETO_API
+    virtual std::vector< float > getModel( void ) const = 0;
+
+    RETO_API
+    virtual std::vector< float > getPositions( void ) const = 0;
+
+    RETO_API
+    virtual bool getSelected( void ) const = 0;
+
+    RETO_API
+    virtual void setSelected( const bool& selected ) = 0;
+
+    RETO_API
+    int getId( void ) const;
+
+    RETO_API
+    void setId( const int& id );
+
   protected:
     int _numIds = 1;
-    void setNumIDs ( int numIds );
+    void setNumIDs( int numIds );
+
+  private:
+    int _id;
   };
 };
 

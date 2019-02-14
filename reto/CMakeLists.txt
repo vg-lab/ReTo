@@ -12,6 +12,10 @@ set(RETO_PUBLIC_HEADERS
   PickingSystem.h
   Spline.h
   TextureManager.h
+  TransformFeedback.h
+  Framebuffer.h
+  SelectionSystem.h
+  ClippingSystem.h
 )
 
 set(RETO_HEADERS )
@@ -28,6 +32,10 @@ set(RETO_SOURCES
   PickingSystem.cpp
   Spline.cpp
   TextureManager.cpp
+  TransformFeedback.cpp
+  Framebuffer.cpp
+  SelectionSystem.cpp
+  ClippingSystem.cpp
 )
 
 set(RETO_LINK_LIBRARIES
@@ -43,5 +51,9 @@ endif( )
 if ( LEXIS_FOUND )
   set(RETO_LINK_LIBRARIES ${RETO_LINK_LIBRARIES} Lexis )
 endif( )
+
+#if( MSVC )
+#  add_definitions( -DGLEW_STATIC )
+#endif( MSVC )
 
 common_library( ReTo )

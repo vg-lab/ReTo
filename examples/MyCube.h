@@ -31,14 +31,24 @@ public:
   MyCube( float side );
   void render( void );
   virtual void render( reto::ShaderProgram* );
-  void setModel( const std::vector<float> value )
-  {
-    this->model = value;
-  }
-  std::vector<float> model;
-protected:
+
+  std::vector< float > getModel( void ) const;
+  void setModel( const std::vector<float> value );
+
+  std::vector< float > getPositions( void ) const;
+
+  bool getSelected( void ) const;
+  void setSelected( const bool& selected );
+
+private:
   unsigned int _vao;
   unsigned int _size;
+  unsigned int _handle[5];
+  std::vector< float > _model;
+  std::vector< float > _v;
+  std::vector< float > _c;
+  bool _selected;
+
 };
 
 #endif // __RETO__MYCUBE__

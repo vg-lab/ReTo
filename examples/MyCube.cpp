@@ -38,9 +38,10 @@
 #include <vector>
 
 MyCube::MyCube( float side )
+  : _selected( false )
 {
-    side /= 2;
-    float v[24*3] = {
+    side /= 2.0f;
+    _v = {
       // Front
      -side, -side, side,
       side, -side, side,
@@ -73,7 +74,7 @@ MyCube::MyCube( float side )
      -side,  side, -side
     };
 
-    float n[24*3] = {
+    std::vector< float > n = {
       // Front
       0.0f, 0.0f, 1.0f,
       0.0f, 0.0f, 1.0f,
@@ -106,7 +107,40 @@ MyCube::MyCube( float side )
       0.0f, 1.0f, 0.0f
     };
 
-    float tex[24*2] = {
+    _c = {
+      //Front (blue)
+      0.0f, 0.0f, 1.0f, 1.0f,
+      0.0f, 0.0f, 1.0f, 1.0f,
+      0.0f, 0.0f, 1.0f, 1.0f,
+      0.0f, 0.0f, 1.0f, 1.0f,
+      //Right (cyan)
+      0.0f, 1.0f, 1.0f, 1.0f,
+      0.0f, 1.0f, 1.0f, 1.0f,
+      0.0f, 1.0f, 1.0f, 1.0f,
+      0.0f, 1.0f, 1.0f, 1.0f,
+      //Back (red)
+      1.0f, 0.0f, 0.0f, 1.0f,
+      1.0f, 0.0f, 0.0f, 1.0f,
+      1.0f, 0.0f, 0.0f, 1.0f,
+      1.0f, 0.0f, 0.0f, 1.0f,
+      //Left (purple)
+      1.0f, 0.0f, 1.0f, 1.0f,
+      1.0f, 0.0f, 1.0f, 1.0f,
+      1.0f, 0.0f, 1.0f, 1.0f,
+      1.0f, 0.0f, 1.0f, 1.0f,
+      //Bottom (green)
+      0.0f, 1.0f, 0.0f, 1.0f,
+      0.0f, 1.0f, 0.0f, 1.0f,
+      0.0f, 1.0f, 0.0f, 1.0f,
+      0.0f, 1.0f, 0.0f, 1.0f,
+      //Top (yellow)
+      1.0f, 1.0f, 0.0f, 1.0f,
+      1.0f, 1.0f, 0.0f, 1.0f,
+      1.0f, 1.0f, 0.0f, 1.0f,
+      1.0f, 1.0f, 0.0f, 1.0f
+     };
+
+    std::vector< float > tex = {
       // Front
       0.0f, 0.0f,
       1.0f, 0.0f,
@@ -139,7 +173,7 @@ MyCube::MyCube( float side )
       0.0f, 1.0f
     };
 
-  GLuint el[] = {
+  std::vector< GLuint > el = {
     0,1,2,0,2,3,
     4,5,6,4,6,7,
     8,9,10,8,10,11,
@@ -151,39 +185,78 @@ MyCube::MyCube( float side )
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
 
-  unsigned int handle[4];
-  glGenBuffers(4, handle);
+  glGenBuffers(5, _handle);
 
   _size = 36;
 
-  glBindBuffer(GL_ARRAY_BUFFER, handle[0]);
-  glBufferData(GL_ARRAY_BUFFER, 24 * 3 * sizeof(float), v, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, _handle[0]);
+  glBufferData(GL_ARRAY_BUFFER, _v.size( ) * sizeof(float), _v.data( ), GL_STATIC_DRAW);
   glVertexAttribPointer( (GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(0);  // Vertex position
 
-  glBindBuffer(GL_ARRAY_BUFFER, handle[1]);
-  glBufferData(GL_ARRAY_BUFFER, 24 * 3 * sizeof(float), n, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, _handle[1]);
+  glBufferData(GL_ARRAY_BUFFER, n.size( ) * sizeof(float), n.data( ), GL_STATIC_DRAW);
   glVertexAttribPointer( (GLuint)1, 3, GL_FLOAT, GL_FALSE, 0, 0);
   glEnableVertexAttribArray(1);  // Vertex normal
 
-  glBindBuffer(GL_ARRAY_BUFFER, handle[2]);
-  glBufferData(GL_ARRAY_BUFFER, 24 * 2 * sizeof(float), tex, GL_STATIC_DRAW);
-  glVertexAttribPointer( (GLuint)2, 2, GL_FLOAT, GL_FALSE, 0, 0);
-  glEnableVertexAttribArray(2);  // texture coords
+  glBindBuffer(GL_ARRAY_BUFFER, _handle[2]);
+  glBufferData(GL_ARRAY_BUFFER, _c.size( ) * sizeof(float), _c.data( ), GL_STATIC_DRAW);
+  glVertexAttribPointer( (GLuint)2, 4, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(2);  // Vertex colors
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle[3]);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, _size * sizeof(GLuint), el, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, _handle[3]);
+  glBufferData(GL_ARRAY_BUFFER, tex.size( ) * sizeof(float), tex.data( ), GL_STATIC_DRAW);
+  glVertexAttribPointer( (GLuint)3, 2, GL_FLOAT, GL_FALSE, 0, 0);
+  glEnableVertexAttribArray(3);  // texture coords
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _handle[4]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, el.size( ) * sizeof(GLuint), el.data( ), GL_STATIC_DRAW);
 
   glBindVertexArray(0);
 }
+
 void MyCube::render() {
   glBindVertexArray(_vao);
-  glDrawElements(GL_TRIANGLES, _size, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, (GLsizei)_size, GL_UNSIGNED_INT, 0);
+  //glDrawArrays(GL_TRIANGLES, 0, _size);
 }
 
-void MyCube::render( reto::ShaderProgram* ss ) {
+void MyCube::render( reto::ShaderProgram* ss )
+{
   //std::cout << this->model[12] << ", " << this->model[13] << ", " << this->model[14] << std::endl;
-  ss->sendUniform4m("model", this->model.data( ));
+  ss->sendUniform4m("model", this->_model.data( ));
+  if ( !_selected )
+  {
+    ss->sendUniform4v( "uColor", { 0.5f, 0.0f, 0.0f, 0.0f } );
+  }
+  else
+  {
+    ss->sendUniform4v( "uColor", { 0.0f, 0.5f, 0.0f, 0.0f } );
+  }
   glBindVertexArray(_vao);
-  glDrawElements(GL_TRIANGLES, _size, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, (GLsizei)_size, GL_UNSIGNED_INT, 0);
+}
+std::vector< float > MyCube::getModel( void ) const
+{
+  return _model;
+}
+
+void MyCube::setModel( const std::vector< float > value )
+{
+  this->_model = value;
+}
+
+std::vector< float > MyCube::getPositions( void ) const
+{
+  return _v;
+}
+
+bool MyCube::getSelected( void ) const
+{
+  return _selected;
+}
+
+void MyCube::setSelected( const bool& selected )
+{
+  _selected = selected;
 }
