@@ -8,6 +8,8 @@ set(RETO_PUBLIC_HEADERS
   PickingSystem.h
   Spline.h
   TextureManager.h
+
+  SSBO.h
 )
 
 set(RETO_HEADERS )
@@ -20,6 +22,8 @@ set(RETO_SOURCES
   PickingSystem.cpp
   Spline.cpp
   TextureManager.cpp
+
+  SSBO.cpp
 )
 
 set(RETO_LINK_LIBRARIES
