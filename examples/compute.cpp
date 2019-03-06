@@ -67,7 +67,7 @@ reto::ShaderProgram prog;
 reto::SSBO *inABuffer, *inBBuffer, *outBuffer;
 
 const uint32_t bufferElements = 10;
-const uint32_t bufferSize = bufferElements * sizeof( int32_t );
+const uint32_t bufferSize = bufferElements * sizeof( uint32_t );
 
 void initOGL( void )
 {

@@ -1,0 +1,40 @@
+#version 450
+
+layout( local_size_x = 1, local_size_y = 1 ) in;
+
+layout(std430, binding = 0) buffer InputBufferA
+{
+  uint idxs[ ];
+};
+layout(std430, binding = 1) buffer InputBufferB
+{
+  float dists[ ];
+};
+
+uniform uint bufferElems;
+
+void main( )
+{
+	uint gid = gl_GlobalInvocationID.x;
+  if( gid == 0 )
+  {
+		float auxF;
+    uint auxU;
+    uint i = 1;
+    while( i < bufferElems )
+    {
+			auxF = dists[ i ];
+      auxU = idxs[ i ];
+			uint j = i;
+			while(j > 0 && auxF < dists[j-1])
+      {
+				dists[j] = dists[j-1];
+				idxs[j] = idxs[j-1];
+				j--;
+			}
+			dists[j] = auxF;
+			idxs[j] = auxU;
+      ++i;
+		}
+  }
+}
