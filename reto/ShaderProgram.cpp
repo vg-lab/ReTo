@@ -42,6 +42,9 @@
 
 #define MACRO_SP_WARNING(name, type) std::cerr << "WARNING: '" << name << "' " << type << " doesn't exist or appears unused." << std::endl;
 
+#include <functional>
+
+#define MACRO_SHADER_STR "#macros"
 
 namespace reto
 {
@@ -75,6 +78,33 @@ namespace reto
     return this->_isLinked;
   }
 
+  void ShaderProgram::addDefine( const std::string& macroName, 
+    const unsigned int& macroValue )
+  {
+    this->addDefine( macroName, std::to_string( macroValue ) );
+  }
+  
+  void ShaderProgram::addDefine( const std::string& macroName, 
+    const int& macroValue )
+  {
+    this->addDefine( macroName, std::to_string( macroValue ) );
+  }
+
+  void ShaderProgram::addDefine( const std::string& macroName,
+    const float& macroValue )
+  {
+    this->addDefine( macroName, std::to_string( macroValue ) );
+  }
+
+  void ShaderProgram::addDefine( const std::string& macroName, 
+    const std::string& macroValue )
+  {
+    if( this->_shaders.empty( ) )
+    {
+      this->_macros[ macroName ] = macroValue;
+    }
+  }
+
   bool ShaderProgram::isUniformCached( const std::string& unif )
   {
     return this->_uniformList.find(unif) != this->_uniformList.end( );
@@ -93,10 +123,28 @@ namespace reto
 
   bool ShaderProgram::_loadFromText( const std::string& source, int type )
   {
+    std::string src = source;
+    if( !_macros.empty( ) )
+    {
+      std::string toReplace( MACRO_SHADER_STR );
+      std::size_t pos = src.find( toReplace );
+      if( pos != std::string::npos )
+      {
+        std::string replaceWith = "";
+        for( const auto element : _macros )
+        {
+          replaceWith += std::string( "#define " ) + element.first + 
+            std::string( " " ) + element.second + std::string( "\n" ); 
+        }
+        src.replace( pos, toReplace.length( ), replaceWith );
+      }
+    }
+
     // Create and compile shader
     unsigned int shader;
     shader = glCreateShader( type );
-    const char* cStr = source.c_str( );
+    const char* cStr = src.c_str( );
+
     glShaderSource( shader, 1, &cStr, nullptr );
 
     int status;
@@ -198,11 +246,30 @@ namespace reto
     source[fileLen] = '\0';
     file.close( );
 
+
+    std::string src = source;
+    if( !_macros.empty( ) )
+    {
+      std::string toReplace( MACRO_SHADER_STR );
+      std::size_t pos = src.find( toReplace );
+      if( pos != std::string::npos )
+      {
+        std::string replaceWith = "";
+        for( const auto element : _macros )
+        {
+          replaceWith += std::string( "#define " ) + element.first + 
+            std::string( " " ) + element.second + std::string( "\n" ); 
+        }
+        src.replace( pos, toReplace.length( ), replaceWith );
+      }
+    }
+
+    const char* cStr = src.c_str( );
+
     // Create and compile shader
     unsigned int shader;
     shader = glCreateShader( type );
-    glShaderSource( shader, 1, ( const GLchar** ) &source,
-                    ( const int* ) &fileLen );
+    glShaderSource( shader, 1, &cStr, nullptr );
 
     int status;
     glCompileShader( shader );

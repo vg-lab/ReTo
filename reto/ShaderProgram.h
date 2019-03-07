@@ -485,6 +485,18 @@ namespace reto
                         const float* data,
                         bool inverse = false );
 
+    RETO_API
+    void addDefine( const std::string& macroName, const unsigned int& macroValue );
+
+    RETO_API
+    void addDefine( const std::string& macroName, const int& macroValue );
+
+    RETO_API
+    void addDefine( const std::string& macroName, const float& macroValue );
+
+    RETO_API
+    void addDefine( const std::string& macroName, const std::string& macroValue );
+
 #ifdef RETO_SUBPROGRAMS
     /**
      * Method to active a subprogram in a specific shader
@@ -643,6 +655,8 @@ namespace reto
     std::multimap<int, SubProgram> _subprograms;
 #endif
     std::vector<unsigned int> _shaders;
+
+    std::map<std::string, std::string> _macros;
 
 #ifdef RETO_OCC_QUERY
     unsigned int _occQuery;
