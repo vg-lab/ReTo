@@ -49,6 +49,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
+reto::AbstractCameraController* cameraController;
 reto::Camera* camera;
 
 // X Y mouse position.
@@ -97,7 +98,8 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
-  camera = new reto::Camera( );
+  cameraController = new reto::OrbitalCameraController( );
+  camera = cameraController->camera( );
 
   glutMainLoop( );
   destroy( );
@@ -252,7 +254,7 @@ void renderFunc( void )
 
 void resizeFunc( int width, int height )
 {
-  camera->ratio((( double ) width ) / height );
+  cameraController->windowSize( width, height );
   glViewport( 0, 0, width, height );
 }
 
@@ -270,9 +272,9 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
+      cameraController->position( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+      cameraController->radius( 1000.0f );
+      cameraController->rotation( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
       std::cout << "Centering." << std::endl;
       glutPostRedisplay( );
       break;
@@ -311,9 +313,9 @@ void mouseFunc( int button, int state, int x, int y )
       //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
       float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+                        cameraController->radius() / mouseWheelFactor :
+                        cameraController->radius() * mouseWheelFactor;
+      cameraController->radius( newRadius );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.
@@ -340,15 +342,17 @@ void mouseMotionFunc( int x, int y )
     float deltaY = y - previousY;
     if( rotation )
     {
-      camera->localRotation( deltaX * rotationScale,
-                             deltaY * rotationScale );
+      cameraController->rotate(
+        Eigen::Vector3f( deltaX * rotationScale ,
+                         deltaY * rotationScale, 0.0f ));
     }
     if( traslation )
     {
-      camera->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-                                                  deltaY * traslationScale,
-                                                  0.0f ) );
+      cameraController->translate(
+        Eigen::Vector3f ( deltaX * traslationScale, -deltaY * traslationScale,
+                          0.0f ));
     }
+
     previousX = x;
     previousY = y;
     glutPostRedisplay();

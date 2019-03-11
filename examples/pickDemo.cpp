@@ -52,6 +52,7 @@ using namespace reto;
 
 #include "MyCube.h"
 
+reto::AbstractCameraController* cameraController;
 reto::Camera* camera;
 
 // X Y mouse position.
@@ -63,13 +64,13 @@ bool wireframe = true;
 bool mouseDown = false;
 bool mouseScrolling = false;
 bool rotation = false;
-bool traslation = false;
+bool translation = false;
 
 // Constants.
 
 const float mouseWheelFactor = 1.2f;
 const float rotationScale = 0.01f;
-const float traslationScale = 0.2f;
+const float translationScale = 0.2f;
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -91,7 +92,8 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.0f );
 
-  camera = new reto::Camera( );
+  cameraController = new reto::OrbitalCameraController( );
+  camera = cameraController->camera( );
 
   glutMainLoop( );
   destroy( );
@@ -273,7 +275,7 @@ void resizeFunc( int w, int h )
 {
   width = w;
   height = h;
-  camera->ratio((( double ) width ) / height );
+  cameraController->windowSize( width, height );
   glViewport( 0, 0, width, height );
 }
 
@@ -291,9 +293,9 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
+      cameraController->position( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+      cameraController->radius( 1000.0f );
+      cameraController->rotation( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
       std::cout << "Centering." << std::endl;
       glutPostRedisplay( );
       break;
@@ -327,7 +329,7 @@ void mouseFunc( int button, int state, int x, int y )
   {
     mouseDown = true;
     if( button == 0 ) rotation = true;
-    if( button == 1 ) traslation = true;
+    if( button == 1 ) translation = true;
     if( button == 2 ) {
       printf("Click at %d, %d\n", x, height - y);
       comprobar = true;
@@ -339,9 +341,9 @@ void mouseFunc( int button, int state, int x, int y )
       //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
       float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+                        cameraController->radius() / mouseWheelFactor :
+                        cameraController->radius() * mouseWheelFactor;
+      cameraController->radius( newRadius );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.
@@ -352,7 +354,7 @@ void mouseFunc( int button, int state, int x, int y )
   {
     mouseDown = false;
     if( button == 0 ) rotation = false;
-    if( button == 1 ) traslation = false;
+    if( button == 1 ) translation = false;
     if ( (button == 3) || (button == 4) )
     {
       mouseScrolling = false;
@@ -368,14 +370,15 @@ void mouseMotionFunc( int x, int y )
     float deltaY = y - previousY;
     if( rotation )
     {
-      camera->localRotation( deltaX * rotationScale,
-                             deltaY * rotationScale );
+      cameraController->rotate(
+        Eigen::Vector3f( deltaX * rotationScale ,
+                         deltaY * rotationScale, 0.0f ));
     }
-    if( traslation )
+    if( translation )
     {
-      camera->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-                                                  deltaY * traslationScale,
-                                                  0.0f ) );
+      cameraController->translate(
+        Eigen::Vector3f ( deltaX * translationScale, -deltaY * translationScale,
+                          0.0f ));
     }
     previousX = x;
     previousY = y;
