@@ -1,0 +1,44 @@
+#version 450
+
+layout( local_size_x = 1, local_size_y = 1 ) in;
+
+layout(std430, binding = 1) buffer InputBufferB
+{
+  float dists[ ];
+};
+
+layout(std430, binding = 2) buffer InputBufferC
+{
+  vec4 positions[ ];   // You need to use vec4 from data aligment rules
+};
+
+layout( std430, binding = 3 ) buffer InputAliveBuffer
+{
+  uint alives[ ];
+};
+
+//uniform uint bufferElems;
+//uniform vec3 cameraPos;
+uniform mat4 modelView;
+
+void main( )
+{
+	uint gid = gl_GlobalInvocationID.x;
+ 
+  if( alives[ gid ] == 1u )
+  {
+    // Transform a particle's position from world space to view space.
+    vec4 position = modelView * positions[ gid ];
+
+    // The default front of camera in view space.
+    const vec3 targetVS = vec3( 0.0, 0.0, -1.0 );
+
+    // Distance of the particle from the camera.
+    dists[ gid ] = dot( targetVS, position.xyz );
+    //dists[ gid ] = -position.z;
+  }
+  else
+  {
+    dists[ gid ] = -1.0;
+  }
+}

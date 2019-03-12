@@ -22,6 +22,8 @@
 #include <reto/reto.h>
 using namespace reto;
 
+reto::Camera* camera;
+
 void initContext( int argc, char** argv );
 void initOGL( void );
 void renderFunc( void );
@@ -32,6 +34,8 @@ int main( int argc, char** argv )
 {
   initContext( argc, argv );
   initOGL( );
+
+  camera = new reto::Camera( );
 
   glutMainLoop( );
   destroy( );
@@ -62,9 +66,9 @@ void initContext( int argc, char** argv )
   glutIdleFunc( idleFunc );
 }
 
-reto::ShaderProgram sortProg;
+reto::ShaderProgram sortProg, cameraPosProg;
 
-reto::SSBO *inIdxBuffer, *inDistanceBuffer, *inPositionsBuffer;
+reto::SSBO *inIdxBuffer, *inDistanceBuffer, *inPositionsBuffer, *inAlivesBuffer;
 
 struct Vector4
 {
@@ -76,7 +80,10 @@ struct Vector4
 
 std::vector<uint32_t> indicesVector;
 std::vector<float> distancesVector;
-uint32_t bufferElements = 4;
+std::vector<uint32_t> alivesVector;
+std::vector<Vector4> positionsVector; // You need to use vec4 from data aligment rules
+uint32_t bufferElements = std::pow( 2, 2 );
+const uint32_t bufferSize = bufferElements * sizeof( float );
 
 float randFloat(float a, float b)
 {
@@ -99,35 +106,23 @@ void initOGL( void )
   sortProg.compileAndLink( );
   sortProg.autocatching( );
 
+  cameraPosProg.loadComputeShader( shadersPath + "computeCameraDistance.comp" );
+  cameraPosProg.compileAndLink( );
+  cameraPosProg.autocatching( );
+
   std::cout << "Allocate buffers...";
     inIdxBuffer = new reto::SSBO( );
-    inDistanceBuffer = new reto::SSBO( );
+    inDistanceBuffer = new reto::SSBO( bufferSize, GL_DYNAMIC_COPY );
     inPositionsBuffer = new reto::SSBO( );
+    inAlivesBuffer = new reto::SSBO( );
     reto::SSBO::unbind( );
   std::cout << "OK" << std::endl;
-
-  //bufferElements = std::pow( 2, ParticlePowerOfTwo );
-}
-
-void bubbleSort(std::vector<uint32_t>& idxs, std::vector<float>& dists) 
-{ 
-  for(uint32_t i = 0; i < dists.size( ); i++)
-  {
-    for(uint32_t j = 0; j < dists.size( ) - 1; j++)
-    {   
-      if (dists[j] < dists[j+1])
-      {
-        std::swap(dists[j], dists[j+1]);
-        std::swap(idxs[j], idxs[j+1]);
-      }
-    }
-  }
 }
 
 template<typename T>
 void printArray(const std::vector<T>& array)
 {
-  for(size_t i = 0; i < array.size( ); ++i)
+  for( size_t i = 0; i < array.size( ); ++i )
   {
     std::cerr << array[ i ] <<" ";
   }
@@ -141,23 +136,43 @@ void renderFunc( void )
   std::cout << std::endl;
  
   indicesVector.clear( );
-  distancesVector.clear( );
+  positionsVector.clear( );
+  alivesVector.clear( );
   
   for( uint32_t i = 0; i < bufferElements; ++i )
   {
     indicesVector.push_back( i );
-    distancesVector.push_back( randFloat( 0.0f, 5.0f ) );
+    positionsVector.push_back( Vector4{ 
+      randFloat( -5.0f, +5.0f ), 
+      randFloat( -5.0f, +5.0f ), 
+      randFloat( -5.0f, +5.0f ), 
+      1.0f
+    } );
+    alivesVector.push_back( i % 2 );
   }
 
-  inIdxBuffer->data( bufferElements * sizeof( uint32_t ), 
-    indicesVector.data( ), GL_DYNAMIC_COPY );
-  inDistanceBuffer->data( bufferElements * sizeof( float ), 
-    distancesVector.data( ), GL_DYNAMIC_COPY );
+  inIdxBuffer->data< uint32_t >( indicesVector, GL_DYNAMIC_COPY );
+  inPositionsBuffer->data< Vector4 >( positionsVector, GL_DYNAMIC_COPY );
+  inAlivesBuffer->data< uint32_t >( alivesVector, GL_DYNAMIC_COPY );
 
   std::cout << "NO SORT: " << std::endl;
   printArray<uint32_t>( indicesVector );
   printArray<float>( distancesVector );
   std::cout << std::endl;
+
+
+  cameraPosProg.use( );
+
+  inIdxBuffer->bind( 0 );
+  inDistanceBuffer->bind( 1 );
+  inPositionsBuffer->bind( 2 );
+  inAlivesBuffer->bind( 3 );
+
+  //cameraPosProg.sendUniformu("bufferElems", bufferElements);
+  //cameraPosProg.sendUniform3v("cameraPos", camera->position( ) );
+  cameraPosProg.sendUniform4m("modelView", camera->viewMatrix( ) ); // TODO: identity model
+
+  glDispatchCompute( bufferElements, 1, 1 );
 
   // ----------------------------------------------- //
   // --------------- SORT ZONE (GPU) --------------- //
@@ -174,14 +189,14 @@ void renderFunc( void )
   
   uint32_t logn = std::log2( bufferElements );
 
-  for(uint32_t i = 0; i < logn; i++)
-	{
-		for(uint32_t j = 0; j <= i; j++)
-		{
-      sortProg.sendUniformi("p", i);
-      sortProg.sendUniformi("q", j);
-			glDispatchCompute(workGroups, 1, 1);
-			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+  for( uint32_t i = 0; i < logn; ++i )
+  {
+    for( uint32_t j = 0; j <= i; ++j )
+    {
+      sortProg.sendUniformi( "p", i );
+      sortProg.sendUniformi( "q", j );
+      glDispatchCompute( workGroups, 1, 1 );
+      glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT );
     }
   }
 
@@ -201,33 +216,12 @@ void renderFunc( void )
   // ----------------------------------------------- //
   // --------------- SORT ZONE (CPU) --------------- //
   // ----------------------------------------------- //
-  bubbleSort( indicesVector, distancesVector );
 
   std::cout << "SORTED: " << std::endl;
   printArray<uint32_t>( indicesVector );
   printArray<uint32_t>( indicesResult );
   printArray<float>( distancesVector );
   printArray<float>( distancesResult );
-
-  if ( std::equal( indicesResult.begin( ), indicesResult.end( ), 
-    indicesVector.begin( ), []( float r, float h ) { return r == h; } ) )
-  {
-    std::cout << "Ok. Same indices arrays as equals." << std::endl;
-  }
-  else
-  {
-    std::cout << "Fail. Invalid indices result." << std::endl;
-  }
-
-  if ( std::equal( distancesResult.begin( ), distancesResult.end( ), 
-    distancesVector.begin( ), []( float r, float h ) { return r == h; } ) )
-  {
-    std::cout << "Ok. Same distance arrays as equals." << std::endl;
-  }
-  else
-  {
-    std::cout << "Fail. Invalid distance result." << std::endl;
-  }
 
   std::cout << std::endl;
   std::cout << std::endl;

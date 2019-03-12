@@ -7,6 +7,8 @@
   #include <GL/glew.h>
 #endif
 
+#include <vector>
+
 namespace reto
 {
   class SSBO
@@ -24,6 +26,15 @@ namespace reto
     void bufferSubData( int offset, unsigned int size, void* _data );
     RETO_API
     void data( unsigned int size, void* _data, unsigned int usage );
+
+    template< typename T >
+    void data( const std::vector< T >& _data, unsigned int usage )
+    {
+      this->bind( );
+      glBufferData( GL_SHADER_STORAGE_BUFFER, _data.size( ) * sizeof( T ), 
+        _data.data( ), usage );
+    }
+
     RETO_API
     void* getData( void );
     RETO_API

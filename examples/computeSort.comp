@@ -15,26 +15,26 @@ uniform uint bufferElems;
 
 void main( )
 {
-	uint gid = gl_GlobalInvocationID.x;
+  uint gid = gl_GlobalInvocationID.x;
   if( gid == 0 )
   {
-		float auxF;
+    float auxF;
     uint auxU;
     uint i = 1;
     while( i < bufferElems )
     {
-			auxF = dists[ i ];
+      auxF = dists[ i ];
       auxU = idxs[ i ];
-			uint j = i;
-			while(j > 0 && auxF < dists[j-1])
+      uint j = i;
+      while(j > 0 && auxF < dists[j-1])
       {
-				dists[j] = dists[j-1];
-				idxs[j] = idxs[j-1];
-				j--;
-			}
-			dists[j] = auxF;
-			idxs[j] = auxU;
+        dists[j] = dists[j-1];
+        idxs[j] = idxs[j-1];
+        j--;
+      }
+      dists[j] = auxF;
+      idxs[j] = auxU;
       ++i;
-		}
+    }
   }
 }
