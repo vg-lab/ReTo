@@ -63,10 +63,11 @@ namespace reto
 
       /**
        * ClippingPlane constructor
-       * @param clippingMode: clipping mode (global or local)
+       * @param clippingMode: clipping mode (global or local, global by default)
        */
       RETO_API
-      ClippingPlane( const reto::ClippingMode& clippingMode );
+      ClippingPlane(
+        const reto::ClippingMode& clippingMode = ClippingMode::Global );
 
       /**
        * ClippingPlane constructor
@@ -74,11 +75,12 @@ namespace reto
        * @param b: y coefficient
        * @param c: z coefficient
        * @param d: distance from the origin
-       * @param clippingMode: clipping mode (global or local)
+       * @param clippingMode: clipping mode (global or local, global by default)
        */
       RETO_API
       ClippingPlane( const float& a, const float& b, const float& c,
-        const float& d, const reto::ClippingMode& clippingMode );
+        const float& d,
+        const reto::ClippingMode& clippingMode = ClippingMode::Global );
 
       /**
        * ClippingPlane destructor

@@ -126,18 +126,51 @@ namespace reto
 
   reto::ClippingPlane* ClippingSystem::get( const std::string& alias ) const
   {
-    return _planes.at( alias );
+    auto it = _planes.find( alias );
+    if ( it == _planes.end( ) )
+    {
+      std::cerr << "Warning: Can't get '" << alias
+        << "' plane. CLipping plane not found." << std::endl;
+    }
+    return it->second;
   }
 
   void ClippingSystem::set( const std::string& alias,
     reto::ClippingPlane* plane )
   {
-    _planes[ alias ] = plane;
+    auto it = _planes.find( alias );
+    if (it == _planes.end())
+    {
+      //Not found -> check max planes
+      if ( _planes.size( ) < static_cast< size_t >( _maxPlanes ) )
+      {
+        _planes[ alias ] = plane;
+      }
+      else
+      {
+        std::cerr << "Warning: Can't add '" << alias
+          << "' plane. Max number of clipping planes reached." << std::endl;
+      }
+    }
+    else
+    {
+      //Found -> overwrite
+      _planes[ alias ] = plane;
+    }
   }
 
   void ClippingSystem::remove( const std::string& alias )
   {
-    _planes.erase( alias );
+    auto it = _planes.find( alias );
+    if ( it != _planes.end( ) )
+    {
+      _planes.erase( it );
+    }
+    else
+    {
+      std::cerr << "Warning: Can't remove '" << alias
+        << "' plane. CLipping plane not found." << std::endl;
+    }
   }
 
   void ClippingSystem::draw( void )

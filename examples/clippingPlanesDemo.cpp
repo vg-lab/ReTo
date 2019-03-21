@@ -98,14 +98,10 @@ int main( int argc, char** argv )
   camera = new reto::Camera( );
 
   clippingSystem = new reto::ClippingSystem( );
-  clippingSystem->set( "clippingPlane1",
-    new ClippingPlane( 0.1f, 0.1f, 0.0f, 5.5f, ClippingMode::Global ) );
-  clippingSystem->set( "clippingPlane2",
-    new ClippingPlane( -0.1f, -0.1f, 0.0f, 5.5f, ClippingMode::Global ) );
-  clippingSystem->set( "clippingPlane3",
-    new ClippingPlane( 0.1f, -0.1f, 0.0f, 5.5f, ClippingMode::Global ) );
-  clippingSystem->set( "clippingPlane4",
-    new ClippingPlane( -0.1f, 0.1f, 0.0f, 5.5f, ClippingMode::Global ) );
+  clippingSystem->set( "plane1", new ClippingPlane( 0.1f, 0.1f, 0.0f, 5.5f) );
+  clippingSystem->set( "plane2", new ClippingPlane( -0.1f, -0.1f, 0.0f, 5.5f ) );
+  clippingSystem->set( "plane3", new ClippingPlane( 0.1f, -0.1f, 0.0f, 5.5f ) );
+  clippingSystem->set( "plane4", new ClippingPlane( -0.1f, 0.1f, 0.0f, 5.5f ) );
 
   createCubes( );
 
@@ -258,10 +254,10 @@ void idleFunc( void )
       adding=true;
     }
   }
-  clippingSystem->get( "clippingPlane1" )->setEquation( 0.1f, 0.1f, 0.0f, var );
-  clippingSystem->get( "clippingPlane2" )->setEquation(-0.1f, -0.1f, 0.0f, var );
-  clippingSystem->get( "clippingPlane3" )->setEquation( 0.1f, -0.1f, 0.0f, var );
-  clippingSystem->get( "clippingPlane4" )->setEquation(-0.1f, 0.1f, 0.0f, var );
+  clippingSystem->get( "plane1" )->setEquation( 0.1f, 0.1f, 0.0f, var );
+  clippingSystem->get( "plane2" )->setEquation(-0.1f, -0.1f, 0.0f, var );
+  clippingSystem->get( "plane3" )->setEquation( 0.1f, -0.1f, 0.0f, var );
+  clippingSystem->get( "plane4" )->setEquation(-0.1f, 0.1f, 0.0f, var );
 
   glutPostRedisplay( );
 }
