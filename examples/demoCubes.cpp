@@ -21,10 +21,9 @@
  *
  */
 
-// std.
 #include <string>
 
-// OpenGL, GLEW, GLUT.
+// OpenGL, GLEW, GLUT
 #include <GL/glew.h>
 
 #ifdef Darwin
@@ -37,6 +36,8 @@
   #include <GL/gl.h>
   #include <GL/freeglut.h>
 #endif
+
+#include <chrono>
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -52,6 +53,9 @@ using namespace reto;
 
 #include "MyCube.h"
 
+reto::AbstractCameraController* cameraController;
+reto::AbstractCameraController* cControllers[2];
+unsigned int ccNumber = 0;
 reto::Camera* camera;
 
 // X Y mouse position.
@@ -63,13 +67,16 @@ bool wireframe = true;
 bool mouseDown = false;
 bool mouseScrolling = false;
 bool rotation = false;
-bool traslation = false;
+bool translation = false;
+bool animation = false;
 
 // Constants.
 
 const float mouseWheelFactor = 1.2f;
-const float rotationScale = 0.01f;
-const float traslationScale = 0.2f;
+const float rotationScale = 0.001f;
+const float translationScale = 0.2f;
+
+std::chrono::time_point< std::chrono::system_clock > _previusTime;
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -91,7 +98,15 @@ int main( int argc, char** argv )
 
   mycube = new MyCube( 4.5f );
 
+
   camera = new reto::Camera( );
+  cControllers[1] = new reto::FreeCameraController( camera );
+  cControllers[1]->position( Eigen::Vector3f( 0.0f, 0.0f, 100.0f ));
+  cControllers[0] = new reto::OrbitalCameraController( camera );
+  cControllers[0]->radius( 100.0f );
+  cameraController = cControllers[0];
+
+  _previusTime = std::chrono::system_clock::now( );
 
   glutMainLoop( );
   destroy( );
@@ -153,12 +168,19 @@ void destroy( void )
 #define MAX 25
 void renderFunc( void )
 {
+
+  auto currentTime = std::chrono::system_clock::now( );
+  auto duration = std::chrono::duration_cast< std::chrono::microseconds >
+    ( currentTime - _previusTime );
+  float dt = (( float ) duration.count( )) * 0.000001f;
+  cameraController->anim( dt );
+  _previusTime = currentTime;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-  // std::cout << "DRAW" << std::endl;
   prog.use( );
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
+
   for (auto i = -MAX; i <= MAX; i+= 5)
   {
     for (auto j = -MAX; j <= MAX; j+= 5)
@@ -201,7 +223,7 @@ void renderFunc( void )
 
 void resizeFunc( int width, int height )
 {
-  camera->ratio((( double ) width ) / height );
+  cameraController->windowSize( width, height );
   glViewport( 0, 0, width, height );
 }
 
@@ -214,32 +236,80 @@ void idleFunc( void )
 
 void keyboardFunc( unsigned char key, int, int )
 {
+  CameraAnimation* camAnim;
   switch( key )
   {
     // Camera control.
-    case 'c':
-    case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
-      std::cout << "Centering." << std::endl;
-      glutPostRedisplay( );
-      break;
-    case 'm':
-    case 'M':
-      wireframe = !wireframe;
-      if ( wireframe )
-      {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        std::cout << "Wireframe ON." << std::endl;
-      }
-      else
-      {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-        std::cout << "Wireframe OFF." << std::endl;
-      }
-      glutPostRedisplay( );
-      break;
+  case 'p':
+  case 'P':
+    cameraController->stopAnim( );
+    break;
+  case 'o':
+  case 'O':
+    camAnim = new CameraAnimation( CameraAnimation::LINEAR,
+                                   CameraAnimation::LINEAR,
+                                   CameraAnimation::LINEAR );
+    camAnim->addKeyCamera(
+      new KeyCamera( 5.0f, Eigen::Vector3f( 0.0f, 100.0f, 0.0f ),
+                     Eigen::Vector3f( 2.0f, 0.0f, 0.0f ), 1000.0f ));
+    camAnim->addKeyCamera(
+      new KeyCamera( 0.0f, Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                     Eigen::Vector3f( 0.0f, 0.0f, 0.0f ), 100.0f ));
+    camAnim->addKeyCamera(
+      new KeyCamera( 10.0f, Eigen::Vector3f( 0.0f, 0.0f, 0.0f ),
+                     Eigen::Vector3f( 0.0f, 0.0f, 0.0f ), 100.0f ));
+    cameraController->startAnim( camAnim, true );
+    break;
+  case 'w':
+  case 'W':
+    cameraController->localTranslate( Eigen::Vector3f( 0.0f, 0.0f, -10.0f ) *
+                                      translationScale );
+    break;
+  case 'a':
+  case 'A':
+    cameraController->localTranslate( Eigen::Vector3f( -10.0f, 0.0f, 0.0f ) *
+                                      translationScale );
+    break;
+  case 's':
+  case 'S':
+    cameraController->localTranslate( Eigen::Vector3f( 0.0f, 0.0f, 10.0f ) *
+                                      translationScale );
+    break;
+  case 'd':
+  case 'D':
+    cameraController->localTranslate( Eigen::Vector3f( 10.0f, 0.0f, 0.0f ) *
+                                      translationScale );
+    break;
+  case 'c':
+  case 'C':
+    ccNumber++;
+    ccNumber %= 2;
+    cameraController = cControllers[ccNumber];
+    cameraController->update( );
+    break;
+  case 'r':
+  case 'R':
+    cameraController->position( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+    cameraController->radius( 100.0f );
+    cameraController->rotation( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+    std::cout << "Centering." << std::endl;
+    glutPostRedisplay( );
+    break;
+  case 'm':
+  case 'M':
+    wireframe = !wireframe;
+    if ( wireframe )
+    {
+      glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+      std::cout << "Wireframe ON." << std::endl;
+    }
+    else
+    {
+      glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+      std::cout << "Wireframe OFF." << std::endl;
+    }
+    glutPostRedisplay( );
+    break;
   }
 }
 
@@ -254,15 +324,16 @@ void mouseFunc( int button, int state, int x, int y )
   {
     mouseDown = true;
     if( button == 0 ) rotation = true;
-    if( button == 1 ) traslation = true;
+    if( button == 1 ) translation = true;
+    if ( button == 2 ) animation = true;
     if ( (button == 3) || (button == 4) )
     {
       //std::cout << "Scrolling." << std::endl;
       mouseScrolling = true;
       float newRadius = ( button == 3 ) ?
-                        camera->radius() / mouseWheelFactor :
-                        camera->radius() * mouseWheelFactor;
-      camera->radius( newRadius );
+                        cameraController->radius() / mouseWheelFactor :
+                        cameraController->radius() * mouseWheelFactor;
+      cameraController->radius( newRadius );
       glutPostRedisplay();
     }
     // We save X and Y previous positions.
@@ -273,7 +344,33 @@ void mouseFunc( int button, int state, int x, int y )
   {
     mouseDown = false;
     if( button == 0 ) rotation = false;
-    if( button == 1 ) traslation = false;
+    if( button == 1 ) translation = false;
+    if ( button == 2 )
+    {
+      float deltaX = x - previousX;
+      float deltaY = y - previousY;
+      Eigen::Vector3f targetPos = cameraController->position( ) +
+        Eigen::Vector3f( -deltaX * translationScale,
+                         deltaY * translationScale,
+                         0.0f );
+      Eigen::Matrix3f targetRot =
+        cameraController->rotationMatrixFromAngles(
+          Eigen::Vector3f( -deltaX * rotationScale,
+                           deltaY * rotationScale,
+                           0.0f )) *
+        cameraController->rotation( );
+
+      auto camAnim = new CameraAnimation( CameraAnimation::NONE,
+                                          CameraAnimation::LINEAR );
+      camAnim->addKeyCamera(
+        new KeyCamera( 0.0f, cameraController->position( ),
+                       cameraController->rotation( ),
+                       cameraController->radius( )));
+      camAnim->addKeyCamera(
+        new KeyCamera( 2.0f, targetPos, targetRot,
+                       cameraController->radius( )));
+      cameraController->startAnim( camAnim, false );
+    }
     if ( (button == 3) || (button == 4) )
     {
       mouseScrolling = false;
@@ -283,21 +380,23 @@ void mouseFunc( int button, int state, int x, int y )
 
 void mouseMotionFunc( int x, int y )
 {
-  if( mouseDown )
+  if( mouseDown & ( rotation | translation ))
   {
     float deltaX = x - previousX;
     float deltaY = y - previousY;
     if( rotation )
     {
-      camera->localRotation( deltaX * rotationScale,
-                             deltaY * rotationScale );
+      cameraController->rotate(
+        Eigen::Vector3f( deltaX * rotationScale ,
+                         deltaY * rotationScale, 0.0f ));
     }
-    if( traslation )
+    if( translation )
     {
-      camera->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-                                                  deltaY * traslationScale,
-                                                  0.0f ) );
+      cameraController->localTranslate(
+        Eigen::Vector3f ( deltaX * translationScale, -deltaY * translationScale,
+                          0.0f ));
     }
+
     previousX = x;
     previousY = y;
     glutPostRedisplay();

@@ -2,7 +2,11 @@ source_group(\\ FILES CMakeLists.txt)
 
 set(RETO_PUBLIC_HEADERS
   ObjParser.h
+  CameraAnimation.h
   Camera.h
+  AbstractCameraController.h
+  OrbitalCameraController.h
+  FreeCameraController.h
   ShaderProgram.h
   Pickable.h
   PickingSystem.h
@@ -14,7 +18,11 @@ set(RETO_HEADERS )
 
 set(RETO_SOURCES
   ObjParser.cpp
+  CameraAnimation.cpp
   Camera.cpp
+  AbstractCameraController.cpp
+  OrbitalCameraController.cpp
+  FreeCameraController.cpp
   ShaderProgram.cpp
   Pickable.cpp
   PickingSystem.cpp
