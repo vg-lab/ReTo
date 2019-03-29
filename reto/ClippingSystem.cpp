@@ -117,6 +117,17 @@ namespace reto
     _program->loadFragmentShaderFromText( _FragmentCode( ) );
     _program->compileAndLink( );
     _program->autocatching( );
+  }  
+
+  ClippingSystem::ClippingSystem( const std::string& vertexCode )
+  {
+    glGetIntegerv( GL_MAX_CLIP_PLANES, &_maxPlanes );
+
+    _program = new reto::ShaderProgram( );
+    _program->loadVertexShaderFromText( vertexCode );
+    _program->loadFragmentShaderFromText( _FragmentCode( ) );
+    _program->compileAndLink( );
+    _program->autocatching( );
   }
 
   ClippingSystem::~ClippingSystem( void )
@@ -170,6 +181,28 @@ namespace reto
     {
       std::cerr << "Warning: Can't remove '" << alias
         << "' plane. CLipping plane not found." << std::endl;
+    }
+  }
+
+  void ClippingSystem::activatePlanes( void )
+  {
+    unsigned int i = 0;
+    _program->sendUniformi( "nPlanes",
+      static_cast< GLint >( _planes.size( ) ) );
+    for( const auto& plane : _planes )
+    {
+      plane.second->activate( _program, i );
+      i++;
+    }
+  }
+
+  void ClippingSystem::deactivatePlanes( void )
+  {
+    unsigned int i = 0;
+    for( const auto& plane : _planes )
+    {
+      plane.second->deactivate( i );
+      i++;
     }
   }
 

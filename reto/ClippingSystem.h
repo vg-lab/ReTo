@@ -194,6 +194,12 @@ namespace reto
       ClippingSystem( void );
 
       /**
+       * ClippingSystem constructor passing vertex shader code
+       */
+      RETO_API
+      ClippingSystem( const std::string& vertexCode );
+
+      /**
        * ClippingSystem destructor
        */
       ~ClippingSystem( void );
@@ -220,6 +226,18 @@ namespace reto
        */
       RETO_API
       void remove( const std::string& alias );
+
+      /**
+       * Method to activate clipping planes
+       */
+      RETO_API
+      void activatePlanes( void );
+
+      /**
+       * Method to deactivate clipping planes
+       */
+      RETO_API
+      void deactivatePlanes( void );
 
       /**
        * Method to draw objects using clipping system
