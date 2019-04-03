@@ -80,7 +80,7 @@ namespace reto
   }
 
   void ClippingPlane::activate( reto::ShaderProgram* program,
-    const unsigned int& index )
+                                const unsigned int& index ) const
   {
     glEnable( GL_CLIP_DISTANCE0 + index );
 
@@ -98,7 +98,7 @@ namespace reto
     };
   }
 
-  void ClippingPlane::deactivate( const unsigned int& index )
+  void ClippingPlane::deactivate( const unsigned int& index ) const
   {
     glDisable( GL_CLIP_DISTANCE0 + index );
   }
@@ -184,7 +184,7 @@ namespace reto
     }
   }
 
-  void ClippingSystem::activatePlanes( void )
+  void ClippingSystem::activatePlanes( void ) const
   {
     unsigned int i = 0;
     _program->sendUniformi( "nPlanes",
@@ -196,7 +196,7 @@ namespace reto
     }
   }
 
-  void ClippingSystem::deactivatePlanes( void )
+  void ClippingSystem::deactivatePlanes( void ) const
   {
     unsigned int i = 0;
     for( const auto& plane : _planes )
@@ -206,7 +206,7 @@ namespace reto
     }
   }
 
-  void ClippingSystem::draw( void )
+  void ClippingSystem::draw( void ) const
   {
     unsigned int i = 0;
     _program->sendUniformi( "nPlanes",

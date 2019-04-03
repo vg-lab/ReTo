@@ -154,14 +154,14 @@ namespace reto
        * @param index: index of clipping plane
        */
       RETO_API
-      void activate( reto::ShaderProgram* program, const unsigned int& index );
+      void activate( reto::ShaderProgram* program, const unsigned int& index ) const;
 
       /**
        * Method to deactivate the clipping plane
        * @param index: index of clipping plane
        */
       RETO_API
-      void deactivate( const unsigned int& index );
+      void deactivate( const unsigned int& index ) const;
 
       /**
        * Method to clear clipping plane
@@ -231,19 +231,19 @@ namespace reto
        * Method to activate clipping planes
        */
       RETO_API
-      void activatePlanes( void );
+      void activatePlanes( void ) const;
 
       /**
        * Method to deactivate clipping planes
        */
       RETO_API
-      void deactivatePlanes( void );
+      void deactivatePlanes( void ) const;
 
       /**
        * Method to draw objects using clipping system
        */
       RETO_API
-      void draw( void );
+      void draw( void ) const;
 
       /**
        * Method to add a pickable object
