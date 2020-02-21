@@ -52,6 +52,7 @@ using namespace reto;
 #include "MyCube.h"
 
 reto::Camera* camera;
+reto::OrbitalCameraController* orbitalCamera;
 
 // X Y mouse position.
 int previousX;
@@ -141,6 +142,7 @@ int main( int argc, char** argv )
   initOGL( );
 
   camera = new reto::Camera( );
+  orbitalCamera = new reto::OrbitalCameraController( camera );
 
   program = new reto::ShaderProgram( );
   program->loadVertexShaderFromText( vertexCode( ) );
@@ -301,7 +303,7 @@ void resizeFunc( int w, int h )
 {
   width = w;
   height = h;
-  camera->ratio((( double ) width ) / height );
+  orbitalCamera->windowSize( width, height );
   glViewport( 0, 0, width, height );
 }
 
@@ -323,9 +325,9 @@ void keyboardFunc( unsigned char key, int, int )
     // Camera control.
     case 'c':
     case 'C':
-      camera->pivot( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
-      camera->radius( 1000.0f );
-      camera->rotation( 0.0f, 0.0f );
+      orbitalCamera->position( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
+      orbitalCamera->radius( 1000.0f );
+      orbitalCamera->rotation( Eigen::Vector3f( 0.0f, 0.0f, 0.0f ));
       std::cout << "Centering." << std::endl;
       glutPostRedisplay( );
       break;
@@ -359,9 +361,9 @@ void mouseFunc( int button, int state, int x, int y )
       case 3:
       case 4:
         float newRadius = ( button == 3 ) ?
-          camera->radius() / mouseWheelFactor :
-          camera->radius() * mouseWheelFactor;
-        camera->radius( newRadius );
+        orbitalCamera->radius() / mouseWheelFactor :
+        orbitalCamera->radius() * mouseWheelFactor;
+        orbitalCamera->radius( newRadius );
         glutPostRedisplay();
         break;
     }
@@ -388,11 +390,14 @@ void mouseMotionFunc( int x, int y )
   switch( mouseButton )
   {
     case 0:
-      camera->localRotation( deltaX * rotationScale, deltaY * rotationScale );
+      orbitalCamera->rotate( Eigen::Vector3f( deltaX * rotationScale,
+                                              deltaY * rotationScale,
+                                              0.0f ));
       break;
     case 1:
-      camera->localTranslation( Eigen::Vector3f ( -deltaX * traslationScale,
-        deltaY * traslationScale, 0.0f ) );
+      orbitalCamera->translate( Eigen::Vector3f( -deltaX * traslationScale,
+                                                 deltaY * traslationScale,
+                                                 0.0f ));
       break;
     case 2:
       break;

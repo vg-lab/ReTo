@@ -105,6 +105,48 @@ namespace reto
     void setZeqSession( const std::string& session_ );
 
     /**
+     * Method to obtain the near plane distance.
+     * @return camera near plane distance.
+     */
+    RETO_API
+    float nearPlane( void ) const;
+
+    /**
+     * Method to establish the near plane distance.
+     @param nearPlane_ new value to be assigned as near plane distance.
+     */
+    RETO_API
+    void nearPlane( float nearPlane_ );
+
+    /**
+     * Method to obtain the far plane distance.
+     * @return camera far plane distance.
+     */
+    RETO_API
+    float farPlane( void ) const;
+
+    /**
+     * Method to establish the far plane distance.
+     @param farPlane_ new value to be assigned as far plane distance.
+     */
+    RETO_API
+    void farPlane( float farPlane_ );
+
+    /**
+     * Method to obtain the field of view angle value.
+     * @return field of view angle.
+     */
+    RETO_API
+    float fieldOfView( void ) const;
+
+    /**
+     * Method to establish field of view angle.
+     @param fov_ new value to be assigned as field of view.
+     */
+    RETO_API
+    void fieldOfView( float fov_ );
+
+    /**
      * Method to get the pointer to projection matrix of the camera vectorized
      * in columns
      * @return pointer to float whit the column vectorized projection matrix of
@@ -116,7 +158,7 @@ namespace reto
     /**
      * Method to get the pointer to view matrix of the camera vectorized
      * in columns
-     * @return pointer to float whit the column vectorized view matrix of
+     * @return pointer to float with the column vectorized view matrix of
      * the camera
      */
     RETO_API
@@ -125,7 +167,7 @@ namespace reto
     /**
      * Method to get the pointer to view-projection matrix of the camera
      * vectorized in columns
-     * @return pointer to float whit the column vectorized view-projection
+     * @return pointer to float with the column vectorized view-projection
      * matrix of the camera
      */
     RETO_API

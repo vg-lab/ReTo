@@ -51,6 +51,20 @@ namespace reto
     RETO_API
     void localTranslate( const Eigen::Vector3f& translation_ );
 
+    /**
+     * Method to establish the pivot or orbital center for the camera.
+     @param position_ new value to be assigned as pivot or orbital center.
+     */
+    RETO_API
+    void position( const Eigen::Vector3f& position_ );
+
+    /**
+     * Method to obtain the pivot or orbital center.
+     * @return position of the pivot or orbital center.
+     */
+    RETO_API
+    Eigen::Vector3f position( void );
+
   protected:
 
     void _conformSetViewMatrix( const Eigen::Vector3f& position_,

@@ -2,6 +2,10 @@
 
 ## git master
 
+## 0.3.1
+
+	*[!43] Added rubberband, lasso and clipping planes capabilities.
+
 ## 0.3.0
 	* [!39] Added setters for several camera attributes.
 	* [!36] Release 0.3. Updated README.md. Changed CMake/common to submodule. Fixed examples shaders path.

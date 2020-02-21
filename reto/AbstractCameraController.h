@@ -60,10 +60,10 @@ namespace reto
     bool isAniming( void );
 
     RETO_API
-    void position( const Eigen::Vector3f& position_ );
+    virtual void position( const Eigen::Vector3f& position_ );
 
     RETO_API
-    Eigen::Vector3f position( void );
+    virtual Eigen::Vector3f position( void );
 
     RETO_API
     void rotation( const Eigen::Matrix3f& rotation_ );
