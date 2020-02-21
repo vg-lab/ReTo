@@ -35,6 +35,12 @@ namespace reto
     , _isProjMatClean( true )
     , _enableZeqConnChanges( true )
     , _zeqConnection( false )
+#ifdef RETO_USE_LEXIS
+    , _zeroeqSession( )
+    , _publisher( nullptr )
+    , _subscriber( nullptr )
+    , _subscriberThread( nullptr )
+#endif
   {
     _fov = fov_ * ( M_PI / 360.0f );
     _f = 1.0f / tan( _fov );
@@ -67,7 +73,7 @@ namespace reto
     _subscriber->subscribe(
         lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
         [ & ]( const void* data, size_t size )
-        { _OnCameraEvent( lexis::render::LookOut::create( data, size ));});
+        { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
 
     _subscriberThread =
         new std::thread( [&]() { while( true ) _subscriber->receive( 10000 );});
@@ -80,8 +86,8 @@ namespace reto
   Camera::~Camera( void )
   {
 #ifdef RETO_USE_LEXIS
-    if ( _subscriverThread )
-      _subscriberThread->.std::thread::~thread();
+    if ( _subscriberThread )
+      _subscriberThread->std::thread::~thread();
     if ( _publisher )
       delete _publisher;
     if ( _subscriber )
@@ -95,7 +101,7 @@ namespace reto
 #ifdef RETO_USE_LEXIS
     _zeroeqSession = session_.empty( ) ? zeroeq::DEFAULT_SESSION : session_;
 
-    if ( _subscriverThread )
+    if ( _subscriberThread )
       _subscriberThread->std::thread::~thread( );
     if ( _publisher )
       delete _publisher;
@@ -108,7 +114,7 @@ namespace reto
     _subscriber->subscribe(
         lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
         [ & ]( const void* data, size_t size )
-        { _OnCameraEvent( lexis::render::LookOut::create( data, size ));});
+        { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
 
     _subscriberThread =
         new std::thread( [&]() { while( true ) _subscriber->receive( 10000 );});
@@ -116,6 +122,36 @@ namespace reto
     std::cout << "Warning: Could establish connection " << session_
               << " not slexis not supported" << std::endl;
 #endif
+  }
+
+  float Camera::nearPlane( void ) const
+  {
+    return _nearPlane;
+  }
+
+  void Camera::nearPlane( float nearPlane_ )
+  {
+    _setNearPlane( nearPlane_ );
+  }
+
+  float Camera::farPlane( void ) const
+  {
+    return _farPlane;
+  }
+
+  void Camera::farPlane( float farPlane_ )
+  {
+    _setFarPlane( farPlane_ );
+  }
+
+  float Camera::fieldOfView( void ) const
+  {
+    return _fov;
+  }
+
+  void Camera::fieldOfView( float fov_ )
+  {
+    _setFov( fov_ );
   }
 
   float* Camera::projectionMatrix( void )
@@ -190,14 +226,15 @@ namespace reto
   }
 
 #ifdef RETO_USE_LEXIS
-  void Camera::_OnCameraEvent( lexis::render::ConstLookOutPtr lookoutPtr_ )
+  void Camera::_onCameraEvent( lexis::render::ConstLookOutPtr lookoutPtr_ )
   {
     if ( this->_enableZeqConnChanges )
     {
       const auto& aux = lookoutPtr_->getMatrixVector( );
-      std::vector<float> viewMatrixVec( aux.begin( ), aux.end( ));
-      _viewMatrix( viewMatrixVec );
-      _projectionViewMatrix = _projectionView * _viewMatrix;
+      std::vector< float > viewMatrixVec( aux.begin( ), aux.end( ));
+      _viewMatrix =
+          Eigen::Map< Eigen::Matrix< float, 4, 4 > >( viewMatrixVec.data( ));
+      _projectionViewMatrix = _projectionMatrix * _viewMatrix;
     }
   }
 

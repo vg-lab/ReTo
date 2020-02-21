@@ -8,8 +8,8 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
-project( ReTo VERSION 0.3.0 )
-set( ReTo_VERSION_ABI 4)
+project( ReTo VERSION 0.3.1 )
+set( ReTo_VERSION_ABI 5)
 
 # Disable in source building
 if( "${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}" )

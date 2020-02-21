@@ -7,8 +7,8 @@ if( RETO_WITH_EXAMPLES )
   )
 
   list( APPEND RETO_EXAMPLES_FILES
-    color.vert pick.vert
-    color.frag pick.frag
+    color.vert pick.vert colorUniform.vert
+    color.frag pick.frag colorUniform.frag
   )
 
   # configure_file(
@@ -50,6 +50,37 @@ if( RETO_WITH_EXAMPLES )
     set( RETODEMOPICKING2_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
     common_application( ReToDemoPicking2 NOHELP )
     list( APPEND RETO_EXAMPLES_FILES ${RETODEMOPICKING2_SOURCES} )
+
+
+    set( RETODEMORUBBERBAND_HEADERS MyCube.h )
+    set( RETODEMORUBBERBAND_SOURCES MyCube.cpp rubberBandDemo.cpp )
+    set( RETODEMORUBBERBAND_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
+    common_application( ReToDemoRubberBand NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMORUBBERBAND_SOURCES} )
+
+    set( RETODEMOLASSO_HEADERS MyCube.h )
+    set( RETODEMOLASSO_SOURCES MyCube.cpp lassoDemo.cpp )
+    set( RETODEMOLASSO_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
+    common_application( ReToDemoLasso NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOLASSO_SOURCES} )
+
+    set( RETODEMOCLIPPINGPLANES_HEADERS MyCube.h )
+    set( RETODEMOCLIPPINGPLANES_SOURCES MyCube.cpp clippingPlanesDemo.cpp )
+    set( RETODEMOCLIPPINGPLANES_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
+    common_application( ReToDemoClippingPlanes NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCLIPPINGPLANES_SOURCES} )
+
+    set( RETODEMOCLIPPINGPLANES2_HEADERS MyCube.h )
+    set( RETODEMOCLIPPINGPLANES2_SOURCES MyCube.cpp clippingPlanes2Demo.cpp )
+    set( RETODEMOCLIPPINGPLANES2_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
+    common_application( ReToDemoClippingPlanes2 NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCLIPPINGPLANES2_SOURCES} )
+
+    set( RETODEMOCLIPPINGPLANESNOCSYSTEM_HEADERS MyCube.h )
+    set( RETODEMOCLIPPINGPLANESNOCSYSTEM_SOURCES MyCube.cpp clippingPlanesNoCSystemDemo.cpp )
+    set( RETODEMOCLIPPINGPLANESNOCSYSTEM_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
+    common_application( ReToDemoClippingPlanesNoCSystem NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCLIPPINGPLANESNOCSYSTEM_SOURCES} )
 
   endif( )
 

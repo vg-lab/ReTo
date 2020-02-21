@@ -38,5 +38,16 @@ namespace reto
   void Pickable::setNumIDs ( int numIds )
   {
     _numIds = numIds;
+  }  
+
+  int Pickable::getId( void ) const
+  {
+    return _id;
   }
+
+  void Pickable::setId( const int& id )
+  {
+    _id = id;
+  }
+
 };

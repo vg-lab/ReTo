@@ -53,4 +53,14 @@ namespace reto
     _setCameraViewMatrix( view );
   }
 
+  void OrbitalCameraController::position( const Eigen::Vector3f& position_ )
+  {
+    AbstractCameraController::position( position_ );
+  }
+
+  Eigen::Vector3f OrbitalCameraController::position( void )
+  {
+    return AbstractCameraController::position( );
+  }
+
 }
