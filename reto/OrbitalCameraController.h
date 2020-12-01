@@ -41,12 +41,11 @@ namespace reto
   {
 
   public:
-
     
     OrbitalCameraController( Camera* camera_ = nullptr );
 
     
-    ~OrbitalCameraController( void ) { };
+    virtual ~OrbitalCameraController( void ) { };
 
     
     void localTranslate( const Eigen::Vector3f& translation_ );
@@ -63,7 +62,7 @@ namespace reto
      * @return position of the pivot or orbital center.
      */
     
-    Eigen::Vector3f position( void );
+    Eigen::Vector3f position( void ) const;
 
   protected:
 

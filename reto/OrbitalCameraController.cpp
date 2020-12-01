@@ -58,7 +58,7 @@ namespace reto
     AbstractCameraController::position( position_ );
   }
 
-  Eigen::Vector3f OrbitalCameraController::position( void )
+  Eigen::Vector3f OrbitalCameraController::position( void ) const
   {
     return AbstractCameraController::position( );
   }

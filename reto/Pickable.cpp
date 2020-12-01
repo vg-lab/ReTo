@@ -25,6 +25,7 @@
 namespace reto
 {
   Pickable::Pickable( void )
+  : _id{0}
   {}
 
   Pickable::~Pickable( void )

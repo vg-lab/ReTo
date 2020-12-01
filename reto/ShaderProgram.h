@@ -242,14 +242,14 @@ namespace reto
      * @return bool
      */
     
-    bool isUniformCached( const std::string& unif );
+    bool isUniformCached( const std::string& unif ) const;
     /**
      * Method to check if attribute exist (only check in attribute cache)
      * @param attr: Attribute name
      * @return bool
      */
     
-    bool isAttributeCached( const std::string& attr );
+    bool isAttributeCached( const std::string& attr ) const;
     /**
      * Method to catching an uniform buffer object
      * @param ubo: Uniform Buffer Object name
@@ -610,7 +610,7 @@ namespace reto
     bool link( void );
 
     
-    bool isLinked( void );
+    bool isLinked( void ) const;
 
     /**
      * Autocatching attributes and uniforms

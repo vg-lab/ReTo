@@ -46,7 +46,7 @@ namespace reto
     FreeCameraController( Camera* camera_ = nullptr );
 
     
-    ~FreeCameraController( void ) { };
+    virtual ~FreeCameraController( void ) { };
 
     
     void localTranslate( const Eigen::Vector3f& translation_ );

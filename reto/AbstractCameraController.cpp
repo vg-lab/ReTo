@@ -102,7 +102,7 @@ namespace reto
     _camera->_setEnableZeqConnChanges( true );
   }
 
-  bool AbstractCameraController::isAniming( void )
+  bool AbstractCameraController::isAniming( void ) const
   {
     return _isAniming;
   }
@@ -116,7 +116,7 @@ namespace reto
     }
   }
 
-  Eigen::Vector3f AbstractCameraController::position( void )
+  Eigen::Vector3f AbstractCameraController::position( void ) const
   {
     return _position;
   }
@@ -138,7 +138,7 @@ namespace reto
     _conformSetViewMatrix( _position, _rotation, _radius );
   }
 
-  Eigen::Matrix3f AbstractCameraController::rotation( void )
+  Eigen::Matrix3f AbstractCameraController::rotation( void ) const
   {
     return _rotation;
   }
@@ -152,7 +152,7 @@ namespace reto
     }
   }
 
-  float AbstractCameraController::radius( void )
+  float AbstractCameraController::radius( void ) const
   {
     return _radius;
   }

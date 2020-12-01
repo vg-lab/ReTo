@@ -151,14 +151,19 @@ namespace reto {
     this->configTexture( data );
     this->_loaded = true;
   }
+
   Texture2D::Texture2D( const TextureConfig& options, const std::string src )
     : Texture( options, GL_TEXTURE_2D )
     , _src ( src )
+    , _width {0}
+    , _height {0}
   {
   }
+
   Texture2D::~Texture2D( void )
   {
   }
+
   void Texture2D::configTexture( void* data )
   {
     glTexImage2D(

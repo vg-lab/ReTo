@@ -57,13 +57,13 @@ namespace reto
     void stopAnim( void );
 
     
-    bool isAniming( void );
+    bool isAniming( void ) const;
 
     
     virtual void position( const Eigen::Vector3f& position_ );
 
     
-    virtual Eigen::Vector3f position( void );
+    virtual Eigen::Vector3f position( void ) const;
 
     
     void rotation( const Eigen::Matrix3f& rotation_ );
@@ -72,13 +72,13 @@ namespace reto
     void rotation( const Eigen::Vector3f& rotationAngles_ );
 
     
-    Eigen::Matrix3f rotation( void );
+    Eigen::Matrix3f rotation( void ) const;
 
     
     void radius( float radius_ );
 
     
-    float radius( void );
+    float radius( void ) const;
 
     
     void translate( const Eigen::Vector3f& translation_ );

@@ -59,6 +59,7 @@ namespace reto
     _isLinked = false;
 
     #ifdef RETO_OCC_QUERY
+    _occQuery = 0;
       // Occlusion query object
       // TODO: You need to call this after OpenGL context creation
       //glGenQueries(1, &_occQuery);
@@ -70,16 +71,17 @@ namespace reto
     _destroy( );
   }
 
-  bool ShaderProgram::isLinked( void )
+  bool ShaderProgram::isLinked( void ) const
   {
     return this->_isLinked;
   }
 
-  bool ShaderProgram::isUniformCached( const std::string& unif )
+  bool ShaderProgram::isUniformCached( const std::string& unif ) const
   {
     return this->_uniformList.find(unif) != this->_uniformList.end( );
   }
-  bool ShaderProgram::isAttributeCached( const std::string& attr )
+
+  bool ShaderProgram::isAttributeCached( const std::string& attr ) const
   {
     return this->_attrsList.find(attr) != this->_attrsList.end( );
   }
