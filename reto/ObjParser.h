@@ -52,13 +52,13 @@ namespace reto
     std::vector< float > bitangents;
   };
   //! Class to read obj mesh files
-  class ObjParser
+  class RETO_API ObjParser
   {
   public:
     /**
      * ObjParser constructor
      */
-    RETO_API
+    
     ObjParser( void );
     /**
      * Load new obj file
@@ -67,7 +67,7 @@ namespace reto
      *   bitangents for object.
      * @return Model object with parsed values.
      */
-    RETO_API
+    
     Model loadObj( const std::string& filename,
       bool calculateTangAndBi = false );
   protected:

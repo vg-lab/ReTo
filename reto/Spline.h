@@ -33,27 +33,27 @@ namespace reto
    * Class to manage spline structs
    * @class Spline
    */
-  class Spline
+  class RETO_API Spline
   {
     public:
       /**
        * Create a new Spline object.
        * @param points Point list who define the spline.
        */
-      RETO_API
+      
       Spline( const std::vector< Eigen::Vector3f >& points );
       /**
        * Evaluate the spline in a specific time.
        * @param dt Time to evaluate. Must be in [0, 1] interval.
        * @return Interpolated position in dt time.
        */
-      RETO_API
+      
       Eigen::Vector3f evaluate( float dt );
       /**
        * Returns tangent vector in last time evaluate called.
        * @return Intepolated tangent in dt time.
        */
-      RETO_API
+      
       Eigen::Vector3f getTangent( void );
       /**
        * Returns tangent vector between between two times given.
@@ -61,13 +61,13 @@ namespace reto
        * @param dt1 Current time
        * @return Interpolated tangent in position.
        */
-      RETO_API
+      
       Eigen::Vector3f getTangent( float dt0, float dt1 );
       /**
        * Returns interpolated angle between last and current time.
        * @return angle (in radians).
        */
-      RETO_API
+      
       float angleBetweenPoints( void );
       /**
        * Returns interpolated angle between last and current time.
@@ -75,7 +75,7 @@ namespace reto
        * @param dt1 Current time
        * @return angle (in radians).
        */
-      RETO_API
+      
       float angleBetweenPoints( float dt0, float dt1 );
     protected:
       /**

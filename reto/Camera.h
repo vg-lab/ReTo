@@ -59,7 +59,7 @@ namespace reto
    * This class manage the camera: allows synchronize the camera with other
    * applications using of ZeroEQ
    */
-  class Camera
+  class RETO_API Camera
   {
     friend class AbstractCameraController;
     public:
@@ -71,7 +71,6 @@ namespace reto
      * @param nearPlane camera near plane
      * @param farPlane camera far plane
      */
-    RETO_API
     Camera( float fov_ = 45.0f, float ratio_ = 16.0f/9,
             float nearPlane_ = 0.1f, float farPlane_ = 10000.0f );
 
@@ -84,7 +83,6 @@ namespace reto
      * @param nearPlane camera near plane
      * @param farPlan camera far plane
      */
-    RETO_API
     Camera( const std::string& session_, float fov_ = 45.0f,
             float ratio_ = 16.0f/9, float nearPlane_ = 0.1f,
             float farPlane_ = 10000.0f );
@@ -92,7 +90,6 @@ namespace reto
     /**
      * Default destructor
      */
-    RETO_API
     ~Camera( void );
 
 
@@ -101,49 +98,42 @@ namespace reto
      @param session ZeroEq session to synchronize the camera with other
      * applications
      */
-    RETO_API
     void setZeqSession( const std::string& session_ );
 
     /**
      * Method to obtain the near plane distance.
      * @return camera near plane distance.
      */
-    RETO_API
     float nearPlane( void ) const;
 
     /**
      * Method to establish the near plane distance.
      @param nearPlane_ new value to be assigned as near plane distance.
      */
-    RETO_API
     void nearPlane( float nearPlane_ );
 
     /**
      * Method to obtain the far plane distance.
      * @return camera far plane distance.
      */
-    RETO_API
     float farPlane( void ) const;
 
     /**
      * Method to establish the far plane distance.
      @param farPlane_ new value to be assigned as far plane distance.
      */
-    RETO_API
     void farPlane( float farPlane_ );
 
     /**
      * Method to obtain the field of view angle value.
      * @return field of view angle.
      */
-    RETO_API
     float fieldOfView( void ) const;
 
     /**
      * Method to establish field of view angle.
      @param fov_ new value to be assigned as field of view.
      */
-    RETO_API
     void fieldOfView( float fov_ );
 
     /**
@@ -152,7 +142,6 @@ namespace reto
      * @return pointer to float whit the column vectorized projection matrix of
      * the camera
      */
-    RETO_API
     float* projectionMatrix( void );
 
     /**
@@ -161,7 +150,6 @@ namespace reto
      * @return pointer to float with the column vectorized view matrix of
      * the camera
      */
-    RETO_API
     float* viewMatrix( void );
 
     /**
@@ -170,9 +158,8 @@ namespace reto
      * @return pointer to float with the column vectorized view-projection
      * matrix of the camera
      */
-    RETO_API
     float* projectionViewMatrix( void );
-
+    
   protected:
 
     void _setFov( float fov_ );
@@ -238,6 +225,7 @@ namespace reto
 
     //! Thread that runs the ZeroEQ subscriber
     std::thread* _subscriberThread;
+    
 #endif
 
   };

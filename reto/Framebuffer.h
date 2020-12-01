@@ -44,7 +44,7 @@ namespace reto
    * Class to manage a quad
    * @class Quad
    */
-  class Quad
+  class RETO_API Quad
   {
     public:
 
@@ -53,7 +53,7 @@ namespace reto
        * @param vertexCode: vertex shader code
        * @param fragmentCode: fragment shader code
        */
-      RETO_API
+      
       Quad( const std::string& vertexCode, const std::string& fragmentCode );
 
       /**
@@ -65,19 +65,19 @@ namespace reto
        * Method to get program handler
        * @return program handler.
        */
-      RETO_API
+      
       reto::ShaderProgram* const& program( void ) const;
 
       /**
        * Method to draw quad
        */
-      RETO_API
+      
       void draw( void ) const;
 
       /**
        * Method to clear quad resources
        */
-      RETO_API
+      
       void clear( void );
 
     private:
@@ -106,7 +106,7 @@ namespace reto
    * Class to manage a framebuffer with 2D textures
    * @class Framebuffer2D
    */
-  class Framebuffer2D : public Quad
+  class RETO_API Framebuffer2D : public Quad
   {
 
     public:
@@ -119,7 +119,7 @@ namespace reto
        * @param width: screen width
        * @param height: screen height
        */
-      RETO_API
+      
       Framebuffer2D( const std::string& vertexCode,
         const std::string& fragmentCode, const AttachmentsConfig& attsConfig,
         const unsigned int& width, const unsigned int& height );
@@ -132,13 +132,13 @@ namespace reto
       /**
        * Method to bind framebuffer
        */
-      RETO_API
+      
       void bind( void );
 
       /**
        * Method to bind default framebuffer
        */
-      RETO_API
+      
       void unbind( void );
 
       /**
@@ -146,19 +146,19 @@ namespace reto
        * @param width: screen width
        * @param height: screen height
        */
-      RETO_API
+      
       void resize( const unsigned int& width, const unsigned int& height );
 
       /**
        * Method to bind all framebuffer attachments
        */
-      RETO_API
+      
       void bindAttachments( void );
 
       /**
        * Method to bind all framebuffer attachments
        */
-      RETO_API
+      
       void clear( void );
 
     private:

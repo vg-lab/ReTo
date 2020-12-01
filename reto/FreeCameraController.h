@@ -36,19 +36,19 @@ namespace reto
    * This class manage the movement, rotation, zoom and animation of free
    * camera
    */
-  class FreeCameraController
+  class RETO_API FreeCameraController
     : public AbstractCameraController
   {
 
   public:
 
-    RETO_API
+    
     FreeCameraController( Camera* camera_ = nullptr );
 
-    RETO_API
+    
     ~FreeCameraController( void ) { };
 
-    RETO_API
+    
     void localTranslate( const Eigen::Vector3f& translation_ );
 
   protected:

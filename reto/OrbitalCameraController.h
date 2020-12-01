@@ -36,33 +36,33 @@ namespace reto
    * This class manage the movement, rotation, zoom and animation of orbital
    * camera
    */
-  class OrbitalCameraController
+  class RETO_API OrbitalCameraController
     : public AbstractCameraController
   {
 
   public:
 
-    RETO_API
+    
     OrbitalCameraController( Camera* camera_ = nullptr );
 
-    RETO_API
+    
     ~OrbitalCameraController( void ) { };
 
-    RETO_API
+    
     void localTranslate( const Eigen::Vector3f& translation_ );
 
     /**
      * Method to establish the pivot or orbital center for the camera.
      @param position_ new value to be assigned as pivot or orbital center.
      */
-    RETO_API
+    
     void position( const Eigen::Vector3f& position_ );
 
     /**
      * Method to obtain the pivot or orbital center.
      * @return position of the pivot or orbital center.
      */
-    RETO_API
+    
     Eigen::Vector3f position( void );
 
   protected:

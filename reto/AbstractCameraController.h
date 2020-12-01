@@ -31,71 +31,71 @@
 
 namespace reto
 {
-  class AbstractCameraController
+  class RETO_API AbstractCameraController
   {
   public:
 
-    RETO_API
+    
     AbstractCameraController( Camera* camera_ = nullptr );
 
-    RETO_API
+    
     virtual ~AbstractCameraController( void );
 
-    RETO_API
+    
     Camera* camera( void );
 
-    RETO_API
+    
     void update( void );
 
-    RETO_API
+    
     void anim( float deltaTime_ = 1.0f / 60 );
 
-    RETO_API
+    
     void startAnim( CameraAnimation* cameraAnimation_, bool loop_ = false );
 
-    RETO_API
+    
     void stopAnim( void );
 
-    RETO_API
+    
     bool isAniming( void );
 
-    RETO_API
+    
     virtual void position( const Eigen::Vector3f& position_ );
 
-    RETO_API
+    
     virtual Eigen::Vector3f position( void );
 
-    RETO_API
+    
     void rotation( const Eigen::Matrix3f& rotation_ );
 
-    RETO_API
+    
     void rotation( const Eigen::Vector3f& rotationAngles_ );
 
-    RETO_API
+    
     Eigen::Matrix3f rotation( void );
 
-    RETO_API
+    
     void radius( float radius_ );
 
-    RETO_API
+    
     float radius( void );
 
-    RETO_API
+    
     void translate( const Eigen::Vector3f& translation_ );
 
-    RETO_API
+    
     virtual void localTranslate( const Eigen::Vector3f& translation_ ) = 0;
 
-    RETO_API
+    
     void rotate( const Eigen::Matrix3f& rotation_ );
 
-    RETO_API
+    
     void rotate( const Eigen::Vector3f& rotationAngles_ );
 
-    RETO_API
+    
     void windowSize( int width_, int height_ );
 
-    RETO_API
+    
     Eigen::Matrix3f rotationMatrixFromAngles(
       const Eigen::Vector3f& rotationAngles_ );
 

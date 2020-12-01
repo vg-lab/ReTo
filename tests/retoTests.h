@@ -2,7 +2,7 @@
 #define __RETO_TESTS_H__
 
 #define BOOST_TEST_MODULE reto
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 
 
 #endif // __RETO_TESTS_H__
