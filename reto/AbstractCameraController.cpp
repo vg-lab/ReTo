@@ -40,6 +40,11 @@ namespace reto
       _camera = new Camera( );
   }
 
+  AbstractCameraController::AbstractCameraController( const std::string &zeqSession )
+  : AbstractCameraController( new Camera ( zeqSession ) )
+  {
+  }
+
   AbstractCameraController::~AbstractCameraController( void )
   {
 

@@ -56,7 +56,7 @@ namespace reto
    * Class to manage a clipping plane
    * @class ClippingPlane
    */
-  class RETO_API ClippingPlane
+  class ClippingPlane
   {
 
     public:
@@ -65,7 +65,7 @@ namespace reto
        * ClippingPlane constructor
        * @param clippingMode: clipping mode (global or local, global by default)
        */
-      
+      RETO_API
       ClippingPlane(
         const reto::ClippingMode& clippingMode = ClippingMode::Global );
 
@@ -77,7 +77,7 @@ namespace reto
        * @param d: distance from the origin
        * @param clippingMode: clipping mode (global or local, global by default)
        */
-      
+      RETO_API
       ClippingPlane( const float& a, const float& b, const float& c,
         const float& d,
         const reto::ClippingMode& clippingMode = ClippingMode::Global );
@@ -85,13 +85,14 @@ namespace reto
       /**
        * ClippingPlane destructor
        */
+      RETO_API
       ~ClippingPlane( void );
 
       /**
        * Method to get the clipping plane equation
        * @return clipping plane equation
        */
-      
+      RETO_API
       std::vector< float > getEquation( void ) const;
 
       /**
@@ -101,7 +102,7 @@ namespace reto
        * @param c: z coefficient
        * @param d: distance from the origin
        */
-      
+      RETO_API
       void setEquation( const float& a, const float& b, const float& c,
         const float& d );
 
@@ -110,7 +111,7 @@ namespace reto
        * @param point: point on the plane
        * @param normal: normal vector
        */
-      
+      RETO_API
       void setEquationByPointAndNormal( const Eigen::Vector3f& point,
         const Eigen::Vector3f& normal );
 
@@ -120,7 +121,7 @@ namespace reto
        * @param vector1: vector on the plane
        * @param vector2: vector on the plane
        */
-      
+      RETO_API
       void setEquationByPointAndVectors( const Eigen::Vector3f& point,
         const Eigen::Vector3f& vector1, const Eigen::Vector3f& vector2 );
 
@@ -130,7 +131,7 @@ namespace reto
        * @param point2: point on the plane
        * @param point3: point on the plane
        */
-      
+      RETO_API
       void setEquationByPoints( const Eigen::Vector3f& point1,
         const Eigen::Vector3f& point2, const Eigen::Vector3f& point3 );
 
@@ -138,14 +139,14 @@ namespace reto
        * Method to get the plane clipping mode
        * @return clipping mode
        */
-      
+      RETO_API
       reto::ClippingMode getClippingMode( void ) const;
 
       /**
        * Method to set the plane clipping mode
        * @param clippingMode: clipping mode (global or local)
        */
-      
+      RETO_API
       void setClippingMode( const reto::ClippingMode& clippingMode );
 
       /**
@@ -153,20 +154,20 @@ namespace reto
        * @param program: program pointer
        * @param index: index of clipping plane
        */
-      
+      RETO_API
       void activate( reto::ShaderProgram* program, const unsigned int& index ) const;
 
       /**
        * Method to deactivate the clipping plane
        * @param index: index of clipping plane
        */
-      
+      RETO_API
       void deactivate( const unsigned int& index ) const;
 
       /**
        * Method to clear clipping plane
        */
-      
+      RETO_API
       void clear( void );
 
     private:
@@ -183,25 +184,26 @@ namespace reto
    * Class to manage clipping planes
    * @class ClippingSystem
    */
-  class RETO_API ClippingSystem
+  class ClippingSystem
   {
     public:
 
       /**
        * ClippingSystem constructor
        */
-      
+      RETO_API
       ClippingSystem( void );
 
       /**
        * ClippingSystem constructor passing vertex shader code
        */
-      
+      RETO_API
       ClippingSystem( const std::string& vertexCode );
 
       /**
        * ClippingSystem destructor
        */
+      RETO_API
       ~ClippingSystem( void );
 
       /**
@@ -209,7 +211,7 @@ namespace reto
        * @param alias: ClippingPlane alias
        * @return ClippingPlane pointer
        */
-      
+      RETO_API
       reto::ClippingPlane* get( const std::string& alias ) const;
 
       /**
@@ -217,59 +219,59 @@ namespace reto
        * @param alias: ClippingPlane alias
        * @param tex: ClippingPlane pointer
        */
-      
+      RETO_API
       void set( const std::string& alias, reto::ClippingPlane* plane );
 
       /**
        * Method to remove a clipping plane from ClippingSystem
        * @param alias: ClippingPlane alias
        */
-      
+      RETO_API
       void remove( const std::string& alias );
 
       /**
        * Method to activate clipping planes
        */
-      
+      RETO_API
       void activatePlanes( void ) const;
 
       /**
        * Method to deactivate clipping planes
        */
-      
+      RETO_API
       void deactivatePlanes( void ) const;
 
       /**
        * Method to draw objects using clipping system
        */
-      
+      RETO_API
       void draw( void ) const;
 
       /**
        * Method to add a pickable object
        * @param object: Pickable object
        */
-      
+      RETO_API
       void addObject( reto::Pickable* object );
 
       /**
        * Method to remove a pickable object
        * @param object: Pickable object
        */
-      
+      RETO_API
       void removeObject( reto::Pickable* object );
 
       /**
        * Method to get program handler
        * @return program handler.
        */
-      
+      RETO_API
       reto::ShaderProgram* const& program( void ) const;
 
       /**
        * Method to clear clipping planes
        */
-      
+      RETO_API
       void clear( void );
 
     private:

@@ -55,6 +55,10 @@ endif( )
 if( WIN32 )
   configure_file("${PROJECT_SOURCE_DIR}/reto/ReToWinProps.rc.in" "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
   set( RETO_SOURCES ${RETO_SOURCES} "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
+  
+  if( MSVC )
+    add_definitions( -DGLEW_STATIC )
+  endif( MSVC )  
 endif( WIN32 )
 
 common_library( ReTo )

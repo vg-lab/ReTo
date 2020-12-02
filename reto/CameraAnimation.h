@@ -32,26 +32,32 @@
 namespace reto
 {
 
-  class RETO_API KeyCamera
+  class KeyCamera
   {
 
   public:
-
+    RETO_API
     KeyCamera( float time_, const Eigen::Vector3f& position_,
                const Eigen::Matrix3f& rotation_,
                float radius_ = 0.0f );
 
+    RETO_API
     KeyCamera( float time_, const Eigen::Vector3f& position_,
                const Eigen::Vector3f& rotationAngles_, float radius_ = 0.0f );
 
+    RETO_API
     ~KeyCamera( void );
 
+    RETO_API
     float time( void ) const;
 
+    RETO_API
     Eigen::Vector3f position( void ) const;
 
+    RETO_API
     Eigen::Matrix3f rotation( void ) const;
 
+    RETO_API
     float radius( void ) const;
 
   protected:
@@ -69,7 +75,7 @@ namespace reto
 
   };
 
-  class RETO_API CameraAnimation
+  class CameraAnimation
   {
 
   public:
@@ -79,24 +85,33 @@ namespace reto
       LINEAR
     } TInterpolation;
 
+    RETO_API
     CameraAnimation( TInterpolation posInterpolation_ = LINEAR,
                      TInterpolation rotInterpolation_ = NONE,
                      TInterpolation radInterpolation_ = NONE );
 
+    RETO_API
     ~CameraAnimation( void );
 
+    RETO_API
     KeyCamera* getKeyCamera( float currentTime_ );
 
+    RETO_API
     bool addKeyCamera( KeyCamera* keyCamera_ );
 
+    RETO_API
     float startTime( void ) const;
 
+    RETO_API
     float endTime( void ) const;
 
+    RETO_API
     bool isPosAnimated( void ) const;
 
+    RETO_API
     bool isRotAnimated( void ) const;
 
+    RETO_API
     bool isRadAnimated( void ) const;
 
   protected:

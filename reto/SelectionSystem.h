@@ -49,7 +49,7 @@ namespace reto
      * Class to manage rubberband selection
      * @class RubberBand
      */
-    class RETO_API RubberBand
+    class RubberBand
     {
 
       public:
@@ -59,7 +59,7 @@ namespace reto
          * @param width: screen width
          * @param height: screen height
          */
-        
+        RETO_API
         RubberBand( const unsigned int& width, const unsigned int& height );
 
         /**
@@ -71,14 +71,14 @@ namespace reto
          * Method to set the selection color
          * @param color: selection color
          */
-        
+        RETO_API
         void setColor( const Eigen::Vector4f& color );
 
         /**
          * Method to set the width of the border line of the selection
          * @param width: line size
          */
-        
+        RETO_API
         void setLineWidth( const float& width );
 
         /**
@@ -87,27 +87,27 @@ namespace reto
          * @param width: screen width
          * @param height: screen height
          */
-        
+        RETO_API
         void resize( const unsigned int& width, const unsigned int& height );
 
         /**
          * Method to draw rubberband
          */
-        
+        RETO_API
         void draw( void );
 
         /**
          * Method used on mouse down callback to get a point
          * @param point: first point of the selection
          */
-        
+        RETO_API
         void mouseDown( const Point& point );
 
         /**
          * Method used on mouse move callback to get the a point
          * @param point: last point of the selection (while moving)
          */
-        
+        RETO_API
         void mouseMove( const Point& point );
 
         /**
@@ -116,28 +116,28 @@ namespace reto
          * @param point: last point of the selection
          * @param viewProj: view projection matrix
          */
-        
+        RETO_API
         void mouseUp( const Point& point, float* viewProj );
 
         /**
          * Method to get program handler for line and filling
          * @return program handler.
          */
-        
+        RETO_API
         reto::ShaderProgram* const& program( void ) const;
 
         /**
          * Method to add a pickable object
          * @param object: Pickable object
          */
-        
+        RETO_API
         void addObject( reto::Pickable* object );
 
         /**
          * Method to remove a pickable object
          * @param object: Pickable object
          */
-        
+        RETO_API
         void removeObject( reto::Pickable* object );
 
       private:
@@ -274,7 +274,7 @@ namespace reto
          * @param width: screen width
          * @param height: screen height
          */
-        
+        RETO_API
         Lasso( const unsigned int& width, const unsigned int& height );
 
         /**
@@ -286,14 +286,14 @@ namespace reto
          * Method to set the selection color
          * @param color: selection color
          */
-        
+        RETO_API
         void setColor( const Eigen::Vector4f& color );
 
         /**
          * Method to set the width of the border line of the selection
          * @param width: line size
          */
-        
+        RETO_API
         void setLineWidth( const float& width );
 
         /**
@@ -302,27 +302,27 @@ namespace reto
          * @param width: screen width
          * @param height: screen height
          */
-        
+        RETO_API
         void resize( const unsigned int& width, const unsigned int& height );
 
         /**
          * Method to draw lasso
          */
-        
+        RETO_API
         void draw( void );
 
         /**
          * Method used on mouse down callback to get a point
          * @param point: first point of the selection
          */
-        
+        RETO_API
         void mouseDown( const Point& point );
 
         /**
          * Method used on mouse move callback to get the a point
          * @param point: next point of the selection
          */
-        
+        RETO_API
         void mouseMove( const Point& point );
 
         /**
@@ -331,35 +331,35 @@ namespace reto
          * @param point: last point of the selection
          * @param viewProj: view projection matrix
          */
-        
+        RETO_API
         void mouseUp( const Point& point, float* viewProj );
 
         /**
          * Method to get program handler for line
          * @return program handler.
          */
-        
+        RETO_API
         reto::ShaderProgram* const& programLine( void ) const;
 
         /**
          * Method to get program handler for filling
          * @return program handler.
          */
-        
+        RETO_API
         reto::ShaderProgram* const& programFilling( void ) const;
 
         /**
          * Method to add a pickable object
          * @param object: Pickable object
          */
-        
+        RETO_API
         void addObject( reto::Pickable* object );
 
         /**
          * Method to remove a pickable object
          * @param object: Pickable object
          */
-        
+        RETO_API
         void removeObject( reto::Pickable* object );
 
       private:

@@ -44,7 +44,7 @@ namespace reto
    * Class to manage transform feedbacks
    * @class TransformFeedback
    */
-  class RETO_API TransformFeedback
+  class TransformFeedback
   {
 
     public:
@@ -55,7 +55,7 @@ namespace reto
        * @param varyings: transform feedback varying names
        * @param mode: transform feedback mode
        */
-      
+      RETO_API
       TransformFeedback( const std::string& vertexCode,
         std::vector< const char* > varyings, int mode );
 
@@ -67,34 +67,34 @@ namespace reto
       /**
        * Method to draw transform feedback
        */
-      
+      RETO_API
       void draw( void );
 
       /**
        * Method to add a pickable object
        * @param object: Pickable object
        */
-      
+      RETO_API
       void addObject( reto::Pickable* object );
 
       /**
        * Method to remove a pickable object
        * @param object: Pickable object
        */
-      
+      RETO_API
       void removeObject( reto::Pickable* object );
 
       /**
        * Method to get program handler
        * @return program handler.
        */
-      
+      RETO_API
       reto::ShaderProgram* const& program( void ) const;
 
       /**
        * Method to clear transform feedback
        */
-      
+      RETO_API
       void clear( void );
 
     private:

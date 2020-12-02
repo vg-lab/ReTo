@@ -28,12 +28,13 @@
 
 namespace reto
 {
-  class RETO_API Pickable
+  class Pickable
   {
   public:
-    
+    RETO_API
     Pickable( void );
     
+    RETO_API
     virtual ~Pickable ( void );
 
     /**
@@ -41,31 +42,31 @@ namespace reto
      * @param currentOffset: Current offset
      * @return Updated current offset
      */
-    
+    RETO_API
     virtual unsigned int sendId ( unsigned int currentOffset );
 
     /**
      * Method to render a Pickable object
      */
-    
+    RETO_API
     virtual void render ( reto::ShaderProgram* ) = 0;
 
-    
+    RETO_API
     virtual std::vector< float > getModel( void ) const = 0;
 
-    
+    RETO_API
     virtual std::vector< float > getPositions( void ) const = 0;
 
-    
+    RETO_API
     virtual bool getSelected( void ) const = 0;
 
-    
+    RETO_API
     virtual void setSelected( const bool& selected ) = 0;
 
-    
+    RETO_API
     int getId( void ) const;
 
-    
+    RETO_API
     void setId( const int& id );
 
   protected:

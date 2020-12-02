@@ -38,35 +38,41 @@
 namespace reto
 {
   typedef std::pair<unsigned int, unsigned int> Point;
-  class RETO_API PickingSystem
+
+  class PickingSystem
   {
     public:
-      
+      RETO_API
       PickingSystem( );
+      
       /**
        * Reuse a ShaderProgram that lacks fragment shader
        * @param prog: ProgramShader*
        **/
-      
+      RETO_API
       PickingSystem( reto::ShaderProgram* prog );
+      
+      RETO_API
       virtual ~PickingSystem( );
 
       /**
        * Method to add a Pickable object
        * @param pickSystem: Pickable object
        */
-      
+      RETO_API
       void AddObject( reto::Pickable * pickSystem );
+      
       /**
        * Method to remove a Pickable object
        * @param pickSystem: Pickable object
        */
-      
+      RETO_API
       void RemoveObject( reto::Pickable * pickSystem );
+      
       /**
        * Method to clear Pickable elements
        */
-      
+      RETO_API
       void Clear( void );
 
       /**
@@ -74,7 +80,7 @@ namespace reto
        * @param point: Point (in OpenGL coordinates)
        * @return int: Indice that is visible
        */
-      
+      RETO_API
       int click( Point point );
 
       /**
@@ -83,10 +89,10 @@ namespace reto
        * @param maxPoint: maxPoint (in OpenGL coordinates)
        * @return std::set<unsigned int> Indices that objects are visibles
        */
-      
+      RETO_API
       std::set<unsigned int> area( Point minPoint, Point maxPoint );
 
-      
+      RETO_API
       reto::ShaderProgram* const& program( ) const;
 
     protected:
@@ -94,17 +100,16 @@ namespace reto
        * This method is invoked in the constuctor after creating the program.
        * Override thist just like you want it ( Default: Cache model, view, proj and id)
        */
-      
+      RETO_API
       virtual void init( void );
 
       /**
        * This method is invoked to render objects.
        * Override thist just like you want it (Default: Send id uniform)
        */
-      
+      RETO_API
       virtual void renderObjects( void );
 
-    //protected:
     public:
       reto::ShaderProgram* _program;
       std::set< reto::Pickable* > _objects;
