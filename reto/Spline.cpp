@@ -26,7 +26,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-constexpr float DEG2RAD = M_PI / 180.0f;
+constexpr float DEG2RAD = static_cast<float>(M_PI) / 180.0f;
 
 namespace reto
 {
