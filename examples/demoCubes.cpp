@@ -63,7 +63,7 @@ int previousX;
 int previousY;
 
 // States.
-bool wireframe = true;
+bool wireframe = false;
 bool mouseDown = false;
 bool mouseScrolling = false;
 bool rotation = false;
@@ -72,11 +72,11 @@ bool animation = false;
 
 // Constants.
 
-const float mouseWheelFactor = 1.2f;
-const float rotationScale = 0.001f;
-const float translationScale = 0.2f;
+constexpr float mouseWheelFactor = 1.2f;
+constexpr float rotationScale = 0.001f;
+constexpr float translationScale = 0.2f;
 
-std::chrono::time_point< std::chrono::system_clock > _previusTime;
+std::chrono::time_point< std::chrono::system_clock > _previousTime;
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -106,7 +106,7 @@ int main( int argc, char** argv )
   cControllers[0]->radius( 100.0f );
   cameraController = cControllers[0];
 
-  _previusTime = std::chrono::system_clock::now( );
+  _previousTime = std::chrono::system_clock::now( );
 
   glutMainLoop( );
   destroy( );
@@ -150,9 +150,14 @@ void initOGL( void )
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
   const auto path = std::getenv( "RETO_SHADERS_PATH" );
-  std::string shadersPath;
-  if ( path )
-    shadersPath = std::string( path ) + std::string( "/" );
+  if ( !path )
+  {
+    const std::string message("Error: RETO_SHADERS_PATH environment variable not found.");
+    std::cerr << message << std::endl;
+    throw std::runtime_error( message );
+  }
+
+  const auto shadersPath = std::string( path ) + std::string( "/" );
 
   prog.load( shadersPath + "color.vert", shadersPath + "color.frag" );
   prog.compileAndLink( );
@@ -165,27 +170,30 @@ void initOGL( void )
 void destroy( void )
 {
 }
-#define MAX 25
+
+constexpr int MAX = 25;
+constexpr int STEP = 25;
+
 void renderFunc( void )
 {
 
   auto currentTime = std::chrono::system_clock::now( );
   auto duration = std::chrono::duration_cast< std::chrono::microseconds >
-    ( currentTime - _previusTime );
+    ( currentTime - _previousTime );
   float dt = (( float ) duration.count( )) * 0.000001f;
   cameraController->anim( dt );
-  _previusTime = currentTime;
+  _previousTime = currentTime;
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
   prog.use( );
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
 
-  for (auto i = -MAX; i <= MAX; i+= 5)
+  for (auto i = -MAX; i <= MAX; i+= STEP)
   {
-    for (auto j = -MAX; j <= MAX; j+= 5)
+    for (auto j = -MAX; j <= MAX; j+= STEP)
     {
-      for (auto k = -MAX; k <= MAX; k+= 5)
+      for (auto k = -MAX; k <= MAX; k+= STEP)
       {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;

@@ -72,7 +72,7 @@
               << oglVersion << std::endl;
 
 
-    std::string vsShader = (
+    const std::string vsShader = (
       "#version 430 core\n"
       "layout(location = 0) in vec3 position;\n"
       "uniform mat4 MVP;\n"
@@ -80,14 +80,16 @@
       " gl_Position = MVP * vec4(position, 1.0);\n"
       "}"
     );
-    std::string fsShader = (
+
+    const std::string fsShader = (
       "#version 430 core\n"
       "out vec4 fragColor;\n"
       "void main() {\n"
       " fragColor = vec4(1.0);\n"
       "}"
     );
-    std::string gsShader = (
+
+    const std::string gsShader = (
       "#version 430 core\n"
       "layout (points) in;\n"
       "layout (line_strip) out;\n"
