@@ -264,7 +264,7 @@ namespace reto
      * Class to manage lasso selection
      * @class Lasso
      */
-    class RETO_API Lasso
+    class Lasso
     {
 
       public:
