@@ -31,7 +31,7 @@
 namespace reto
 {
 
-  //! Class to control orbtial camera
+  //! Class to control orbital camera
   /*!
    * This class manage the movement, rotation, zoom and animation of free
    * camera
@@ -42,9 +42,10 @@ namespace reto
   public:
 
     RETO_API
-    FreeCameraController( Camera* camera_ = nullptr );
+    FreeCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
 
-    virtual ~FreeCameraController( void ) { };
+    RETO_API
+    virtual ~FreeCameraController( void );
 
     RETO_API
     void localTranslate( const Eigen::Vector3f& translation_ );

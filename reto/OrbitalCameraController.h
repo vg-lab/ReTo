@@ -41,12 +41,10 @@ namespace reto
 
   public:
     RETO_API
-    OrbitalCameraController( Camera* camera_ = nullptr );
+    OrbitalCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
     
     RETO_API
-    OrbitalCameraController( const std::string &zeqSession );
-
-    virtual ~OrbitalCameraController( void ) { };
+    virtual ~OrbitalCameraController( void );
 
     RETO_API
     void localTranslate( const Eigen::Vector3f& translation_ );
@@ -66,7 +64,7 @@ namespace reto
     Eigen::Vector3f position( void ) const;
 
   protected:
-
+    RETO_API
     void _conformSetViewMatrix( const Eigen::Vector3f& position_,
                                 const Eigen::Matrix3f& rotation_,
                                 float radius_ );

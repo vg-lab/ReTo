@@ -36,11 +36,8 @@ namespace reto
   public:
 
     RETO_API
-    AbstractCameraController( Camera* camera_ = nullptr );
+    AbstractCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
     
-    RETO_API
-    AbstractCameraController( const std::string &zeqSession );
-
     RETO_API
     virtual ~AbstractCameraController( void );
 

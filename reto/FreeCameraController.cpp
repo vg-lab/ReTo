@@ -26,10 +26,13 @@
 namespace reto
 {
 
-  FreeCameraController::FreeCameraController( Camera* camera_ )
-    : AbstractCameraController( camera_ )
+  FreeCameraController::FreeCameraController( Camera* camera_ , const std::string zeqSession )
+  : AbstractCameraController( camera_, zeqSession )
   {
+  }
 
+  FreeCameraController::~FreeCameraController()
+  {
   }
 
   void FreeCameraController::localTranslate(

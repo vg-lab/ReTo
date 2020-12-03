@@ -53,8 +53,10 @@ if ( LEXIS_FOUND )
 endif( )
 
 if( WIN32 )
-  configure_file("${PROJECT_SOURCE_DIR}/reto/ReToWinProps.rc.in" "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
-  set( RETO_SOURCES ${RETO_SOURCES} "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
+  if(NOT (${COMMON_LIBRARY_TYPE} MATCHES STATIC))
+    configure_file("${PROJECT_SOURCE_DIR}/reto/ReToWinProps.rc.in" "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
+    set( RETO_SOURCES ${RETO_SOURCES} "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
+  endif()
   
   if( MSVC )
     add_definitions( -DGLEW_STATIC )

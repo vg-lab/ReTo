@@ -15,7 +15,7 @@ BEGIN
       VALUE "InternalName", "ReTo"
       VALUE "LegalCopyright", "GNU Public License"
       VALUE "OriginalFilename", "libReTo.dll"
-      VALUE "ProductName", "Rendering Tools"
+      VALUE "ProductName", "Render auxiliary Tools"
       VALUE "ProductVersion", "@PROJECT_VERSION@"
     END
   END

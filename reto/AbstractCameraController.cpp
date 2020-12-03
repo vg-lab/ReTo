@@ -26,7 +26,7 @@
 namespace reto
 {
 
-  AbstractCameraController::AbstractCameraController( Camera* camera_ )
+  AbstractCameraController::AbstractCameraController( Camera* camera_, const std::string zeqSession )
     : _camera( camera_ )
     , _position( 0.0f, 0.0f, 0.0f )
     , _rotation( Eigen::Matrix3f::Identity( ))
@@ -38,11 +38,9 @@ namespace reto
   {
     if ( !_camera )
       _camera = new Camera( );
-  }
 
-  AbstractCameraController::AbstractCameraController( const std::string &zeqSession )
-  : AbstractCameraController( new Camera ( zeqSession ) )
-  {
+    if( !zeqSession.empty() )
+      _camera->setZeqSession( zeqSession );
   }
 
   AbstractCameraController::~AbstractCameraController( void )
