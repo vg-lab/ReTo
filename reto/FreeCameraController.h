@@ -51,6 +51,7 @@ namespace reto
     void localTranslate( const Eigen::Vector3f& translation_ );
 
   protected:
+    RETO_API
     void _conformSetViewMatrix( const Eigen::Vector3f& position_,
                                 const Eigen::Matrix3f& rotation_,
                                 float radius_ );
