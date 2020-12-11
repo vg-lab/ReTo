@@ -50,6 +50,7 @@ namespace reto
   public:
     RETO_API
     ShaderProgram(void);
+    
     RETO_API
     ~ShaderProgram( void );
 
@@ -61,6 +62,7 @@ namespace reto
      */
     RETO_API
     bool load( const std::string& vsFile, const std::string& fsFile );
+    
     /**
      * Method to load and add a vertex shader from file
      * @param file: Shader file source
@@ -68,6 +70,7 @@ namespace reto
      */
     RETO_API
     bool loadVertexShader( const std::string& file );
+    
     /**
      * Method to load and add a fragment shader from file
      * @param file: Shader file source
@@ -75,6 +78,7 @@ namespace reto
      */
     RETO_API
     bool loadFragmentShader( const std::string& file );
+    
 #ifdef RETO_GEOMETRY_SHADERS
     /**
      * Method to load and add a geometry shader from file
@@ -125,6 +129,7 @@ namespace reto
      */
     RETO_API
     bool loadVertexShaderFromText( const std::string& source );
+    
     /**
      * Method to load and add a fragment shader from text
      * @param source: Shader source
@@ -214,7 +219,7 @@ namespace reto
      * @param attr: Attribute name
      * @param index: Attribute index
      */
-    RETO_API
+    
     void bindAttribute( const std::string& attr, unsigned int index );
     /**
      * Method to catching an uniform value.
@@ -242,14 +247,14 @@ namespace reto
      * @return bool
      */
     RETO_API
-    bool isUniformCached( const std::string& unif );
+    bool isUniformCached( const std::string& unif ) const;
     /**
      * Method to check if attribute exist (only check in attribute cache)
      * @param attr: Attribute name
      * @return bool
      */
     RETO_API
-    bool isAttributeCached( const std::string& attr );
+    bool isAttributeCached( const std::string& attr ) const;
     /**
      * Method to catching an uniform buffer object
      * @param ubo: Uniform Buffer Object name
@@ -274,6 +279,7 @@ namespace reto
      */
     RETO_API
     int attribute( const std::string& _attr );
+    
     /**
      * Method to get a uniform index in cache
      * @param _unif: Uniform name
@@ -281,6 +287,7 @@ namespace reto
      */
     RETO_API
     int uniform( const std::string& _unif );
+    
     /**
      * Method to get a Uniform Buffer Object index in cache
      * @param ubo: Uniform Buffer Object name
@@ -288,6 +295,7 @@ namespace reto
      */
     RETO_API
     int ubo( const std::string& ubo );
+    
     /**
      * Method to get a subprogram index of a specific kind of shader
      *    in cache
@@ -297,6 +305,7 @@ namespace reto
      */
     RETO_API
     int subprogram( const std::string& name, int shaderType );
+    
     /**
      * Method to get a attribute index in cache
      * @param _attr: Attribute name
@@ -304,6 +313,7 @@ namespace reto
      */
     RETO_API
     int operator( )( const std::string& _attr );
+    
     /**
      * Method to get a uniform index in cache
      * @param _unif: Uniform name
@@ -319,6 +329,7 @@ namespace reto
      */
     RETO_API
     void sendUniformb( const std::string& uniform, bool val );
+    
     /**
      * Method to send an integer
      * @param uniform: Uniform name
@@ -326,6 +337,7 @@ namespace reto
      */
     RETO_API
     void sendUniformi( const std::string& uniform, int val );
+    
     /**
      * Method to send an unsigned integer
      * @param uniform: Uniform name
@@ -333,6 +345,7 @@ namespace reto
      */
     RETO_API
     void sendUniformu( const std::string& uniform, unsigned int val );
+    
     /**
      * Method to send a float
      * @param uniform: Uniform name
@@ -405,7 +418,7 @@ namespace reto
      */
     RETO_API
     void sendUniform2iv( const std::string& uniform,
-      const unsigned int* data );
+                         const unsigned int* data );
     /**
      * Method to send a ivec2
      * @param uniform: Uniform name
@@ -413,7 +426,7 @@ namespace reto
      */
     RETO_API
     void sendUniform2iv( const std::string& uniform,
-      const std::vector< unsigned int > & data );
+                         const std::vector< unsigned int > & data );
     /**
      * Method to send a ivec3
      * @param uniform: Uniform name
@@ -421,7 +434,7 @@ namespace reto
      */
     RETO_API
     void sendUniform3iv( const std::string& uniform,
-      const unsigned int* data );
+                         const unsigned int* data );
     /**
      * Method to send a ivec3
      * @param uniform: Uniform name
@@ -429,7 +442,8 @@ namespace reto
      */
     RETO_API
     void sendUniform3iv( const std::string& uniform,
-      const std::vector< unsigned int > & data );
+                         const std::vector< unsigned int > & data );
+    
     /**
      * Method to send a ivec4
      * @param uniform: Uniform name
@@ -437,7 +451,7 @@ namespace reto
      */
     RETO_API
     void sendUniform4iv( const std::string& uniform,
-      const unsigned int* data );
+                         const unsigned int* data );
     /**
      * Method to send a ivec4
      * @param uniform: Uniform name
@@ -445,7 +459,7 @@ namespace reto
      */
     RETO_API
     void sendUniform4iv( const std::string& uniform,
-      const std::vector< unsigned int > & data );
+                         const std::vector< unsigned int > & data );
     /**
      * Method to send a mat3
      * @param uniform: Uniform name
@@ -526,12 +540,14 @@ namespace reto
      */
     RETO_API
     unsigned int getPatchVertices( void );
+    
     /**
      * Method to get inner tesselation level.
      * @return Inner level
      */
     RETO_API
     float getInnerLevel( void );
+    
     /**
      * Method to get outer tesselation level.
      * @return Outer level
@@ -545,12 +561,14 @@ namespace reto
      */
     RETO_API
     void setPatchVertices( unsigned int numPatches );
+    
     /**
      * Method to set inner tesselation level.
      * @param level: Inner level
      */
     RETO_API
     void setInnerLevel( float level );
+    
     /**
      * Method to set outer tesselation level.
      * @param level: Outer level
@@ -565,12 +583,14 @@ namespace reto
      */
     RETO_API
     int getGeometryMaxOutput( void );
+    
     /**
      * Method to get max input geometry type.
      * @return int: Input geometry type
      */
     RETO_API
     int getGeometryInputType( void );
+    
     /**
      * Method to get output geometry type.
      * @return int: Output geometry type
@@ -584,12 +604,14 @@ namespace reto
      */
     RETO_API
     void setGeometryMaxOutput( unsigned int maxValue );
+    
     /**
      * Method to set input geometry type.
      * @param inputValue: Input geometry type
      */
     RETO_API
     void setGeometryInputType( unsigned int inputValue );
+    
     /**
      * Method to set output geometry type.
      * @param outputType: Output geometry type
@@ -603,6 +625,7 @@ namespace reto
      */
     RETO_API
     void create( void );
+    
     /**
      * Method to link program and check status
      */
@@ -610,7 +633,7 @@ namespace reto
     bool link( void );
 
     RETO_API
-    bool isLinked( void );
+    bool isLinked( void ) const;
 
     /**
      * Autocatching attributes and uniforms

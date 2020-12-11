@@ -60,7 +60,7 @@ int previousX;
 int previousY;
 
 // States.
-bool wireframe = true;
+bool wireframe = false;
 bool mouseDown = false;
 bool mouseScrolling = false;
 bool rotation = false;
@@ -68,9 +68,9 @@ bool translation = false;
 
 // Constants.
 
-const float mouseWheelFactor = 1.2f;
-const float rotationScale = 0.01f;
-const float translationScale = 0.2f;
+constexpr float mouseWheelFactor = 1.2f;
+constexpr float rotationScale = 0.01f;
+constexpr float translationScale = 0.2f;
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -136,16 +136,23 @@ reto::ShaderProgram prog, progPick;
 
 std::vector<MyCube*> cubes;
 
-int MAX = 25;
+constexpr int MAX = 25;
+constexpr int STEP = 5;
+
 void initOGL( void )
 {
   glEnable( GL_DEPTH_TEST );
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
   const auto path = std::getenv( "RETO_SHADERS_PATH" );
-  std::string shadersPath;
-  if ( path )
-    shadersPath = std::string( path ) + std::string( "/" );
+  if ( !path )
+  {
+    const std::string message("Error: RETO_SHADERS_PATH environment variable not found.");
+    std::cerr << message << std::endl;
+    throw std::runtime_error( message );
+  }
+
+  const auto shadersPath = std::string( path ) + std::string( "/" );
 
   prog.load( shadersPath + "color.vert", shadersPath + "color.frag" );
   prog.compileAndLink( );
@@ -160,11 +167,11 @@ void initOGL( void )
 
   glEnable( GL_CULL_FACE );
 
-  for (auto i = -MAX; i <= MAX; i+= 5)
+  for (auto i = -MAX; i <= MAX; i+= STEP)
   {
-    for (auto j = -MAX; j <= MAX; j+= 5)
+    for (auto j = -MAX; j <= MAX; j+= STEP)
     {
-      for (auto k = -MAX; k <= MAX; k+= 5)
+      for (auto k = -MAX; k <= MAX; k+= STEP)
       {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;

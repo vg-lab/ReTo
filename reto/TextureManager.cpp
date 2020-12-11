@@ -81,6 +81,21 @@ namespace reto {
   void Texture::resize( int, int ) {}
   void Texture::resize( int, int, void* ) {}
 
+  unsigned int Texture::handler( void ) const
+  {
+    return this->_handler;
+  }
+
+  unsigned int Texture::target( void ) const
+  {
+    return this->_target;
+  }
+
+  bool Texture::isLoaded( void ) const
+  {
+    return this->_loaded;
+  }
+
   Texture1D::Texture1D( const TextureConfig& options, void* data, unsigned int width )
     : Texture(options, GL_TEXTURE_1D)
     , _width( width )
@@ -151,14 +166,19 @@ namespace reto {
     this->configTexture( data );
     this->_loaded = true;
   }
+
   Texture2D::Texture2D( const TextureConfig& options, const std::string src )
     : Texture( options, GL_TEXTURE_2D )
     , _src ( src )
+    , _width {0}
+    , _height {0}
   {
   }
+
   Texture2D::~Texture2D( void )
   {
   }
+
   void Texture2D::configTexture( void* data )
   {
     glTexImage2D(
@@ -350,21 +370,26 @@ namespace reto {
                                     // Instantiated on first use.
     return instance;
   }
+
   void TextureManager::add( const std::string& alias, Texture* tex )
   {
     this->_textures[ alias ] = tex;
   }
+
   void TextureManager::remove( const std::string& alias )
   {
     this->_textures.erase( alias );
   }
+
   Texture* TextureManager::get( const std::string& alias )
   {
     return this->_textures[ alias ];
   }
+
   TextureManager::~TextureManager( )
   {
     for(auto& pair : this->_textures) delete pair.second;
     this->_textures.clear( );
   }
+
 };

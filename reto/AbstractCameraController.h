@@ -36,8 +36,8 @@ namespace reto
   public:
 
     RETO_API
-    AbstractCameraController( Camera* camera_ = nullptr );
-
+    AbstractCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
+    
     RETO_API
     virtual ~AbstractCameraController( void );
 
@@ -57,13 +57,13 @@ namespace reto
     void stopAnim( void );
 
     RETO_API
-    bool isAniming( void );
+    bool isAniming( void ) const;
 
     RETO_API
     virtual void position( const Eigen::Vector3f& position_ );
 
     RETO_API
-    virtual Eigen::Vector3f position( void );
+    virtual Eigen::Vector3f position( void ) const;
 
     RETO_API
     void rotation( const Eigen::Matrix3f& rotation_ );
@@ -72,13 +72,13 @@ namespace reto
     void rotation( const Eigen::Vector3f& rotationAngles_ );
 
     RETO_API
-    Eigen::Matrix3f rotation( void );
+    Eigen::Matrix3f rotation( void ) const;
 
     RETO_API
     void radius( float radius_ );
 
     RETO_API
-    float radius( void );
+    float radius( void ) const;
 
     RETO_API
     void translate( const Eigen::Vector3f& translation_ );

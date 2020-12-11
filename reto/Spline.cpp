@@ -26,12 +26,15 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+constexpr float DEG2RAD = static_cast<float>(M_PI) / 180.0f;
+
 namespace reto
 {
   Spline::Spline( const std::vector< Eigen::Vector3f >& points )
+  : _points{points}
+  , _currentdt{0.f}
+  , _olddt{0.f}
   {
-    this->_points = points;
-    this->_olddt = this->_currentdt = 0.0f;
   }
 
   Eigen::Vector3f Spline::evaluate( float dt )
@@ -83,6 +86,7 @@ namespace reto
   {
     return this->getTangent( this->_olddt, this->_currentdt );
   }
+
   Eigen::Vector3f Spline::getTangent( float dt0, float dt1 )
   {
     Eigen::Vector3f p1 = this->evaluate( dt0 );
@@ -91,6 +95,7 @@ namespace reto
     rem.normalize( );
     return rem;
   }
+
   float Spline::angleBetweenPoints( void )
   {
     return this->angleBetweenPoints( this->_olddt, this->_currentdt );
@@ -101,7 +106,7 @@ namespace reto
     Eigen::Vector3f p1 = this->evaluate( dt0 );
     Eigen::Vector3f p2 = this->evaluate( dt1 );
     float angle = atan2( p2( 2 ) - p1( 2 ), p2( 0 ) - p1( 0 ) );
-    return angle * M_PI / 180.0f;
+    return angle * DEG2RAD;
   }
 
   float Spline::_catmullRom( float p0, float p1, float p2, float p3, float t )

@@ -57,7 +57,7 @@ int previousX;
 int previousY;
 
 // States.
-bool wireframe = true;
+bool wireframe = false;
 bool mouseDown = false;
 bool mouseScrolling = false;
 bool rotation = false;
@@ -65,9 +65,9 @@ bool traslation = false;
 
 // Constants.
 
-const float mouseWheelFactor = 1.2f;
-const float rotationScale = 0.01f;
-const float traslationScale = 0.2f;
+constexpr float mouseWheelFactor = 1.2f;
+constexpr float rotationScale = 0.01f;
+constexpr float traslationScale = 0.2f;
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -85,9 +85,6 @@ std::string textureFile;
 
 int main( int argc, char** argv )
 {
-  initContext( argc, argv );
-  initOGL( );
-
   if ( argc < 2 )
   {
     std::cerr << "Error: A texture file must be provided." << std::endl;
@@ -95,6 +92,9 @@ int main( int argc, char** argv )
   }
 
   textureFile = std::string( argv[1] );
+
+  initContext( argc, argv );
+  initOGL( );
 
   mycube = new MyCube( 4.5f );
 
@@ -120,7 +120,7 @@ void initContext( int argc, char** argv )
   glewExperimental = GL_TRUE;
   GLenum err = glewInit( );
   if ( GLEW_OK != err ) {
-    std::cout << "Error: " << glewGetErrorString( err ) << std::endl;
+    std::cerr << "Error: " << glewGetErrorString( err ) << std::endl;
     exit ( -1 );
   }
   const GLubyte *oglVersion = glGetString( GL_VERSION );
@@ -143,9 +143,14 @@ void initOGL( void )
   glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 
   const auto path = std::getenv( "RETO_SHADERS_PATH" );
-  std::string shadersPath;
-  if ( path )
-    shadersPath = std::string( path ) + std::string( "/" );
+  if ( !path )
+  {
+    const std::string message("Error: RETO_SHADERS_PATH environment variable not found.");
+    std::cerr << message << std::endl;
+    throw std::runtime_error( message );
+  }
+
+  const auto shadersPath = std::string( path ) + std::string( "/" );
 
   prog.load( shadersPath + "texture.vert", shadersPath + "texture.frag" );
   prog.compileAndLink( );
@@ -154,23 +159,20 @@ void initOGL( void )
   glFrontFace( GL_CCW );
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
-
-  unsigned int texSize = 1024;
-  unsigned int *data = new unsigned int[texSize * texSize * 3];
+  constexpr unsigned int texSize = 1024;
+  unsigned char *data = new unsigned char[texSize * texSize * 3];
   unsigned int n = 0;
-  // Generate some checker board pattern
-  for (unsigned int yy = 0; yy < texSize; ++yy) {
-    for (unsigned int xx = 0; xx < texSize; ++xx) {
-      if ((xx + yy) / 4 % 4 == 1) {
-        data[n++] = 128;
-        data[n++] = 128;
-        data[n++] = 128;
-      }
-      else {
-        data[n++] = 255;
-        data[n++] = 255;
-        data[n++] = 255;
-      }
+  // Generate some checker board pattern, square is 8x8, colors are 255, 128 (white, gray)
+  for (unsigned int yy = 0; yy < texSize; ++yy)
+  {
+    const int value_y = (yy & 0x8) == 0;
+    for (unsigned int xx = 0; xx < texSize; ++xx)
+    {
+      const int value_x = (xx & 0x8) == 0;
+      const auto pix_value = static_cast<GLubyte>(255 - (value_y ^ value_x) * 128);
+      data[n++] = pix_value;
+      data[n++] = pix_value;
+      data[n++] = pix_value;
     }
   }
   /*short texSize = 64;
@@ -197,7 +199,10 @@ void initOGL( void )
 void destroy( void )
 {
 }
-#define MAX 25
+
+constexpr int MAX = 25;
+constexpr int STEP = 5;
+
 void renderFunc( void )
 {
   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -206,9 +211,10 @@ void renderFunc( void )
   prog.use( );
   prog.sendUniform4m("proj", camera->projectionMatrix( ));
   prog.sendUniform4m("view", camera->viewMatrix( ));
-  for (auto i = -MAX; i <= MAX; i+= 5) {
-    for (auto j = -MAX; j <= MAX; j+= 5) {
-      for (auto k = -MAX; k <= MAX; k+= 5) {
+  auto &manager = reto::TextureManager::getInstance( );
+  for (auto i = -MAX; i <= MAX; i+= STEP) {
+    for (auto j = -MAX; j <= MAX; j+= STEP) {
+      for (auto k = -MAX; k <= MAX; k+= STEP) {
         auto modelMat_ = Eigen::Matrix4f::Identity( );
         std::vector<float> _modelVecMat;
         _modelVecMat.resize(16);
@@ -235,11 +241,11 @@ void renderFunc( void )
 
         if ((i + j + k) / 4 % 4 == 1)
         {
-          reto::TextureManager::getInstance( ).get("procedural")->bind( 0 );
+          manager.get("procedural")->bind( 0 );
         }
         else
         {
-          reto::TextureManager::getInstance( ).get("gmrv")->bind( 0 );
+          manager.get("gmrv")->bind( 0 );
         }
 
         prog.sendUniform4m("model", _modelVecMat.data( ));

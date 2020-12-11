@@ -60,6 +60,7 @@ namespace reto
      */
     RETO_API
     ObjParser( void );
+    
     /**
      * Load new obj file
      * @param filename: Wavefront OBJ file route.

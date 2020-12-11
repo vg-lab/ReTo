@@ -54,22 +54,22 @@ namespace reto
 
   }
 
-  float KeyCamera::time( void )
+  float KeyCamera::time( void ) const
   {
     return _time;
   }
 
-  Eigen::Vector3f KeyCamera::position( void )
+  Eigen::Vector3f KeyCamera::position( void ) const
   {
     return _position;
   }
 
-  Eigen::Matrix3f KeyCamera::rotation( void )
+  Eigen::Matrix3f KeyCamera::rotation( void ) const
   {
     return _rotation;
   }
 
-  float KeyCamera::radius( void )
+  float KeyCamera::radius( void ) const
   {
     return _radius;
   }
@@ -200,27 +200,27 @@ namespace reto
     return ret.second;
   }
 
-  float CameraAnimation::startTime( void )
+  float CameraAnimation::startTime( void ) const
   {
     return _startTime;
   }
 
-  float CameraAnimation::endTime( void )
+  float CameraAnimation::endTime( void ) const
   {
     return _endTime;
   }
 
-  bool CameraAnimation::isPosAnimated( void )
+  bool CameraAnimation::isPosAnimated( void ) const
   {
     return _positionInterFunc;
   }
 
-  bool CameraAnimation::isRotAnimated( void )
+  bool CameraAnimation::isRotAnimated( void ) const
   {
     return _rotationInterFunc;
   }
 
-  bool CameraAnimation::isRadAnimated( void )
+  bool CameraAnimation::isRadAnimated( void ) const
   {
     return _radiusInterFunc;
   }

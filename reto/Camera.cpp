@@ -25,6 +25,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+constexpr float HALFDEG2RAD = static_cast<float>(M_PI) / 360.0f;
+
 namespace reto
 {
 
@@ -42,7 +44,7 @@ namespace reto
     , _subscriberThread( nullptr )
 #endif
   {
-    _fov = fov_ * ( M_PI / 360.0f );
+    _fov = fov_ * HALFDEG2RAD;
     _f = 1.0f / tan( _fov );
     _buildProjectionMatrix( );
     _viewMatrix = Eigen::Matrix4f::Identity( );
@@ -57,7 +59,7 @@ namespace reto
     , _enableZeqConnChanges( true )
     , _zeqConnection( false )
   {
-    _fov = fov_ * ( M_PI / 360.0f );
+    _fov = fov_ * HALFDEG2RAD;
     _f = 1.0f / tan( _fov );
     _buildProjectionMatrix( );
     _viewMatrix = Eigen::Matrix4f::Identity( );
@@ -183,7 +185,7 @@ namespace reto
 
   void Camera::_setFov( float fov_ )
   {
-    _fov = fov_ * ( M_PI / 360.0f );
+    _fov = fov_ * HALFDEG2RAD;
     _f = 1.0f / tan( _fov );
     _isProjMatClean = false;
   }

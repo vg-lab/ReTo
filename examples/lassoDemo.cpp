@@ -59,13 +59,13 @@ int previousX;
 int previousY;
 
 // States.
-bool wireframe = true;
+bool wireframe = false;
 int mouseButton = -1;
 
 // Constants.
-const float mouseWheelFactor = 1.2f;
-const float rotationScale = 0.01f;
-const float traslationScale = 0.2f;
+constexpr float mouseWheelFactor = 1.2f;
+constexpr float rotationScale = 0.01f;
+constexpr float traslationScale = 0.2f;
 
 void renderFunc( void );
 void resizeFunc( int width, int height );
@@ -88,8 +88,8 @@ unsigned int height = 500;
 
 //Cubes
 std::vector<MyCube*> cubes;
-int MAX = 25;
-int STEP = 5;
+constexpr int MAX = 25;
+constexpr int STEP = 5;
 
 int main( int argc, char** argv )
 {
@@ -97,15 +97,19 @@ int main( int argc, char** argv )
   initOGL( );
 
   camera = new reto::Camera( );
+
   orbitalCamera = new reto::OrbitalCameraController( camera );
 
   lasso = new reto::SelectionSystem::Lasso( width, height );
+
   lasso->setColor( Eigen::Vector4f( 0.0f, 0.5f, 1.0f, 0.5f ) );
+
   lasso->setLineWidth( 2.0f );
 
   createCubes( );
 
   glutMainLoop( );
+
   destroy( );
 
   return 0;
@@ -192,13 +196,12 @@ void initOGL( void )
   const auto path = std::getenv( "RETO_SHADERS_PATH" );
   if ( !path )
   {
-    throw std::runtime_error(
-      "Error: RETO_SHADERS_PATH environment variable not found." );
+    const std::string message("Error: RETO_SHADERS_PATH environment variable not found.");
+    std::cerr << message << std::endl;
+    throw std::runtime_error( message );
   }
 
-  std::string shadersPath;
-  if ( path )
-    shadersPath = std::string( path ) + std::string( "/" );
+  const auto shadersPath = std::string( path ) + std::string( "/" );
 
   prog.load( shadersPath + "colorUniform.vert",
     shadersPath + "colorUniform.frag" );

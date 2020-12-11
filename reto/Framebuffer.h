@@ -59,6 +59,7 @@ namespace reto
       /**
        * Quad destructor
        */
+      RETO_API
       ~Quad( void );
 
       /**
@@ -127,6 +128,7 @@ namespace reto
       /**
        * Framebuffer2D destructor
        */
+      RETO_API
       virtual ~Framebuffer2D( void );
 
       /**

@@ -172,9 +172,8 @@ namespace reto
      */
     RETO_API
     float* projectionViewMatrix( void );
-
+    
   protected:
-
     void _setFov( float fov_ );
 
     void _setRatio( float ratio_ );
@@ -222,12 +221,12 @@ namespace reto
     //! Bool to enable zeq changes in view matrix
     bool _enableZeqConnChanges;
 
-    //! State of the zeq connection: 1 activated, 0 desactivated
+    //! State of the zeq connection: 1 activated, 0 deactivated
     bool _zeqConnection;
 
 #ifdef RETO_USE_LEXIS
 
-    //! ZeroEQ session to sinchronize the camera with other apps
+    //! ZeroEQ session to synchronize the camera with other apps
     std::string _zeroeqSession;
 
     //! ZeroEQ publisher
@@ -238,6 +237,7 @@ namespace reto
 
     //! Thread that runs the ZeroEQ subscriber
     std::thread* _subscriberThread;
+    
 #endif
 
   };

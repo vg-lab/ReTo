@@ -78,28 +78,22 @@ namespace reto
      * @return GLuint
      */
     RETO_API
-    inline unsigned int handler( void ) const
-    {
-      return this->_handler;
-    }
+    unsigned int handler( void ) const;
+
     /**
      * Method to get texture target
      * @return GLuint
      */
     RETO_API
-    inline unsigned int target( void ) const
-    {
-      return this->_target;
-    }
+    unsigned int target( void ) const;
+
     /**
      * Method to check if texture was loaded
      * @return bool
      */
     RETO_API
-    inline bool isLoaded( void ) const
-    {
-      return this->_loaded;
-    }
+    bool isLoaded( void ) const;
+
     /**
      * Method to resize texture
      * @param w: New width
@@ -107,6 +101,7 @@ namespace reto
      */
     RETO_API
     virtual void resize( int w, int h );
+    
     /**
      * Method to resize texture
      * @param w: New width
@@ -144,11 +139,15 @@ namespace reto
   public:
     RETO_API
     Texture2D( const TextureConfig& options, unsigned int width, unsigned int height );
+    
     RETO_API
     Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height );
+    
     RETO_API
     Texture2D( const TextureConfig& options, const std::string src );
+
     virtual ~Texture2D( void );
+
     /**
      * Method to resize texture
      * @param w: New width
@@ -156,6 +155,7 @@ namespace reto
      */
     RETO_API
     virtual void resize( int w, int h);
+    
     /**
      * Method to resize texture
      * @param w: New width
@@ -184,8 +184,10 @@ namespace reto
   public:
     RETO_API
     Texture1D( const TextureConfig& options, void* data, unsigned int width );
+    
     RETO_API
     virtual ~Texture1D( void );
+
     /**
      * Method to update texture content
      * @param width: New width
@@ -199,6 +201,7 @@ namespace reto
     void configTexture( void* data = nullptr );
     virtual void load( void );
   };
+
   //! Class to manage 2D array textures
   class Texture2DArray: public Texture
   {
@@ -206,6 +209,7 @@ namespace reto
     RETO_API
     Texture2DArray( const TextureConfig& options, std::vector< void* > data,
       unsigned int width, unsigned int height );
+    
     RETO_API
     virtual ~Texture2DArray( void );
     //virtual void resize( int w, int h);
@@ -219,8 +223,10 @@ namespace reto
     RETO_API
     Texture3D( const TextureConfig& options, void* data, unsigned int width,
       unsigned int height, unsigned int depth );
+    
     RETO_API
     virtual ~Texture3D( void );
+
     /**
      * Method to update texture content
      * @param w: New width
@@ -230,6 +236,7 @@ namespace reto
      */
     RETO_API
     void update( int w, int h, int d, void* data );
+    
     //virtual void resize( int w, int h);
   protected:
     virtual void load( void );
@@ -240,6 +247,7 @@ namespace reto
   public:
     RETO_API
     static TextureManager& getInstance( void );
+    
     /**
      * Method to add new texture to TextureManager
      * @param alias: Texture alias
@@ -247,12 +255,14 @@ namespace reto
      */
     RETO_API
     void add( const std::string& alias, Texture* tex );
+    
     /**
      * Method to remove a texture from TextureManager
      * @param alias: Texture alias
      */
     RETO_API
     void remove( const std::string& alias );
+    
     /**
      * Method to get a texture from TextureManager
      * @param alias: Texture alias

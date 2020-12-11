@@ -52,8 +52,9 @@ if ( LEXIS_FOUND )
   set(RETO_LINK_LIBRARIES ${RETO_LINK_LIBRARIES} Lexis )
 endif( )
 
-#if( MSVC )
-#  add_definitions( -DGLEW_STATIC )
-#endif( MSVC )
+if( WIN32  )
+    configure_file("${PROJECT_SOURCE_DIR}/reto/ReToWinProps.rc.in" "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
+    set( RETO_SOURCES ${RETO_SOURCES} "${PROJECT_BINARY_DIR}/ReToWinProps.rc")
+endif( WIN32 )
 
 common_library( ReTo )

@@ -85,6 +85,7 @@ namespace reto
       /**
        * ClippingPlane destructor
        */
+      RETO_API
       ~ClippingPlane( void );
 
       /**
@@ -202,6 +203,7 @@ namespace reto
       /**
        * ClippingSystem destructor
        */
+      RETO_API
       ~ClippingSystem( void );
 
       /**

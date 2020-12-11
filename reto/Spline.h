@@ -42,6 +42,7 @@ namespace reto
        */
       RETO_API
       Spline( const std::vector< Eigen::Vector3f >& points );
+      
       /**
        * Evaluate the spline in a specific time.
        * @param dt Time to evaluate. Must be in [0, 1] interval.
@@ -49,12 +50,14 @@ namespace reto
        */
       RETO_API
       Eigen::Vector3f evaluate( float dt );
+      
       /**
        * Returns tangent vector in last time evaluate called.
        * @return Intepolated tangent in dt time.
        */
       RETO_API
       Eigen::Vector3f getTangent( void );
+      
       /**
        * Returns tangent vector between between two times given.
        * @param dt0 Last time
@@ -63,12 +66,14 @@ namespace reto
        */
       RETO_API
       Eigen::Vector3f getTangent( float dt0, float dt1 );
+      
       /**
        * Returns interpolated angle between last and current time.
        * @return angle (in radians).
        */
       RETO_API
       float angleBetweenPoints( void );
+      
       /**
        * Returns interpolated angle between last and current time.
        * @param dt0 Last time

@@ -38,17 +38,21 @@
 namespace reto
 {
   typedef std::pair<unsigned int, unsigned int> Point;
+
   class PickingSystem
   {
     public:
       RETO_API
       PickingSystem( );
+      
       /**
        * Reuse a ShaderProgram that lacks fragment shader
        * @param prog: ProgramShader*
        **/
       RETO_API
       PickingSystem( reto::ShaderProgram* prog );
+      
+      RETO_API
       virtual ~PickingSystem( );
 
       /**
@@ -57,12 +61,14 @@ namespace reto
        */
       RETO_API
       void AddObject( reto::Pickable * pickSystem );
+      
       /**
        * Method to remove a Pickable object
        * @param pickSystem: Pickable object
        */
       RETO_API
       void RemoveObject( reto::Pickable * pickSystem );
+      
       /**
        * Method to clear Pickable elements
        */
@@ -104,7 +110,6 @@ namespace reto
       RETO_API
       virtual void renderObjects( void );
 
-    //protected:
     public:
       reto::ShaderProgram* _program;
       std::set< reto::Pickable* > _objects;

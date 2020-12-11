@@ -33,6 +33,7 @@ namespace reto
   public:
     RETO_API
     Pickable( void );
+    
     RETO_API
     virtual ~Pickable ( void );
 
