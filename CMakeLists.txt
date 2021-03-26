@@ -85,6 +85,12 @@ common_find_package(ZeroEQ)
 common_find_package(Lexis)
 common_find_package(FreeImage)
 
+common_find_package(GLFW3 SYSTEM)
+
+if(GLFW3_FOUND)
+  list(APPEND RETO_DEPENDENT_LIBRARIES GLFW3)
+endif()
+
 list(APPEND RETO_DEPENDENT_LIBRARIES OpenGL GLEW Eigen3)
 
 if(GLUT_FOUND)

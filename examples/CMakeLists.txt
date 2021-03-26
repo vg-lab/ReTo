@@ -1,4 +1,3 @@
-if( RETO_WITH_EXAMPLES )
 
   include_directories(
     ${PROJECT_BINARY_DIR}/include
@@ -14,6 +13,12 @@ if( RETO_WITH_EXAMPLES )
   # configure_file(
   #   ${CMAKE_CURRENT_SOURCE_DIR}/glutExampleShaders.h.in
   #   ${CMAKE_CURRENT_BINARY_DIR}/glutExampleShaders.h )
+
+    set( RETODEMOCUBESGLFW_HEADERS MyCube.h )
+    set( RETODEMOCUBESGLFW_SOURCES MyCube.cpp demoCubesGLFW_.cpp )
+    set( RETODEMOCUBESGLFW_LINK_LIBRARIES ReTo ${GLFW_LIBRARIES} )
+    common_application( ReToDemoCubesGLFW NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCUBESGLFW_SOURCES} )
 
   if ( GLUT_FOUND )
 
@@ -100,4 +105,3 @@ if( RETO_WITH_EXAMPLES )
   install_files(share/ReTo/examples FILES ${RETO_EXAMPLES_FILES} COMPONENT
     examples )
 
-endif( )
