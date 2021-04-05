@@ -50,11 +50,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 reto::ShaderProgram prog;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow*, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+  // make sure the viewport matches the new window dimensions; note that width and 
+  // height will be significantly larger than specified on retina displays.
+  glViewport(0, 0, width, height);
 }
 
 MyCube* mycube;
@@ -87,7 +87,6 @@ constexpr int STEP = 25;
 
 void renderFunc( GLFWwindow* window )
 {
-
   auto currentTime = std::chrono::system_clock::now( );
   auto duration = std::chrono::duration_cast< std::chrono::microseconds >
     ( currentTime - _previousTime );

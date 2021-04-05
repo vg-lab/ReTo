@@ -10,16 +10,20 @@
     color.frag pick.frag colorUniform.frag
   )
 
-  # configure_file(
-  #   ${CMAKE_CURRENT_SOURCE_DIR}/glutExampleShaders.h.in
-  #   ${CMAKE_CURRENT_BINARY_DIR}/glutExampleShaders.h )
-
+  if ( GLFW3_FOUND )
     set( RETODEMOCUBESGLFW_HEADERS MyCube.h )
-    set( RETODEMOCUBESGLFW_SOURCES MyCube.cpp demoCubesGLFW_.cpp )
-    set( RETODEMOCUBESGLFW_LINK_LIBRARIES ReTo ${GLFW_LIBRARIES} )
+    set( RETODEMOCUBESGLFW_SOURCES MyCube.cpp demoCubesGLFW.cpp )
+    set( RETODEMOCUBESGLFW_LINK_LIBRARIES ReTo ${GLFW3_LIBRARIES} )
     common_application( ReToDemoCubesGLFW NOHELP )
     list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCUBESGLFW_SOURCES} )
 
+    set( RETODEMOCUBESGLFW2_HEADERS MyCube.h )
+    set( RETODEMOCUBESGLFW2_SOURCES MyCube.cpp demoCubesGLFW_.cpp )
+    set( RETODEMOCUBESGLFW2_LINK_LIBRARIES ReTo ${GLFW3_LIBRARIES} )
+    common_application( ReToDemoCubesGLFW2 NOHELP )
+    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCUBESGLFW2_SOURCES} )
+  endif( )
+  
   if ( GLUT_FOUND )
 
     set( RETODEMOCUBES_HEADERS MyCube.h )
