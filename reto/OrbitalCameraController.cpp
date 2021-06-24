@@ -25,16 +25,21 @@
 
 namespace reto
 {
+  OrbitalCameraController::OrbitalCameraController( Camera* camera_, const std::string zeqSession
+#ifdef RETO_USE_ZEROEQ
+      , std::shared_ptr<zeroeq::Subscriber> subscriber
+#endif
+      )
+  : AbstractCameraController( camera_, zeqSession
+#ifdef RETO_USE_ZEROEQ
+      , subscriber
+#endif
+      )
 
-  OrbitalCameraController::OrbitalCameraController( Camera* camera_, const std::string zeqSession )
-  : AbstractCameraController( camera_, zeqSession )
-  {
-
-  }
+  {}
 
   OrbitalCameraController::~OrbitalCameraController()
-  {
-  }
+  {}
 
   void OrbitalCameraController::localTranslate(
     const Eigen::Vector3f& translation_ )
@@ -66,5 +71,4 @@ namespace reto
   {
     return AbstractCameraController::position( );
   }
-
 }

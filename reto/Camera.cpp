@@ -29,7 +29,6 @@ constexpr float HALFDEG2RAD = static_cast<float>(M_PI) / 360.0f;
 
 namespace reto
 {
-
   Camera::Camera( float fov_, float ratio_, float nearPlane_, float farPlane_ )
     : _ratio( ratio_ )
     , _nearPlane( nearPlane_ )
@@ -37,9 +36,8 @@ namespace reto
     , _isProjMatClean( true )
     , _enableZeqConnChanges( true )
     , _zeqConnection( false )
-#ifdef RETO_USE_LEXIS
+#ifdef RETO_USE_ZEROEQ
     , _zeroeqSession( )
-    , _publisher( nullptr )
     , _subscriber( nullptr )
     , _subscriberThread( nullptr )
 #endif
@@ -48,81 +46,42 @@ namespace reto
     _f = 1.0f / tan( _fov );
     _buildProjectionMatrix( );
     _viewMatrix = Eigen::Matrix4f::Identity( );
+    _projectionViewMatrix = _projectionMatrix * _viewMatrix;
   }
 
-  Camera::Camera( const std::string& session_, float fov_, float ratio_,
-                  float nearPlane_, float farPlane_ )
-    : _ratio( ratio_ )
-    , _nearPlane( nearPlane_ )
-    , _farPlane( farPlane_ )
-    , _isProjMatClean( true )
-    , _enableZeqConnChanges( true )
-    , _zeqConnection( false )
+  Camera::Camera( const std::string& session_,
+#ifdef RETO_USE_ZEROEQ
+        std::shared_ptr<zeroeq::Subscriber> subscriber,
+#endif
+      float fov_, float ratio_, float nearPlane_, float farPlane_ )
+  : Camera(fov_, ratio_, nearPlane_, farPlane_)
   {
-    _fov = fov_ * HALFDEG2RAD;
-    _f = 1.0f / tan( _fov );
-    _buildProjectionMatrix( );
-    _viewMatrix = Eigen::Matrix4f::Identity( );
-    _projectionViewMatrix = _projectionMatrix * _viewMatrix;
-
-#ifdef RETO_USE_LEXIS
-    _zeqConnection = true;
-    _zeroeqSession = session_.empty( ) ? zeroeq::DEFAULT_SESSION : session_;
-
-    _publisher = new zeroeq::Publisher( _zeroeqSession );
-    _subscriber = new zeroeq::Subscriber( _zeroeqSession );
-
-    _subscriber->subscribe(
-        lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
-        [ & ]( const void* data, size_t size )
-        { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
-
-    _subscriberThread =
-        new std::thread( [&]() { while( true ) _subscriber->receive( 10000 );});
+#ifdef RETO_USE_ZEROEQ
+    initializeZeroEQ(session_, subscriber);
 #else
     std::cout << "Warning: Could establish connection " << session_
-              << " not slexis not supported" << std::endl;
+              << " Lexis/ZeroEQ not supported" << std::endl;
 #endif
   }
 
   Camera::~Camera( void )
   {
-#ifdef RETO_USE_LEXIS
-    if ( _subscriberThread )
-      _subscriberThread->std::thread::~thread();
-    if ( _publisher )
-      delete _publisher;
-    if ( _subscriber )
-      delete _subscriber;
+#ifdef RETO_USE_ZEROEQ
+    deinitializeZeroEQ();
 #endif
   }
 
-
-  void Camera::setZeqSession( const std::string& session_ )
+  void Camera::setZeqSession( const std::string& session_
+#ifdef RETO_USE_ZEROEQ
+        , const std::shared_ptr<zeroeq::Subscriber> subscriber
+#endif
+      )
   {
-#ifdef RETO_USE_LEXIS
-    _zeroeqSession = session_.empty( ) ? zeroeq::DEFAULT_SESSION : session_;
-
-    if ( _subscriberThread )
-      _subscriberThread->std::thread::~thread( );
-    if ( _publisher )
-      delete _publisher;
-    if ( _subscriber )
-      delete _subscriber;
-
-    _publisher = new zeroeq::Publisher( _zeroeqSession );
-    _subscriber = new zeroeq::Subscriber( _zeroeqSession );
-
-    _subscriber->subscribe(
-        lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
-        [ & ]( const void* data, size_t size )
-        { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
-
-    _subscriberThread =
-        new std::thread( [&]() { while( true ) _subscriber->receive( 10000 );});
+#ifdef RETO_USE_ZEROEQ
+    initializeZeroEQ( session_, subscriber );
 #else
     std::cout << "Warning: Could establish connection " << session_
-              << " not slexis not supported" << std::endl;
+              << " Lexis/ZeroEQ not supported" << std::endl;
 #endif
   }
 
@@ -239,7 +198,59 @@ namespace reto
       _projectionViewMatrix = _projectionMatrix * _viewMatrix;
     }
   }
+#endif
 
+#ifdef RETO_USE_ZEROEQ
+  void Camera::initializeZeroEQ(const std::string &session,
+                                std::shared_ptr<zeroeq::Subscriber> subscriber)
+  {
+    deinitializeZeroEQ();
+
+    _zeroeqSession = session.empty( ) ? zeroeq::DEFAULT_SESSION : session;
+    _zeqConnection = true;
+
+    if(_zeroeqSession.compare(zeroeq::NULL_SESSION) == 0)
+    {
+      if(subscriber)
+      {
+        _subscriber = subscriber;
+      }
+      else
+      {
+        // Can't get host or port, throw error.
+        const auto message = std::string("Invalid subscriber for ZeroEQ initialization. ") + __FILE__ + ":" + std::to_string(__LINE__);
+        throw std::runtime_error(message);
+      }
+    }
+    else
+    {
+      _subscriber = std::make_shared<zeroeq::Subscriber>( _zeroeqSession );
+    }
+
+#ifdef RETO_USE_LEXIS
+    _subscriber->subscribe(lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
+        [ & ]( const void* data, size_t size )
+        { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
+#endif
+
+    if(_zeroeqSession.compare(zeroeq::NULL_SESSION) != 0)
+    {
+      _subscriberThread = new std::thread( [&]()
+                          { while( true ) _subscriber->receive( 10000 ); });
+    }
+  }
+
+  void Camera::deinitializeZeroEQ()
+  {
+    if ( _subscriberThread )
+    {
+      _subscriberThread->std::thread::~thread( );
+      _subscriberThread = nullptr;
+    }
+
+    if ( _subscriber )
+      _subscriber = nullptr;
+  }
 #endif
 
 } // end namespace reto

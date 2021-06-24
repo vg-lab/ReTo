@@ -85,9 +85,13 @@ namespace reto
      * @param farPlan camera far plane
      */
     RETO_API
-    Camera( const std::string& session_, float fov_ = 45.0f,
-            float ratio_ = 16.0f/9, float nearPlane_ = 0.1f,
-            float farPlane_ = 10000.0f );
+    Camera( const std::string& session_,
+#ifdef RETO_USE_ZEROEQ
+        std::shared_ptr<zeroeq::Subscriber> subscriber,
+#endif
+        float fov_ = 45.0f,
+        float ratio_ = 16.0f/9, float nearPlane_ = 0.1f,
+        float farPlane_ = 10000.0f );
 
     /**
      * Default destructor
@@ -95,14 +99,17 @@ namespace reto
     RETO_API
     ~Camera( void );
 
-
     /**
      * Method to start or change the camera zeqSession
      @param session ZeroEq session to synchronize the camera with other
      * applications
      */
     RETO_API
-    void setZeqSession( const std::string& session_ );
+    void setZeqSession( const std::string& session_ = std::string()
+#ifdef RETO_USE_ZEROEQ
+        , const std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
+#endif
+        );
 
     /**
      * Method to obtain the near plane distance.
@@ -224,20 +231,21 @@ namespace reto
     //! State of the zeq connection: 1 activated, 0 deactivated
     bool _zeqConnection;
 
-#ifdef RETO_USE_LEXIS
+#ifdef RETO_USE_ZEROEQ
 
     //! ZeroEQ session to synchronize the camera with other apps
     std::string _zeroeqSession;
 
-    //! ZeroEQ publisher
-    zeroeq::Publisher* _publisher;
-
     //! ZeroEQ subscriber
-    zeroeq::Subscriber* _subscriber;
+    std::shared_ptr<zeroeq::Subscriber> _subscriber;
 
     //! Thread that runs the ZeroEQ subscriber
     std::thread* _subscriberThread;
-    
+  private:
+    void initializeZeroEQ(const std::string &session = std::string(),
+                          std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr);
+
+    void deinitializeZeroEQ();
 #endif
 
   };

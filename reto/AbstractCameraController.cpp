@@ -23,29 +23,34 @@
 
 #include "AbstractCameraController.h"
 
+template<class T> void ignore( const T& ) { }
+
 namespace reto
 {
-
-  AbstractCameraController::AbstractCameraController( Camera* camera_, const std::string zeqSession )
-    : _camera( camera_ )
-    , _position( 0.0f, 0.0f, 0.0f )
-    , _rotation( Eigen::Matrix3f::Identity( ))
-    , _radius( 1.0f )
-    , _isAniming( false )
-    , _currentAnimTime( 0.0f )
-    , _currentAnim( nullptr )
-    , _loopAnim( false )
+  AbstractCameraController::AbstractCameraController( Camera* camera_, const std::string session
+#ifdef RETO_USE_ZEROEQ
+      , std::shared_ptr<zeroeq::Subscriber> subscriber
+#endif
+      )
+  : _camera( camera_ )
+  , _position( 0.0f, 0.0f, 0.0f )
+  , _rotation( Eigen::Matrix3f::Identity( ))
+  , _radius( 1.0f )
+  , _isAniming( false )
+  , _currentAnimTime( 0.0f )
+  , _currentAnim( nullptr )
+  , _loopAnim( false )
   {
     if ( !_camera )
       _camera = new Camera( );
 
-    if( !zeqSession.empty() )
-      _camera->setZeqSession( zeqSession );
-  }
 
-  AbstractCameraController::~AbstractCameraController( void )
-  {
-
+#ifdef RETO_USE_ZEROEQ
+    const auto zeqSession = session.empty() ? zeroeq::DEFAULT_SESSION : session;
+    _camera->initializeZeroEQ( zeqSession, subscriber);
+#else
+    ignore(session);
+#endif
   }
 
   Camera* AbstractCameraController::camera( void )
@@ -58,7 +63,7 @@ namespace reto
     _conformSetViewMatrix( _position, _rotation, _radius );
   }
 
-  void AbstractCameraController::anim( float deltaTime_ )
+  void AbstractCameraController::anim( const float deltaTime_ )
   {
     if ( _isAniming && _currentAnim )
     {
