@@ -34,12 +34,16 @@ namespace reto
   class AbstractCameraController
   {
   public:
+    RETO_API
+    AbstractCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string()
+#ifdef RETO_USE_ZEROEQ
+        , std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
+#endif
+        );
 
     RETO_API
-    AbstractCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
-    
-    RETO_API
-    virtual ~AbstractCameraController( void );
+    virtual ~AbstractCameraController( void )
+    {};
 
     RETO_API
     Camera* camera( void );
@@ -48,7 +52,7 @@ namespace reto
     void update( void );
 
     RETO_API
-    void anim( float deltaTime_ = 1.0f / 60 );
+    void anim( const float deltaTime_ = 1.0f / 60 );
 
     RETO_API
     void startAnim( CameraAnimation* cameraAnimation_, bool loop_ = false );
@@ -122,7 +126,6 @@ namespace reto
     CameraAnimation* _currentAnim;
 
     bool _loopAnim;
-
   };
 
 }

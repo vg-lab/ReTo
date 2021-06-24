@@ -31,17 +31,26 @@
 namespace reto
 {
 
-  //! Class to control orbtial camera
-  /*!
+  /** \brief Class to control orbital camera
    * This class manage the movement, rotation, zoom and animation of orbital
    * camera
+   *
    */
   class OrbitalCameraController: public AbstractCameraController
   {
-
   public:
+      /** \brief OrbitalCameraController class constructor.
+       * \param[in] camera_ Camera object.
+       * \param[in] session ZeroEQ session name.
+       * \param[in] subscriber Only if ZeroEQ enabled. ZeroEQ subscriber for null session.
+       *
+       */
     RETO_API
-    OrbitalCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
+    OrbitalCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string()
+#ifdef RETO_USE_ZEROEQ
+        , std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
+#endif
+        );
     
     RETO_API
     virtual ~OrbitalCameraController( void );
@@ -68,7 +77,6 @@ namespace reto
     void _conformSetViewMatrix( const Eigen::Vector3f& position_,
                                 const Eigen::Matrix3f& rotation_,
                                 float radius_ );
-
   };
 }
 
