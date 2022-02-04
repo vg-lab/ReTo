@@ -208,23 +208,20 @@ namespace reto
 
     _zeroeqSession = session.empty( ) ? zeroeq::DEFAULT_SESSION : session;
     _zeqConnection = true;
+    _subscriber = subscriber;
+    bool useListener = false;
 
-    if(_zeroeqSession.compare(zeroeq::NULL_SESSION) == 0)
+    if(_zeroeqSession.compare(zeroeq::NULL_SESSION) == 0 && !_subscriber)
     {
-      if(subscriber)
-      {
-        _subscriber = subscriber;
-      }
-      else
-      {
-        // Can't get host or port, throw error.
-        const auto message = std::string("Invalid subscriber for ZeroEQ initialization. ") + __FILE__ + ":" + std::to_string(__LINE__);
-        throw std::runtime_error(message);
-      }
+      // Can't get host or port, throw error.
+      const auto message = std::string("Invalid subscriber for ZeroEQ initialization. ") + __FILE__ + ":" + std::to_string(__LINE__);
+      throw std::runtime_error(message);
     }
-    else
+
+    if(!_subscriber)
     {
       _subscriber = std::make_shared<zeroeq::Subscriber>( _zeroeqSession );
+      useListener = true;
     }
 
 #ifdef RETO_USE_LEXIS
@@ -233,10 +230,17 @@ namespace reto
         { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
 #endif
 
-    if(_zeroeqSession.compare(zeroeq::NULL_SESSION) != 0)
+    if(useListener)
     {
       _subscriberThread = new std::thread( [&]()
-                          { while( true ) _subscriber->receive( 10000 ); });
+                          { try
+                            {
+                              while( true ) _subscriber->receive( 10000 );
+                            }
+                            catch(const std::exception &e)
+                            {
+                              std::cerr << "ReTo Camera ZeroEQ exception: " << e.what() << std::endl;
+                            } });
     }
   }
 
