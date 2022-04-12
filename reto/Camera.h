@@ -62,7 +62,7 @@ namespace reto
   class Camera
   {
     friend class AbstractCameraController;
-    public:
+  public:
 
     /**
      * Camera constructor
@@ -73,7 +73,7 @@ namespace reto
      */
     RETO_API
     Camera( float fov_ = 45.0f, float ratio_ = 16.0f/9,
-            float nearPlane_ = 0.1f, float farPlane_ = 10000.0f );
+            float nearPlane_ = 10.0f, float farPlane_ = 10000.0f );
 
     /**
      * Camera constructor
@@ -87,11 +87,11 @@ namespace reto
     RETO_API
     Camera( const std::string& session_,
 #ifdef RETO_USE_ZEROEQ
-        std::shared_ptr<zeroeq::Subscriber> subscriber,
+      std::shared_ptr<zeroeq::Subscriber> subscriber,
 #endif
-        float fov_ = 45.0f,
-        float ratio_ = 16.0f/9, float nearPlane_ = 0.1f,
-        float farPlane_ = 10000.0f );
+            float fov_ = 45.0f,
+            float ratio_ = 16.0f/9, float nearPlane_ = 10.0f,
+            float farPlane_ = 10000.0f );
 
     /**
      * Default destructor
@@ -107,9 +107,9 @@ namespace reto
     RETO_API
     void setZeqSession( const std::string& session_ = std::string()
 #ifdef RETO_USE_ZEROEQ
-        , const std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
+      , const std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
 #endif
-        );
+                      );
 
     /**
      * Method to obtain the near plane distance.
@@ -179,7 +179,7 @@ namespace reto
      */
     RETO_API
     float* projectionViewMatrix( void );
-    
+
   protected:
     void _setFov( float fov_ );
 
@@ -199,7 +199,7 @@ namespace reto
 
     //! Factor to calculate the camera projection matrix based on the camera
     //! far plane, near plane, field of view and ratio
-    float _f;
+    float _fovTan;
 
     //! Camera fild of view
     float _fov;

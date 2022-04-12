@@ -31,18 +31,18 @@ Ubuntu:
  tags:
   - ubuntu
 
-OSX:
- stage: build
- script:
-  - date
-  - hostname
-  - uname -a
-  # - export CMAKE_EXTRA_TARGETS="test"
-  - export CMAKE_EXTRA_ARGS=-DGLUT_glut_LIBRARY=/usr/local/Cellar/freeglut/3.0.0/lib/libglut.dylib
-  - export BUILD_GENERATOR="Ninja"
-  - bash .gitlabci.sh
- tags:
-  - osx-sierra
+#OSX:
+# stage: build
+# script:
+#  - date
+#  - hostname
+#  - uname -a
+#  # - export CMAKE_EXTRA_TARGETS="test"
+#  - export CMAKE_EXTRA_ARGS=-DGLUT_glut_LIBRARY=/usr/local/Cellar/freeglut/3.0.0/lib/libglut.dylib
+#  - export BUILD_GENERATOR="Ninja"
+#  - bash .gitlabci.sh
+# tags:
+#  - osx-sierra
 
 Win7-Subproject-vs14:
  stage: build
