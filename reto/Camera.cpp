@@ -37,24 +37,25 @@ namespace reto
     , _enableZeqConnChanges( true )
     , _zeqConnection( false )
 #ifdef RETO_USE_ZEROEQ
-    , _zeroeqSession( )
+  , _zeroeqSession( )
     , _subscriber( nullptr )
     , _subscriberThread( nullptr )
 #endif
   {
     _fov = fov_ * HALFDEG2RAD;
-    _f = 1.0f / tan( _fov );
+    _fovTan = tan( _fov );
     _buildProjectionMatrix( );
     _viewMatrix = Eigen::Matrix4f::Identity( );
     _projectionViewMatrix = _projectionMatrix * _viewMatrix;
   }
 
-  Camera::Camera( const std::string& session_,
+  Camera::Camera( const std::string& session_ ,
 #ifdef RETO_USE_ZEROEQ
-        std::shared_ptr<zeroeq::Subscriber> subscriber,
+    std::shared_ptr<zeroeq::Subscriber> subscriber,
 #endif
-      float fov_, float ratio_, float nearPlane_, float farPlane_ )
-  : Camera(fov_, ratio_, nearPlane_, farPlane_)
+                  float fov_ , float ratio_ , float nearPlane_ ,
+                  float farPlane_ )
+    : Camera( fov_ , ratio_ , nearPlane_ , farPlane_ )
   {
 #ifdef RETO_USE_ZEROEQ
     initializeZeroEQ(session_, subscriber);
@@ -73,9 +74,9 @@ namespace reto
 
   void Camera::setZeqSession( const std::string& session_
 #ifdef RETO_USE_ZEROEQ
-        , const std::shared_ptr<zeroeq::Subscriber> subscriber
+    , const std::shared_ptr<zeroeq::Subscriber> subscriber
 #endif
-      )
+                            )
   {
 #ifdef RETO_USE_ZEROEQ
     initializeZeroEQ( session_, subscriber );
@@ -145,7 +146,7 @@ namespace reto
   void Camera::_setFov( float fov_ )
   {
     _fov = fov_ * HALFDEG2RAD;
-    _f = 1.0f / tan( _fov );
+    _fovTan = tan( _fov );
     _isProjMatClean = false;
   }
 
@@ -169,16 +170,15 @@ namespace reto
 
   void Camera::_buildProjectionMatrix( void )
   {
-    auto nf = 1.0f / ( _nearPlane - _farPlane );
-
     _projectionMatrix = Eigen::Matrix4f::Identity( );
-
-    _projectionMatrix( 0, 0 ) = _f / _ratio;
-    _projectionMatrix( 1, 1 ) = _f;
-    _projectionMatrix( 2, 2 ) = ( _farPlane + _nearPlane ) * nf;
-    _projectionMatrix( 2, 3 ) = ( 2.0f * _farPlane * _nearPlane ) * nf;
-    _projectionMatrix( 3, 2 ) = -1.0f;
-    _projectionMatrix( 3, 3 ) = 0.0f;
+    _projectionMatrix( 0 , 0 ) = 1 / ( _ratio * _fovTan );
+    _projectionMatrix( 1 , 1 ) = 1 / _fovTan;
+    _projectionMatrix( 2 , 2 ) =
+      -( _farPlane + _nearPlane ) / ( _farPlane - _nearPlane );
+    _projectionMatrix( 2 , 3 ) = -1;
+    _projectionMatrix( 3 , 2 ) =
+      -( 2 * _farPlane + _nearPlane ) / ( _farPlane - _nearPlane );
+    _projectionMatrix( 3 , 3 ) = 0;
   }
 
   void Camera::_setEnableZeqConnChanges( bool enableZeqConnChanges_ )
