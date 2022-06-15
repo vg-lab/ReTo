@@ -44,7 +44,6 @@ namespace reto
     if ( !_camera )
       _camera = new Camera( );
 
-
 #ifdef RETO_USE_ZEROEQ
     const auto zeqSession = session.empty() ? zeroeq::DEFAULT_SESSION : session;
     _camera->initializeZeroEQ( zeqSession, subscriber);
@@ -187,7 +186,7 @@ namespace reto
 
   void AbstractCameraController::windowSize( int width_, int height_ )
   {
-    _camera->_setRatio(((float)width_) / height_ );
+    _camera->_setRatio(static_cast<float>(width_) / height_ );
   }
 
   Eigen::Matrix3f AbstractCameraController::rotationMatrixFromAngles(
@@ -198,14 +197,12 @@ namespace reto
     Eigen::Matrix3f rPitch;
     Eigen::Matrix3f rRoll;
 
-    float sinYaw, cosYaw, sinPitch, cosPitch, sinRoll, cosRoll;
-
-    sinYaw = sin( rotationAngles_.x( ));
-    cosYaw = cos( rotationAngles_.x( ));
-    sinPitch = sin( rotationAngles_.y( ));
-    cosPitch = cos( rotationAngles_.y( ));
-    sinRoll = sin( rotationAngles_.z( ));
-    cosRoll = cos( rotationAngles_.z( ));
+    float sinYaw = sin( rotationAngles_.x( ));
+    float cosYaw = cos( rotationAngles_.x( ));
+    float sinPitch = sin( rotationAngles_.y( ));
+    float cosPitch = cos( rotationAngles_.y( ));
+    float sinRoll = sin( rotationAngles_.z( ));
+    float cosRoll = cos( rotationAngles_.z( ));
 
     rYaw << cosYaw, 0.0f, sinYaw,
       0.0f, 1.0f, 0.0f,

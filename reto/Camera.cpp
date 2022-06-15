@@ -29,15 +29,16 @@ constexpr float HALFDEG2RAD = static_cast<float>(M_PI) / 360.0f;
 
 namespace reto
 {
+  const std::string Camera::NO_ZEROEQ = "NO_ZEROEQ";
+
   Camera::Camera( float fov_, float ratio_, float nearPlane_, float farPlane_ )
     : _ratio( ratio_ )
     , _nearPlane( nearPlane_ )
     , _farPlane( farPlane_ )
     , _isProjMatClean( true )
     , _enableZeqConnChanges( true )
-    , _zeqConnection( false )
 #ifdef RETO_USE_ZEROEQ
-  , _zeroeqSession( )
+    , _zeroeqSession( )
     , _subscriber( nullptr )
     , _subscriberThread( nullptr )
 #endif
@@ -206,8 +207,10 @@ namespace reto
   {
     deinitializeZeroEQ();
 
+    if(session.compare(NO_ZEROEQ) == 0)
+      return;
+
     _zeroeqSession = session.empty( ) ? zeroeq::DEFAULT_SESSION : session;
-    _zeqConnection = true;
     _subscriber = subscriber;
     bool useListener = false;
 
@@ -224,11 +227,11 @@ namespace reto
       useListener = true;
     }
 
-#ifdef RETO_USE_LEXIS
+  #ifdef RETO_USE_LEXIS
     _subscriber->subscribe(lexis::render::LookOut::ZEROBUF_TYPE_IDENTIFIER( ),
         [ & ]( const void* data, size_t size )
         { _onCameraEvent( lexis::render::LookOut::create( data, size ));});
-#endif
+  #endif
 
     if(useListener)
     {
@@ -254,6 +257,7 @@ namespace reto
 
     if ( _subscriber )
       _subscriber = nullptr;
+
   }
 #endif
 

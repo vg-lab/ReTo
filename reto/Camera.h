@@ -64,6 +64,8 @@ namespace reto
     friend class AbstractCameraController;
   public:
 
+    static const std::string NO_ZEROEQ; /** use as session name to disable ZEROEQ */
+
     /**
      * Camera constructor
      * @param fov camera field of view
@@ -227,9 +229,6 @@ namespace reto
 
     //! Bool to enable zeq changes in view matrix
     bool _enableZeqConnChanges;
-
-    //! State of the zeq connection: 1 activated, 0 deactivated
-    bool _zeqConnection;
 
 #ifdef RETO_USE_ZEROEQ
 
