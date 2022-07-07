@@ -29,7 +29,7 @@ constexpr float HALFDEG2RAD = static_cast<float>(M_PI) / 360.0f;
 
 namespace reto
 {
-  constexpr char Camera::NO_ZEROEQ[];
+  const std::string Camera::NO_ZEROEQ = "NO_ZEROEQ";
 
   Camera::Camera( float fov_, float ratio_, float nearPlane_, float farPlane_ )
     : _ratio( ratio_ )
