@@ -64,7 +64,7 @@ namespace reto
     friend class AbstractCameraController;
   public:
 
-    static const std::string NO_ZEROEQ; /** use as session name to disable ZEROEQ */
+    static constexpr char NO_ZEROEQ[] = "NO_ZEROEQ"; /** use as session name to disable ZEROEQ */
 
     /**
      * Camera constructor
