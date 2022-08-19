@@ -271,7 +271,7 @@ namespace reto
 
   void ShaderProgram::_destroy( void )
   {
-    if(_program == -1U) return;
+    if(static_cast<int>(_program) == -1) return;
 
     _program = -1;
     _attrsList.clear( );
