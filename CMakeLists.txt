@@ -8,7 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
-project( ReTo VERSION 0.3.5 )
+project( ReTo VERSION 0.3.6 )
 set( ReTo_VERSION_ABI 5)
 
 # Disable in source building

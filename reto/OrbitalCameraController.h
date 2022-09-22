@@ -30,7 +30,6 @@
 
 namespace reto
 {
-
   /** \brief Class to control orbital camera
    * This class manage the movement, rotation, zoom and animation of orbital
    * camera

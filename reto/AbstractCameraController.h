@@ -24,82 +24,73 @@
 #ifndef __RETO_ABSTRACT_CAMERA_CONTROLLER__
 #define __RETO_ABSTRACT_CAMERA_CONTROLLER__
 
-#include "Camera.h"
-#include "CameraAnimation.h"
-
 #include <reto/api.h>
+#include <string>
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4251)
+#endif
+
+#include <Eigen/Dense>
+
+#ifdef RETO_USE_ZEROEQ
+#include <memory>
+#include <zeroeq/zeroeq.h>
+#endif
 
 namespace reto
 {
-  class AbstractCameraController
+  class Camera;
+  class CameraAnimation;
+
+  class RETO_API AbstractCameraController
   {
   public:
-    RETO_API
     AbstractCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string()
 #ifdef RETO_USE_ZEROEQ
         , std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
 #endif
         );
 
-    RETO_API
     virtual ~AbstractCameraController( void )
     {};
 
-    RETO_API
     Camera* camera( void );
 
-    RETO_API
     void update( void );
 
-    RETO_API
     void anim( const float deltaTime_ = 1.0f / 60 );
 
-    RETO_API
     void startAnim( CameraAnimation* cameraAnimation_, bool loop_ = false );
 
-    RETO_API
     void stopAnim( void );
 
-    RETO_API
     bool isAniming( void ) const;
 
-    RETO_API
     virtual void position( const Eigen::Vector3f& position_ );
 
-    RETO_API
     virtual Eigen::Vector3f position( void ) const;
 
-    RETO_API
     void rotation( const Eigen::Matrix3f& rotation_ );
 
-    RETO_API
     void rotation( const Eigen::Vector3f& rotationAngles_ );
 
-    RETO_API
     Eigen::Matrix3f rotation( void ) const;
 
-    RETO_API
     void radius( float radius_ );
 
-    RETO_API
     float radius( void ) const;
 
-    RETO_API
     void translate( const Eigen::Vector3f& translation_ );
 
-    RETO_API
     virtual void localTranslate( const Eigen::Vector3f& translation_ ) = 0;
 
-    RETO_API
     void rotate( const Eigen::Matrix3f& rotation_ );
 
-    RETO_API
     void rotate( const Eigen::Vector3f& rotationAngles_ );
 
-    RETO_API
     void windowSize( int width_, int height_ );
 
-    RETO_API
     Eigen::Matrix3f rotationMatrixFromAngles(
       const Eigen::Vector3f& rotationAngles_ );
 
@@ -127,8 +118,6 @@ namespace reto
 
     bool _loopAnim;
   };
-
 }
-
 
 #endif
