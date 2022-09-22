@@ -25,6 +25,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif
+
 constexpr float HALFDEG2RAD = static_cast<float>(M_PI) / 360.0f;
 
 namespace reto

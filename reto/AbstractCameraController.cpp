@@ -22,6 +22,8 @@
  */
 
 #include "AbstractCameraController.h"
+#include "Camera.h"
+#include "CameraAnimation.h"
 
 template<class T> void ignore( const T& ) { }
 

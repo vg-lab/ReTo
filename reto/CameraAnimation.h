@@ -31,7 +31,6 @@
 
 namespace reto
 {
-
   class KeyCamera
   {
 
