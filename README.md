@@ -1,8 +1,8 @@
 # ReTo - Render auxiliary Tools
-(c) 2016. GMRV / URJC
+(c) 2016. VG-Lab / URJC
 
-www.gmrv.es
-gmrv@gmrv.es
+www.vg-lab.es
+vg-lab@vg-lab.es
 
 ## Introduction
 
@@ -35,7 +35,7 @@ Yosemite and Windows 7/8 (Visual Studio 2013 Win64). The following steps
 should be enough to build it:
 
 ```bash
-git clone --recursive https://gitlab.gmrv.es/nsviz/ReTo.git
+git clone --recursive https://gitlab.vg-lab.es/nsviz/ReTo.git
 mkdir ReTo/build && cd ReTo/build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make
@@ -55,4 +55,4 @@ RETO_SHADERS_PATH=../examples/ bin/ReToTextureReader ../examples/gmrv_grande.png
 ## Documentation
 
 You can access the online API documentation generated from the source (using
-[Doxygen](http://doxygen.org/)) in https://gmrvvis.github.io/doc/ReTo/
+[Doxygen](http://doxygen.org/)) in https://vg-lab.github.io/doc/ReTo/

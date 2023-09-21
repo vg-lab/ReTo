@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2014-2017 GMRV/URJC.
+ * Copyright (c) 2014-2017 VG-Lab/URJC.
  *
  * Authors: Cristian Rodríguez Bernal <cristian.rodriguez@urjc.es>
  *          Juan Guerrero Martín <juan.guerrero@urjc.es>
  *
- * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
+ * This file is part of ReTo <https://gitlab.vg-lab.es/nsviz/ReTo>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 3.0 as published
@@ -192,7 +192,7 @@ void initOGL( void )
 
   reto::TextureConfig opts2;
   reto::TextureManager::getInstance( ).add(
-    "gmrv",
+    "vg-lab",
     new reto::Texture2D( opts2, textureFile ) );
 }
 
@@ -245,7 +245,7 @@ void renderFunc( void )
         }
         else
         {
-          manager.get("gmrv")->bind( 0 );
+          manager.get("vg-lab")->bind( 0 );
         }
 
         prog.sendUniform4m("model", _modelVecMat.data( ));

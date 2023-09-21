@@ -1,14 +1,14 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 #   ReTo
-#   2017 (c) GMRV / Universidad Rey Juan Carlos
-#   gmrv@gmrv.es
-#   www.gmrv.es
+#   2017 (c) VG-Lab / Universidad Rey Juan Carlos
+#   vg-lab@vg-lab.es
+#   www.vg-lab.es
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 cmake_minimum_required( VERSION 3.1 FATAL_ERROR )
-project( ReTo VERSION 0.3.6 )
+project( ReTo VERSION 0.3.7 )
 set( ReTo_VERSION_ABI 5)
 
 # Disable in source building
@@ -36,7 +36,7 @@ endif( )
 include(GitExternal)
 
 set( CMAKECOMMONTEMPLATE_DESCRIPTION "ReTo - Render Tools" )
-set( COMMON_PROJECT_DOMAIN gmrv.es )
+set( COMMON_PROJECT_DOMAIN vg-lab.es )
 
 
 option( RETO_WITH_EXAMPLES "RETO_WITH_EXAMPLES" ON )

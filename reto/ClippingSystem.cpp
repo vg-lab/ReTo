@@ -1,9 +1,9 @@
 /*
- * Copyright (c) 2014-2019 GMRV/URJC.
+ * Copyright (c) 2014-2019 VG-Lab/URJC.
  *
  * Authors: Gonzalo Bayo Martinez <gonzalo.bayo@urjc.es>
  *
- * This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
+ * This file is part of ReTo <https://gitlab.vg-lab.es/nsviz/ReTo>
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License version 3.0 as published
