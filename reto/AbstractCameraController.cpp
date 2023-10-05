@@ -25,6 +25,8 @@
 #include "Camera.h"
 #include "CameraAnimation.h"
 
+#include <cmath>
+
 template<class T> void ignore( const T& ) { }
 
 namespace reto
@@ -76,18 +78,25 @@ namespace reto
         else
         {
           _isAniming = false;
+          _currentAnimTime = _currentAnim->endTime( );
           _camera->_setEnableZeqConnChanges( true );
         }
       }
+
       auto keyCamera = _currentAnim->getKeyCamera( _currentAnimTime );
-      if ( _currentAnim->isPosAnimated( ))
-        _position = keyCamera->position( );
-      if ( _currentAnim->isRotAnimated( ))
-        _rotation = keyCamera->rotation( );
-      if ( _currentAnim->isRadAnimated( ))
-        _radius = keyCamera->radius( );
-      _conformSetViewMatrix( _position, _rotation,
-                             _radius );
+      if(keyCamera != nullptr)
+      {
+        if ( _currentAnim->isPosAnimated( ))
+          _position = keyCamera->position( );
+
+        if ( _currentAnim->isRotAnimated( ))
+          _rotation = keyCamera->rotation( );
+
+        if ( _currentAnim->isRadAnimated( ))
+          _radius = keyCamera->radius( );
+
+        _conformSetViewMatrix( _position, _rotation, _radius );
+      }
     }
   }
 
@@ -199,12 +208,12 @@ namespace reto
     Eigen::Matrix3f rPitch;
     Eigen::Matrix3f rRoll;
 
-    float sinYaw = sin( rotationAngles_.x( ));
-    float cosYaw = cos( rotationAngles_.x( ));
-    float sinPitch = sin( rotationAngles_.y( ));
-    float cosPitch = cos( rotationAngles_.y( ));
-    float sinRoll = sin( rotationAngles_.z( ));
-    float cosRoll = cos( rotationAngles_.z( ));
+    const float sinYaw = sinf( rotationAngles_.x());
+    const float cosYaw = cosf( rotationAngles_.x( ));
+    const float sinPitch = sinf( rotationAngles_.y( ));
+    const float cosPitch = cosf( rotationAngles_.y( ));
+    const float sinRoll = sinf( rotationAngles_.z( ));
+    const float cosRoll = cosf( rotationAngles_.z( ));
 
     rYaw << cosYaw, 0.0f, sinYaw,
       0.0f, 1.0f, 0.0f,

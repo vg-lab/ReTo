@@ -24,6 +24,7 @@
 #include "CameraAnimation.h"
 
 #include <iostream>
+#include <cmath>
 
 
 namespace reto
@@ -82,14 +83,12 @@ namespace reto
     Eigen::Matrix3f rPitch;
     Eigen::Matrix3f rRoll;
 
-    float sinYaw, cosYaw, sinPitch, cosPitch, sinRoll, cosRoll;
-
-    sinYaw = sin( rotationAngles_.x( ));
-    cosYaw = cos( rotationAngles_.x( ));
-    sinPitch = sin( rotationAngles_.y( ));
-    cosPitch = cos( rotationAngles_.y( ));
-    sinRoll = sin( rotationAngles_.z( ));
-    cosRoll = cos( rotationAngles_.z( ));
+    const float sinYaw = std::sin( rotationAngles_.x( ));
+    const float cosYaw = std::cos( rotationAngles_.x( ));
+    const float sinPitch = std::sin( rotationAngles_.y( ));
+    const float cosPitch = std::cos( rotationAngles_.y( ));
+    const float sinRoll = std::sin( rotationAngles_.z( ));
+    const float cosRoll = std::cos( rotationAngles_.z( ));
 
     rYaw << cosYaw, 0.0f, sinYaw,
       0.0f, 1.0f, 0.0f,
@@ -147,48 +146,62 @@ namespace reto
     _animation.clear( );
   }
 
-  KeyCamera* CameraAnimation::getKeyCamera( float currentTime_ )
+  std::shared_ptr<KeyCamera> CameraAnimation::getKeyCamera( float currentTime_ )
   {
     if ( _animation.empty( ))
       return nullptr;
+
     auto upper_bound = _animation.upper_bound( currentTime_ );
     if ( upper_bound == _animation.end( ))
     {
       upper_bound--;
-      return upper_bound->second;
+
+      const auto endKeyCamera = upper_bound->second;
+      return std::make_shared<KeyCamera>( currentTime_, endKeyCamera->position(),
+                                                        endKeyCamera->rotation(),
+                                                        endKeyCamera->radius());
     }
     else if ( upper_bound != _animation.begin( ))
     {
       auto lower_bound = upper_bound;
       lower_bound--;
-      float preTime = lower_bound->first;
+      const float preTime = lower_bound->first;
       KeyCamera* preKey = lower_bound->second;
-      float postTime = upper_bound->first;
+      const float postTime = upper_bound->first;
       KeyCamera* postKey = upper_bound->second;
 
-      float alpha = ( currentTime_ - preTime ) / ( postTime - preTime );
+      const float alpha = ( currentTime_ - preTime ) / ( postTime - preTime );
+
       auto position = preKey->position( );
       if ( _positionInterFunc )
         position = _positionInterFunc( preKey->position( ),
                                        postKey->position( ), alpha );
+
       auto rotation = preKey->rotation( );
       if ( _rotationInterFunc )
         rotation = _rotationInterFunc( preKey->rotation( ),
                                        postKey->rotation( ), alpha );
+
       auto radius = preKey->radius( );
       if ( _radiusInterFunc )
         radius = _radiusInterFunc( preKey->radius( ),
                                        postKey->radius( ), alpha );
-      return new KeyCamera( currentTime_, position, rotation, radius );
+
+      return std::make_shared<KeyCamera>( currentTime_, position, rotation, radius );
     }
-    return _animation.begin( )->second;
+
+    const auto currentKeyCamera = _animation.begin( )->second;
+    return std::make_shared<KeyCamera>( currentTime_, currentKeyCamera->position(),
+                                                      currentKeyCamera->rotation(),
+                                                      currentKeyCamera->radius());
   }
 
   bool CameraAnimation::addKeyCamera( KeyCamera* keyCamera_ )
   {
     if ( !keyCamera_ )
       return false;
-    float time = keyCamera_->time( );
+
+    const float time = keyCamera_->time( );
     std::pair< std::map< float , KeyCamera* >::iterator, bool > ret;
     ret = _animation.insert( std::pair< float, KeyCamera* >(
                                time, keyCamera_ ));
@@ -197,6 +210,7 @@ namespace reto
       _startTime = std::min( _startTime, time );
       _endTime = std::max( _endTime, time );
     }
+
     return ret.second;
   }
 
@@ -235,8 +249,8 @@ namespace reto
   Eigen::Matrix3f CameraAnimation::_linear(
     Eigen::Matrix3f start_, Eigen::Matrix3f end_, float alpha_ )
   {
-    auto qStart = Eigen::Quaternionf( start_ );
-    auto qEnd = Eigen::Quaternionf( end_ );
+    const auto qStart = Eigen::Quaternionf( start_ );
+    const auto qEnd = Eigen::Quaternionf( end_ );
     return qStart.slerp( alpha_, qEnd ).toRotationMatrix( );
   }
 

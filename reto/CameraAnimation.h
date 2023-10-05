@@ -26,6 +26,7 @@
 
 #include <Eigen/Dense>
 #include <map>
+#include <memory>
 
 #include <reto/api.h>
 
@@ -93,7 +94,7 @@ namespace reto
     ~CameraAnimation( void );
 
     RETO_API
-    KeyCamera* getKeyCamera( float currentTime_ );
+    std::shared_ptr<KeyCamera> getKeyCamera( float currentTime_ );
 
     RETO_API
     bool addKeyCamera( KeyCamera* keyCamera_ );
