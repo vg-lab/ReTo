@@ -273,7 +273,6 @@ namespace reto
   {
     if(static_cast<int>(_program) == -1) return;
 
-    _program = -1;
     _attrsList.clear( );
     _uniformList.clear( );
     _uboList.clear( );
@@ -291,6 +290,7 @@ namespace reto
       }
     }
     glDeleteProgram( _program );
+    _program = -1;
   }
 
   void ShaderProgram::create( void )

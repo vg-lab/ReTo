@@ -219,7 +219,7 @@ namespace reto
      * @param attr: Attribute name
      * @param index: Attribute index
      */
-    
+    RETO_API
     void bindAttribute( const std::string& attr, unsigned int index );
     /**
      * Method to catching an uniform value.
