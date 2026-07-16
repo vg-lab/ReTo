@@ -26,7 +26,7 @@
 
 #include "AbstractCameraController.h"
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 namespace reto
 {
@@ -41,17 +41,17 @@ namespace reto
 
   public:
 
-    RETO_API
+    RETO_EXPORT
     FreeCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string() );
 
-    RETO_API
+    RETO_EXPORT
     virtual ~FreeCameraController( void );
 
-    RETO_API
+    RETO_EXPORT
     void localTranslate( const Eigen::Vector3f& translation_ );
 
   protected:
-    RETO_API
+    RETO_EXPORT
     void _conformSetViewMatrix( const Eigen::Vector3f& position_,
                                 const Eigen::Matrix3f& rotation_,
                                 float radius_ );

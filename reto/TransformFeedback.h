@@ -33,7 +33,7 @@
 #endif
 
 //reto
-#include <reto/api.h>
+#include <reto/reto_export.h>
 #include "ShaderProgram.h"
 #include "Pickable.h"
 
@@ -55,7 +55,7 @@ namespace reto
        * @param varyings: transform feedback varying names
        * @param mode: transform feedback mode
        */
-      RETO_API
+      RETO_EXPORT
       TransformFeedback( const std::string& vertexCode,
         std::vector< const char* > varyings, int mode );
 
@@ -67,34 +67,34 @@ namespace reto
       /**
        * Method to draw transform feedback
        */
-      RETO_API
+      RETO_EXPORT
       void draw( void );
 
       /**
        * Method to add a pickable object
        * @param object: Pickable object
        */
-      RETO_API
+      RETO_EXPORT
       void addObject( reto::Pickable* object );
 
       /**
        * Method to remove a pickable object
        * @param object: Pickable object
        */
-      RETO_API
+      RETO_EXPORT
       void removeObject( reto::Pickable* object );
 
       /**
        * Method to get program handler
        * @return program handler.
        */
-      RETO_API
+      RETO_EXPORT
       reto::ShaderProgram* const& program( void ) const;
 
       /**
        * Method to clear transform feedback
        */
-      RETO_API
+      RETO_EXPORT
       void clear( void );
 
     private:

@@ -28,7 +28,7 @@
 #include <map>
 #include <memory>
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 namespace reto
 {
@@ -36,28 +36,28 @@ namespace reto
   {
 
   public:
-    RETO_API
+    RETO_EXPORT
     KeyCamera( float time_, const Eigen::Vector3f& position_,
                const Eigen::Matrix3f& rotation_,
                float radius_ = 0.0f );
 
-    RETO_API
+    RETO_EXPORT
     KeyCamera( float time_, const Eigen::Vector3f& position_,
                const Eigen::Vector3f& rotationAngles_, float radius_ = 0.0f );
 
-    RETO_API
+    RETO_EXPORT
     ~KeyCamera( void );
 
-    RETO_API
+    RETO_EXPORT
     float time( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     Eigen::Vector3f position( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     Eigen::Matrix3f rotation( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     float radius( void ) const;
 
   protected:
@@ -85,33 +85,33 @@ namespace reto
       LINEAR
     } TInterpolation;
 
-    RETO_API
+    RETO_EXPORT
     CameraAnimation( TInterpolation posInterpolation_ = LINEAR,
                      TInterpolation rotInterpolation_ = NONE,
                      TInterpolation radInterpolation_ = NONE );
 
-    RETO_API
+    RETO_EXPORT
     ~CameraAnimation( void );
 
-    RETO_API
+    RETO_EXPORT
     std::shared_ptr<KeyCamera> getKeyCamera( float currentTime_ );
 
-    RETO_API
+    RETO_EXPORT
     bool addKeyCamera( KeyCamera* keyCamera_ );
 
-    RETO_API
+    RETO_EXPORT
     float startTime( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     float endTime( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     bool isPosAnimated( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     bool isRotAnimated( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     bool isRadAnimated( void ) const;
 
   protected:

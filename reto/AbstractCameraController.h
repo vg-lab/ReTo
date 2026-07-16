@@ -24,7 +24,7 @@
 #ifndef __RETO_ABSTRACT_CAMERA_CONTROLLER__
 #define __RETO_ABSTRACT_CAMERA_CONTROLLER__
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 #include <string>
 
 #ifdef _MSC_VER
@@ -43,7 +43,7 @@ namespace reto
   class Camera;
   class CameraAnimation;
 
-  class RETO_API AbstractCameraController
+  class RETO_EXPORT AbstractCameraController
   {
   public:
     AbstractCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string()

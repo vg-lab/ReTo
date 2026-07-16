@@ -1,0 +1,15 @@
+@PACKAGE_INIT@
+
+# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/modules")
+
+include(CMakeFindDependencyMacro)
+find_dependency(Boost CONFIG COMPONENTS unit_test_framework)
+find_dependency(OpenGL)
+find_dependency(GLEW)
+find_dependency(Eigen3 NO_MODULE)
+find_dependency(GLUT)
+find_dependency(FreeImage)
+find_dependency(Lexis)
+find_dependency(ZeroEQ)
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME_LOWER@-targets.cmake")

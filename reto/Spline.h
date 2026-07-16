@@ -23,7 +23,7 @@
 #ifndef __RETO__SPLINE__
 #define __RETO__SPLINE__
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 #include <vector>
 #include <Eigen/Dense>
 
@@ -40,7 +40,7 @@ namespace reto
        * Create a new Spline object.
        * @param points Point list who define the spline.
        */
-      RETO_API
+      RETO_EXPORT
       Spline( const std::vector< Eigen::Vector3f >& points );
       
       /**
@@ -48,14 +48,14 @@ namespace reto
        * @param dt Time to evaluate. Must be in [0, 1] interval.
        * @return Interpolated position in dt time.
        */
-      RETO_API
+      RETO_EXPORT
       Eigen::Vector3f evaluate( float dt );
       
       /**
        * Returns tangent vector in last time evaluate called.
        * @return Intepolated tangent in dt time.
        */
-      RETO_API
+      RETO_EXPORT
       Eigen::Vector3f getTangent( void );
       
       /**
@@ -64,14 +64,14 @@ namespace reto
        * @param dt1 Current time
        * @return Interpolated tangent in position.
        */
-      RETO_API
+      RETO_EXPORT
       Eigen::Vector3f getTangent( float dt0, float dt1 );
       
       /**
        * Returns interpolated angle between last and current time.
        * @return angle (in radians).
        */
-      RETO_API
+      RETO_EXPORT
       float angleBetweenPoints( void );
       
       /**
@@ -80,7 +80,7 @@ namespace reto
        * @param dt1 Current time
        * @return angle (in radians).
        */
-      RETO_API
+      RETO_EXPORT
       float angleBetweenPoints( float dt0, float dt1 );
     protected:
       /**

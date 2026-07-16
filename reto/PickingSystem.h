@@ -33,7 +33,7 @@
 #include "Pickable.h"
 
 #include <tuple>
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 namespace reto
 {
@@ -42,37 +42,37 @@ namespace reto
   class PickingSystem
   {
     public:
-      RETO_API
+      RETO_EXPORT
       PickingSystem( );
       
       /**
        * Reuse a ShaderProgram that lacks fragment shader
        * @param prog: ProgramShader*
        **/
-      RETO_API
+      RETO_EXPORT
       PickingSystem( reto::ShaderProgram* prog );
       
-      RETO_API
+      RETO_EXPORT
       virtual ~PickingSystem( );
 
       /**
        * Method to add a Pickable object
        * @param pickSystem: Pickable object
        */
-      RETO_API
+      RETO_EXPORT
       void AddObject( reto::Pickable * pickSystem );
       
       /**
        * Method to remove a Pickable object
        * @param pickSystem: Pickable object
        */
-      RETO_API
+      RETO_EXPORT
       void RemoveObject( reto::Pickable * pickSystem );
       
       /**
        * Method to clear Pickable elements
        */
-      RETO_API
+      RETO_EXPORT
       void Clear( void );
 
       /**
@@ -80,7 +80,7 @@ namespace reto
        * @param point: Point (in OpenGL coordinates)
        * @return int: Indice that is visible
        */
-      RETO_API
+      RETO_EXPORT
       int click( Point point );
 
       /**
@@ -89,10 +89,10 @@ namespace reto
        * @param maxPoint: maxPoint (in OpenGL coordinates)
        * @return std::set<unsigned int> Indices that objects are visibles
        */
-      RETO_API
+      RETO_EXPORT
       std::set<unsigned int> area( Point minPoint, Point maxPoint );
 
-      RETO_API
+      RETO_EXPORT
       reto::ShaderProgram* const& program( ) const;
 
     protected:
@@ -100,14 +100,14 @@ namespace reto
        * This method is invoked in the constuctor after creating the program.
        * Override thist just like you want it ( Default: Cache model, view, proj and id)
        */
-      RETO_API
+      RETO_EXPORT
       virtual void init( void );
 
       /**
        * This method is invoked to render objects.
        * Override thist just like you want it (Default: Send id uniform)
        */
-      RETO_API
+      RETO_EXPORT
       virtual void renderObjects( void );
 
     public:

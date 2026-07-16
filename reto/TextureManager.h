@@ -23,7 +23,7 @@
 #ifndef __RETO__TEXTURE_MANAGER__
 #define __RETO__TEXTURE_MANAGER__
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 #ifndef __gl_h_
   #include <GL/glew.h>
@@ -56,7 +56,7 @@ namespace reto
   class Texture
   {
   public:
-    RETO_API
+    RETO_EXPORT
     virtual ~Texture( void ) = 0;
 
     /**
@@ -64,34 +64,34 @@ namespace reto
      * @param slot: Active texture. If value < 0, this method don't call
      *   glActiveTexture
      */
-    RETO_API
+    RETO_EXPORT
     void bind( int slot = -1 );
 
     /**
      * Method to unbind this texture
      */
-    RETO_API
+    RETO_EXPORT
     void unbind( void );
 
     /**
      * Method to get texture raw id
      * @return GLuint
      */
-    RETO_API
+    RETO_EXPORT
     unsigned int handler( void ) const;
 
     /**
      * Method to get texture target
      * @return GLuint
      */
-    RETO_API
+    RETO_EXPORT
     unsigned int target( void ) const;
 
     /**
      * Method to check if texture was loaded
      * @return bool
      */
-    RETO_API
+    RETO_EXPORT
     bool isLoaded( void ) const;
 
     /**
@@ -99,7 +99,7 @@ namespace reto
      * @param w: New width
      * @param h: New height
      */
-    RETO_API
+    RETO_EXPORT
     virtual void resize( int w, int h );
     
     /**
@@ -108,7 +108,7 @@ namespace reto
      * @param h: New height
      * @param data: New texture data
      */
-    RETO_API
+    RETO_EXPORT
     virtual void resize( int w, int h, void* data );
   protected:
     Texture( const TextureConfig& options, unsigned int type );
@@ -137,13 +137,13 @@ namespace reto
   class Texture2D: public Texture
   {
   public:
-    RETO_API
+    RETO_EXPORT
     Texture2D( const TextureConfig& options, unsigned int width, unsigned int height );
     
-    RETO_API
+    RETO_EXPORT
     Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height );
     
-    RETO_API
+    RETO_EXPORT
     Texture2D( const TextureConfig& options, const std::string src );
 
     virtual ~Texture2D( void );
@@ -153,7 +153,7 @@ namespace reto
      * @param w: New width
      * @param h: New height
      */
-    RETO_API
+    RETO_EXPORT
     virtual void resize( int w, int h);
     
     /**
@@ -162,7 +162,7 @@ namespace reto
      * @param h: New height
      * @param data: New texture data
      */
-    RETO_API
+    RETO_EXPORT
     virtual void resize( int w, int h, void* data );
   protected:
     void configTexture( void* data = nullptr );
@@ -182,10 +182,10 @@ namespace reto
   class Texture1D: public Texture
   {
   public:
-    RETO_API
+    RETO_EXPORT
     Texture1D( const TextureConfig& options, void* data, unsigned int width );
     
-    RETO_API
+    RETO_EXPORT
     virtual ~Texture1D( void );
 
     /**
@@ -193,7 +193,7 @@ namespace reto
      * @param width: New width
      * @param data: New texture data
      */
-    RETO_API
+    RETO_EXPORT
     void update(void* data, unsigned int width);
     //virtual void resize( int w, int h);
   protected:
@@ -206,11 +206,11 @@ namespace reto
   class Texture2DArray: public Texture
   {
   public:
-    RETO_API
+    RETO_EXPORT
     Texture2DArray( const TextureConfig& options, std::vector< void* > data,
       unsigned int width, unsigned int height );
     
-    RETO_API
+    RETO_EXPORT
     virtual ~Texture2DArray( void );
     //virtual void resize( int w, int h);
   protected:
@@ -220,11 +220,11 @@ namespace reto
   class Texture3D: public Texture
   {
   public:
-    RETO_API
+    RETO_EXPORT
     Texture3D( const TextureConfig& options, void* data, unsigned int width,
       unsigned int height, unsigned int depth );
     
-    RETO_API
+    RETO_EXPORT
     virtual ~Texture3D( void );
 
     /**
@@ -234,7 +234,7 @@ namespace reto
      * @param d: New depth
      * @param data: New texture data
      */
-    RETO_API
+    RETO_EXPORT
     void update( int w, int h, int d, void* data );
     
     //virtual void resize( int w, int h);
@@ -245,7 +245,7 @@ namespace reto
   class TextureManager
   {
   public:
-    RETO_API
+    RETO_EXPORT
     static TextureManager& getInstance( void );
     
     /**
@@ -253,14 +253,14 @@ namespace reto
      * @param alias: Texture alias
      * @param tex: Texture pointer
      */
-    RETO_API
+    RETO_EXPORT
     void add( const std::string& alias, Texture* tex );
     
     /**
      * Method to remove a texture from TextureManager
      * @param alias: Texture alias
      */
-    RETO_API
+    RETO_EXPORT
     void remove( const std::string& alias );
     
     /**
@@ -268,7 +268,7 @@ namespace reto
      * @param alias: Texture alias
      * @return Texture pointer
      */
-    RETO_API
+    RETO_EXPORT
     Texture* get( const std::string& alias );
   protected:
     TextureManager( void ) { }

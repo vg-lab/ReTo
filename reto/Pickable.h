@@ -23,7 +23,7 @@
 #ifndef __RETO__PICKABLE__
 #define __RETO__PICKABLE__
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 #include "ShaderProgram.h"
 
 namespace reto
@@ -31,10 +31,10 @@ namespace reto
   class Pickable
   {
   public:
-    RETO_API
+    RETO_EXPORT
     Pickable( void );
     
-    RETO_API
+    RETO_EXPORT
     virtual ~Pickable ( void );
 
     /**
@@ -42,31 +42,31 @@ namespace reto
      * @param currentOffset: Current offset
      * @return Updated current offset
      */
-    RETO_API
+    RETO_EXPORT
     virtual unsigned int sendId ( unsigned int currentOffset );
 
     /**
      * Method to render a Pickable object
      */
-    RETO_API
+    RETO_EXPORT
     virtual void render ( reto::ShaderProgram* ) = 0;
 
-    RETO_API
+    RETO_EXPORT
     virtual std::vector< float > getModel( void ) const = 0;
 
-    RETO_API
+    RETO_EXPORT
     virtual std::vector< float > getPositions( void ) const = 0;
 
-    RETO_API
+    RETO_EXPORT
     virtual bool getSelected( void ) const = 0;
 
-    RETO_API
+    RETO_EXPORT
     virtual void setSelected( const bool& selected ) = 0;
 
-    RETO_API
+    RETO_EXPORT
     int getId( void ) const;
 
-    RETO_API
+    RETO_EXPORT
     void setId( const int& id );
 
   protected:

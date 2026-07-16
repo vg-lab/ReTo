@@ -288,6 +288,10 @@ namespace reto
         for (auto v = 0; v < 3; ++v)
         {
           int addTo = m.indices[i+v];
+          if (addTo < 0 || static_cast<size_t>(addTo) >= tangents.size()) {
+            std::cerr << "Index out of bounds: " << addTo << " (tangents.size() = " << tangents.size() << ")\n";
+            continue; // or handle error
+          }
           for (auto j = 0; j < 3; ++j)
           {
             tangents[addTo][j] += tangent[j];

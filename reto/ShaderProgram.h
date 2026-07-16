@@ -40,7 +40,7 @@
   #include <functional>
 #endif
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 namespace reto
 {
@@ -48,10 +48,10 @@ namespace reto
   class ShaderProgram
   {
   public:
-    RETO_API
+    RETO_EXPORT
     ShaderProgram(void);
     
-    RETO_API
+    RETO_EXPORT
     ~ShaderProgram( void );
 
     /**
@@ -60,7 +60,7 @@ namespace reto
      * @param fsFile: Fragment shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool load( const std::string& vsFile, const std::string& fsFile );
     
     /**
@@ -68,7 +68,7 @@ namespace reto
      * @param file: Shader file source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadVertexShader( const std::string& file );
     
     /**
@@ -76,7 +76,7 @@ namespace reto
      * @param file: Shader file source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadFragmentShader( const std::string& file );
     
 #ifdef RETO_GEOMETRY_SHADERS
@@ -85,7 +85,7 @@ namespace reto
      * @param file: Shader file source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadGeometryShader( const std::string& file );
 #endif
 #ifdef RETO_TESSELATION_SHADERS
@@ -94,14 +94,14 @@ namespace reto
      * @param file: Shader file source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadTesselationEvaluationShader( const std::string& file );
     /**
      * Method to load and add a tesselation control shader from file
      * @param file: Shader file source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadTesselationControlShader( const std::string& file );
 #endif
 #ifdef RETO_COMPUTE_SHADERS
@@ -110,7 +110,7 @@ namespace reto
      * @param file: Shader file source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadComputeShader( const std::string& file );
 #endif
     /**
@@ -119,7 +119,7 @@ namespace reto
      * @param fsSource: Fragment shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadFromText( const std::string& vsSource,
                        const std::string& fsSource );
     /**
@@ -127,7 +127,7 @@ namespace reto
      * @param source: Shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadVertexShaderFromText( const std::string& source );
     
     /**
@@ -135,7 +135,7 @@ namespace reto
      * @param source: Shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadFragmentShaderFromText( const std::string& source );
 #ifdef RETO_GEOMETRY_SHADERS
     /**
@@ -143,7 +143,7 @@ namespace reto
      * @param source: Shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadGeometryShaderFromText( const std::string& source );
 #endif
 #ifdef RETO_TESSELATION_SHADERS
@@ -152,14 +152,14 @@ namespace reto
      * @param source: Shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadTesselationEvaluationShaderFromText( const std::string& source );
     /**
      * Method to load and add a tesselation control shader from text
      * @param source: Shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadTesselationControlShaderFromText( const std::string& source );
 #endif
 #ifdef RETO_COMPUTE_SHADERS
@@ -168,12 +168,12 @@ namespace reto
      * @param source: Shader source
      * @return Shader loaded
      */
-    RETO_API
+    RETO_EXPORT
     bool loadComputeShaderFromText( const std::string& source );
 #endif
 
 #ifdef RETO_TRANSFORM_FEEDBACK
-    RETO_API
+    RETO_EXPORT
     void feedbackVarying( const char** varyings, int num, int mode );
 #endif
 
@@ -181,64 +181,64 @@ namespace reto
      * Method to compile a program
      * @return If program compile and link OK
      */
-    RETO_API
+    RETO_EXPORT
     bool compileAndLink( void );
     /**
      * Method to get Program id
      * @return program identifier.
      */
-    RETO_API
+    RETO_EXPORT
     unsigned int program( void );
 
     /**
      * Method to enable a program
      */
-    RETO_API
+    RETO_EXPORT
     void use( void );
     /**
      * Method to disable a program (not necessary)
      */
-    RETO_API
+    RETO_EXPORT
     void unuse( void );
 
     /**
      * Method to catching an attribute value of a vertex shader
      * @param attr: Attribute name
      */
-    RETO_API
+    RETO_EXPORT
     void addAttribute( const std::string& attr );
 
     /**
      * Method to catching an array of attribute values of a vertex shader
      * @param attrs: Attribute vector names
      */
-    RETO_API
+    RETO_EXPORT
     void addAttributes( const std::vector<char*> attrs );
     /**
      * Method to bind a specific index to a attribute value
      * @param attr: Attribute name
      * @param index: Attribute index
      */
-    RETO_API
+    RETO_EXPORT
     void bindAttribute( const std::string& attr, unsigned int index );
     /**
      * Method to catching an uniform value.
      * @param unifs: Uniform name
      */
-    RETO_API
+    RETO_EXPORT
     void addUniform( const std::string& unifs );
     /**
      * Method to catching an array of uniform values.
      * @param uniforms: Uniform vector names
      */
-    RETO_API
+    RETO_EXPORT
     void addUniforms( const std::vector<char*> uniforms );
     /**
      * Method to bind a specific index to a uniform value
      * @param unif: Uniform name
      * @param index: Uniform index
      */
-    RETO_API
+    RETO_EXPORT
     void bindUniform( const std::string& unif, unsigned int index );
 
     /**
@@ -246,20 +246,20 @@ namespace reto
      * @param unif: Uniform name
      * @return bool
      */
-    RETO_API
+    RETO_EXPORT
     bool isUniformCached( const std::string& unif ) const;
     /**
      * Method to check if attribute exist (only check in attribute cache)
      * @param attr: Attribute name
      * @return bool
      */
-    RETO_API
+    RETO_EXPORT
     bool isAttributeCached( const std::string& attr ) const;
     /**
      * Method to catching an uniform buffer object
      * @param ubo: Uniform Buffer Object name
      */
-    RETO_API
+    RETO_EXPORT
     void addUbo( const std::string& ubo );
 
 #ifdef RETO_SUBPROGRAMS
@@ -268,7 +268,7 @@ namespace reto
      * @param name: Subprogram name
      * @param shaderType: OpenGL Shader type
      */
-    RETO_API
+    RETO_EXPORT
     void addSubroutine( const std::string& name, int shaderType );
 #endif
 
@@ -277,7 +277,7 @@ namespace reto
      * @param _attr: Attribute name
      * @return Attribute index
      */
-    RETO_API
+    RETO_EXPORT
     int attribute( const std::string& _attr );
     
     /**
@@ -285,7 +285,7 @@ namespace reto
      * @param _unif: Uniform name
      * @return Uniform index
      */
-    RETO_API
+    RETO_EXPORT
     int uniform( const std::string& _unif );
     
     /**
@@ -293,7 +293,7 @@ namespace reto
      * @param ubo: Uniform Buffer Object name
      * @return Uniform Buffer Object index
      */
-    RETO_API
+    RETO_EXPORT
     int ubo( const std::string& ubo );
     
     /**
@@ -303,7 +303,7 @@ namespace reto
      * @param shaderType: OpenGL Shader type
      * @return Subprogram index
      */
-    RETO_API
+    RETO_EXPORT
     int subprogram( const std::string& name, int shaderType );
     
     /**
@@ -311,7 +311,7 @@ namespace reto
      * @param _attr: Attribute name
      * @return Attribute index
      */
-    RETO_API
+    RETO_EXPORT
     int operator( )( const std::string& _attr );
     
     /**
@@ -319,7 +319,7 @@ namespace reto
      * @param _unif: Uniform name
      * @return Uniform index
      */
-    RETO_API
+    RETO_EXPORT
     int operator[]( const std::string& _unif );
 
     /**
@@ -327,7 +327,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param val: Boolean data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniformb( const std::string& uniform, bool val );
     
     /**
@@ -335,7 +335,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param val: Int data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniformi( const std::string& uniform, int val );
     
     /**
@@ -343,7 +343,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param val: Unsigned integer data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniformu( const std::string& uniform, unsigned int val );
     
     /**
@@ -351,7 +351,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param val: Float data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniformf( const std::string& uniform, float val );
 
     /**
@@ -361,14 +361,14 @@ namespace reto
      * @param y: Second element
      * @param z: Third element
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform( const std::string& uniform, float x, float y, float z );
     /**
      * Method to send a vec2
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform2v( const std::string& uniform,
                         const std::vector< float > & data );
     /**
@@ -376,7 +376,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform2v( const std::string& uniform,
                         const float* data );
     /**
@@ -384,7 +384,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform3v( const std::string& uniform,
                         const std::vector< float > & data );
     /**
@@ -392,7 +392,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform3v( const std::string& uniform,
                         const float* data );
     /**
@@ -400,7 +400,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform4v( const std::string& uniform,
                         const std::vector< float > & data );
     /**
@@ -408,7 +408,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform4v( const std::string& uniform,
                         const float* data );
     /**
@@ -416,7 +416,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform2iv( const std::string& uniform,
                          const unsigned int* data );
     /**
@@ -424,7 +424,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform2iv( const std::string& uniform,
                          const std::vector< unsigned int > & data );
     /**
@@ -432,7 +432,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform3iv( const std::string& uniform,
                          const unsigned int* data );
     /**
@@ -440,7 +440,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform3iv( const std::string& uniform,
                          const std::vector< unsigned int > & data );
     
@@ -449,7 +449,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform4iv( const std::string& uniform,
                          const unsigned int* data );
     /**
@@ -457,7 +457,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform4iv( const std::string& uniform,
                          const std::vector< unsigned int > & data );
     /**
@@ -465,7 +465,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform3m( const std::string& uniform,
                         const std::vector< float > & data );
     /**
@@ -473,7 +473,7 @@ namespace reto
      * @param uniform: Uniform name
      * @param data: Data
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform3m( const std::string& uniform,
                         const float* data );
     /**
@@ -483,7 +483,7 @@ namespace reto
      * @param inverse: Specifies whether to transpose
      *    the matrix as the values are loaded into the uniform variable
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform4m( const std::string& uniform,
                         const std::vector< float > & data,
                         bool inverse = false );
@@ -494,7 +494,7 @@ namespace reto
      * @param inverse: Specifies whether to transpose
      *    the matrix as the values are loaded into the uniform variable
      */
-    RETO_API
+    RETO_EXPORT
     void sendUniform4m( const std::string& uniform,
                         const float* data,
                         bool inverse = false );
@@ -505,7 +505,7 @@ namespace reto
      * @param name: Subprogram name
      * @param shaderType: OpenGL Shader type
      */
-    RETO_API
+    RETO_EXPORT
     void activeSubprogram( const std::string& name, int shaderType );
 #endif
 
@@ -515,7 +515,7 @@ namespace reto
      * @param renderFunc: Function callback
      * @return object is visible
      */
-    RETO_API
+    RETO_EXPORT
     bool occlusionQuery( std::function<void( )> renderFunc );
 #endif
 
@@ -529,7 +529,7 @@ namespace reto
      * @param numGroupZ: The number of work groups to be launched
      *                   in the Z dimension.
      */
-    RETO_API
+    RETO_EXPORT
     void launchComputeWork( unsigned int numGroupX, unsigned int numGroupY,
                             unsigned int numGroupZ );
 #endif
@@ -538,42 +538,42 @@ namespace reto
      * Method to get patch vertices.
      * @return Num of patches
      */
-    RETO_API
+    RETO_EXPORT
     unsigned int getPatchVertices( void );
     
     /**
      * Method to get inner tesselation level.
      * @return Inner level
      */
-    RETO_API
+    RETO_EXPORT
     float getInnerLevel( void );
     
     /**
      * Method to get outer tesselation level.
      * @return Outer level
      */
-    RETO_API
+    RETO_EXPORT
     float getOuterLevel( void );
 
     /**
      * Method to set patch vertices.
      * @param numPatches: Num of patches
      */
-    RETO_API
+    RETO_EXPORT
     void setPatchVertices( unsigned int numPatches );
     
     /**
      * Method to set inner tesselation level.
      * @param level: Inner level
      */
-    RETO_API
+    RETO_EXPORT
     void setInnerLevel( float level );
     
     /**
      * Method to set outer tesselation level.
      * @param level: Outer level
      */
-    RETO_API
+    RETO_EXPORT
     void setOuterLevel( float level );
 #endif
 #ifdef RETO_GEOMETRY_SHADERS
@@ -581,58 +581,58 @@ namespace reto
      * Method to get max output vertices.
      * @return int: Máx. num of vertices
      */
-    RETO_API
+    RETO_EXPORT
     int getGeometryMaxOutput( void );
     
     /**
      * Method to get max input geometry type.
      * @return int: Input geometry type
      */
-    RETO_API
+    RETO_EXPORT
     int getGeometryInputType( void );
     
     /**
      * Method to get output geometry type.
      * @return int: Output geometry type
      */
-    RETO_API
+    RETO_EXPORT
     int getGeometryOutputType( void );
 
     /**
      * Method to set max output vertices.
      * @param maxValue: Max. num of vertices
      */
-    RETO_API
+    RETO_EXPORT
     void setGeometryMaxOutput( unsigned int maxValue );
     
     /**
      * Method to set input geometry type.
      * @param inputValue: Input geometry type
      */
-    RETO_API
+    RETO_EXPORT
     void setGeometryInputType( unsigned int inputValue );
     
     /**
      * Method to set output geometry type.
      * @param outputType: Output geometry type
      */
-    RETO_API
+    RETO_EXPORT
     void setGeometryOutputType( unsigned int outputType );
 #endif
 
     /**
      * Method to create program and attach all shaders
      */
-    RETO_API
+    RETO_EXPORT
     void create( void );
     
     /**
      * Method to link program and check status
      */
-    RETO_API
+    RETO_EXPORT
     bool link( void );
 
-    RETO_API
+    RETO_EXPORT
     bool isLinked( void ) const;
 
     /**
@@ -640,7 +640,7 @@ namespace reto
      * @param attributes Autocatching attributes (default= true)
      * @param uniforms Autocatching attributes (default= true)
      */
-    RETO_API
+    RETO_EXPORT
     void autocatching( bool attributes = true, bool uniforms = true );
   protected:
     void _destroy( );

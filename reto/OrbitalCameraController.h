@@ -26,7 +26,7 @@
 
 #include "AbstractCameraController.h"
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 namespace reto
 {
@@ -44,35 +44,35 @@ namespace reto
        * \param[in] subscriber Only if ZeroEQ enabled. ZeroEQ subscriber for null session.
        *
        */
-    RETO_API
+    RETO_EXPORT
     OrbitalCameraController( Camera* camera_ = nullptr, const std::string zeqSession = std::string()
 #ifdef RETO_USE_ZEROEQ
         , std::shared_ptr<zeroeq::Subscriber> subscriber = nullptr
 #endif
         );
     
-    RETO_API
+    RETO_EXPORT
     virtual ~OrbitalCameraController( void );
 
-    RETO_API
+    RETO_EXPORT
     void localTranslate( const Eigen::Vector3f& translation_ );
 
     /**
      * Method to establish the pivot or orbital center for the camera.
      @param position_ new value to be assigned as pivot or orbital center.
      */
-    RETO_API
+    RETO_EXPORT
     void position( const Eigen::Vector3f& position_ );
 
     /**
      * Method to obtain the pivot or orbital center.
      * @return position of the pivot or orbital center.
      */
-    RETO_API
+    RETO_EXPORT
     Eigen::Vector3f position( void ) const;
 
   protected:
-    RETO_API
+    RETO_EXPORT
     void _conformSetViewMatrix( const Eigen::Vector3f& position_,
                                 const Eigen::Matrix3f& rotation_,
                                 float radius_ );

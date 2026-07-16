@@ -24,7 +24,7 @@
 #ifndef __RETO_CAMERA__
 #define __RETO_CAMERA__
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4251)
@@ -61,7 +61,7 @@ namespace reto
    * This class manage the camera: allows synchronize the camera with other
    * applications using of ZeroEQ
    */
-  class RETO_API Camera
+  class RETO_EXPORT Camera
   {
     friend class AbstractCameraController;
 

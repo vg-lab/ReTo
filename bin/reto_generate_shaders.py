@@ -1,31 +1,11 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-'''
-Copyright (c) 2014-2016 GMRV/URJC.
+#!/usr/bin/env python3
 
-Authors: Cristian Rodríguez Bernal
-
-This file is part of ReTo <https://gitlab.gmrv.es/nsviz/ReTo>
-
-This library is free software; you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License version 3.0 as published
-by the Free Software Foundation.
-
-This library is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this library; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-'''
-
-from optparse import OptionParser
-import sys, getopt
-import os, re, io
+import os
+import re
+import sys
+import argparse
 from string import Template
-from imp import reload
+from typing import List, Set
 
 nmtags = ""
 tmpl = """#ifndef $header
@@ -38,131 +18,115 @@ $nmbody_end
 #endif /* $header */
 """
 
-def first_lower(s):
-  if len(s) == 0:
-    return s
-  else:
-    return s[0].lower() + s[1:]
+set_vars: Set[str] = set()
 
-def rchop(str_, ending):
-  if str_.endswith(ending):
-    return str_[:-len(ending)]
-  return str_
 
-set_vars = set()
+def first_lower(s: str) -> str:
+    """Lowercase the first character of a string."""
+    return s[:1].lower() + s[1:] if s else s
 
-def recreateFile( path ):
-  list = []
-  for root, subdirectory, files in os.walk( path ):
-    for file in files:
-      list += read_file( root, file, path, False )
-  del list[-1]
-  set_vars.clear( )
-  return list
 
-def read_file( root, file, path, import_file ):
-  list = []
-  if not import_file and file[0] == "_":
-    return []
-  # Get parent directory name. "" if directory as path
-  var_name = os.path.relpath( os.path.join( root, file ), path ).replace( "\\", "_" )
-  # Remove ".glsl" and replace "." and " " to "_"
-  var_name = rchop( var_name, ".glsl" ).replace( ".", "_" ).replace( " ", "_ ")
-  content = []
+def rchop(s: str, ending: str) -> str:
+    """Remove 'ending' from string s if it ends with it."""
+    return s[:-len(ending)] if s.endswith(ending) else s
 
-  try:
-    f = io.open( os.path.join(root, file ), mode="r", encoding='utf-8' )
-    for line in f:
-      v = re.match(r'#include\(\"(.+?)\"\)', line)
-      if not v is None:
-        content += read_file( root, v.group(1), path, True )
-      else:
-        content.append( line.rstrip( '\n' ) )
-    f.close( )
-  except IOError as e:
-    print("'" + file + "' not found")
-    return []
 
-  content = ('\\n"\n  ' + nmtags + '"').join( content )
-  if not import_file:
-    var_name = first_lower( var_name )
-    if var_name in set_vars:
-      raise ValueError( var_name + " repeated ..." )
-      #print( var_name + " repeated ..." )
-      return []
-    set_vars.add( var_name )
-    list.append( nmtags + "const char* const " + var_name + " = " )
-    list.append( '"' + content + '";' )
-    list.append( "\n\n" )
-  else:
-    list.append( content + "\\n" )
-  return list
+def recreate_file(path: str) -> List[str]:
+    """Recursively read all files in the directory tree rooted at 'path'."""
+    result = []
+    for root, _, files in os.walk(path):
+        for file in files:
+            result += read_file(root, file, path, False)
+    if result:
+        result.pop()  # Remove last element
+    set_vars.clear()
+    return result
 
-def parse_cli( ):
-  parser = OptionParser( )
-  parser.add_option("-d", "--declaration", dest="declaration",
-                    help="Header declaration (without H)")
-  parser.add_option("-n", "--namespace", dest="namespace",
-                    help="header namespace")
-  parser.add_option("-r", "--route",  dest="route", default=".",
-                    help="sources directory")
-  parser.add_option("-f", "--file",  dest="fileOutput", default="exit.h",
-                    help="file output")
 
-  ( options, args ) = parser.parse_args( )
-  defaults = vars( parser.get_default_values( ) )
-  optionsdict = vars( options )
+def read_file(root: str, file: str, path: str, import_file: bool) -> List[str]:
+    """Read a file, process includes, and return lines for output."""
+    global nmtags
+    if not import_file and file.startswith("_"):
+        return []
 
-  all_none = False
-  for k, v in optionsdict.items( ):
-    if v is None and defaults.get( k ) is None:
-      print (k + " undefined")
-      all_none = True
+    var_name = os.path.relpath(os.path.join(root, file), path).replace("\\", "_")
+    var_name = rchop(var_name, ".glsl").replace(".", "_").replace(" ", "_")
+    content = []
 
-  if all_none:
-    print( 'python reto_generate_shaders.py -r "route" -n "namespace"  '\
-           '-d "RETO" -f "file.h"' )
-    parser.print_help( )
-    sys.exit( )
-  return optionsdict
+    try:
+        with open(os.path.join(root, file), encoding='utf-8') as f:
+            for line in f:
+                v = re.match(r'#include\(\"(.+?)\"\)', line)
+                if v:
+                    content += read_file(root, v.group(1), path, True)
+                else:
+                    content.append(line.rstrip('\n'))
+    except IOError:
+        print(f"'{file}' not found")
+        return []
+
+    content_str = ('\\n"\n  ' + nmtags + '"').join(content)
+    if not import_file:
+        var_name = first_lower(var_name)
+        if var_name in set_vars:
+            raise ValueError(f"{var_name} repeated ...")
+        set_vars.add(var_name)
+        return [
+            nmtags + f"const char* const {var_name} = ",
+            '"' + content_str + '";',
+            "\n\n"
+        ]
+    else:
+        return [content_str + "\\n"]
+
+
+def parse_cli() -> dict:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Generate C++ header from GLSL sources.")
+    parser.add_argument("-d", "--declaration", required=True, help="Header declaration (without H)")
+    parser.add_argument("-n", "--namespace", required=True, help="Header namespace")
+    parser.add_argument("-r", "--route", default=".", help="Sources directory")
+    parser.add_argument("-f", "--file", dest="file_output", default="exit.h", help="Output file")
+    args = parser.parse_args()
+    return vars(args)
+
+
+def main():
+    global nmtags
+
+    opts = parse_cli()
+    src = Template(tmpl)
+
+    namespaces = opts["namespace"].split("::")
+    nmbody_begin = ""
+    nmbody_end = ""
+    for namespace in namespaces:
+        nmbody_begin += nmtags + f"namespace {namespace}\n" + nmtags + "{\n"
+        nmbody_end = nmtags + "}\n" + nmbody_end
+        nmtags += "  "
+
+    lines = recreate_file(opts["route"])
+    str_ = ''.join(str(x) for x in lines)
+    header = opts["declaration"] + "_H"
+
+    d = {
+        "tmpl": str_,
+        "nmbody_begin": nmbody_begin,
+        "nmbody_end": nmbody_end,
+        "header": header.upper()
+    }
+    code = src.substitute(d)
+
+    if os.path.exists(opts["file_output"]):
+        try:
+            os.remove(opts["file_output"])
+        except OSError as e:
+            print(f"Error: {e.filename} - {e.strerror}")
+
+    with open(opts["file_output"], "w", encoding='utf-8') as file:
+        file.write("// File generated by reto_generate_shaders.py. Do not edit.\n")
+        file.write(code)
+
 
 if __name__ == "__main__":
-  if sys.version[0] == '2':
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-
-  opts = parse_cli( )
-  src = Template( tmpl )
-
-  namespaces = opts["namespace"].split( "::" )
-  nmbody_begin = ""
-  nmbody_end = ""
-  for namespace in namespaces:
-    nmbody_begin += nmtags + "namespace " + namespace + "\n" + nmtags + "{\n"
-    nmbody_end = nmtags + "}\n" + nmbody_end
-    nmtags += "  "
-
-  list = recreateFile( opts["route"] )
-
-  str_ = ''.join(str(x) for x in list)
-
-  header = opts["declaration"] + "_H"
-
-  d = {
-    "tmpl": str_,
-    "nmbody_begin": nmbody_begin,
-    "nmbody_end": nmbody_end,
-    "header" : header.upper( )
-  }
-  code = src.substitute( d )
-
-  if os.path.exists( opts["fileOutput"] ):
-    try:
-      os.remove( opts["fileOutput"] )
-    except e:
-      print ("Error: %s - %s." % ( e.filename, e.strerror) )
-
-  file = io.open(opts["fileOutput"], mode="w",  encoding='utf-8')
-  file.write( u"// File generated by reto_generate_shaders.py. Do not edit.\n" )
-  file.write( u"{0}".format(code) )
-  file.close( )
+    main()

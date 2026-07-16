@@ -1,103 +1,150 @@
-if( RETO_WITH_EXAMPLES )
+if(RETO_WITH_EXAMPLES)
 
-  include_directories(
-    ${PROJECT_BINARY_DIR}/include
-    ${PROJECT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-  )
+  # Function to create and install an example application
+  function(add_project_example)
+    set(options)
+    set(oneValueArgs TARGET_NAME)
+    set(multiValueArgs SOURCES LINK_LIBRARIES)
+    cmake_parse_arguments(PARSE_ARGV 0 ARG "${options}" "${oneValueArgs}" "${multiValueArgs}")
 
-  list( APPEND RETO_EXAMPLES_FILES
+    if(NOT ARG_TARGET_NAME OR NOT ARG_SOURCES)
+      message(FATAL_ERROR "TARGET_NAME and SOURCES are required arguments")
+    endif()
+
+    add_executable(${ARG_TARGET_NAME} ${ARG_SOURCES})
+    target_link_libraries(${ARG_TARGET_NAME} PRIVATE ${PROJECT_NAME} ${ARG_LINK_LIBRARIES})
+
+    # Get current parent scope value and create a local copy
+    set(PROJECT_EXAMPLES_FILES_VAR "${${PROJECT_NAME}_EXAMPLES_FILES}")
+    set(current_examples ${PROJECT_EXAMPLES_FILES_VAR})
+    
+    # Convert to CMake list and append new sources
+    list(APPEND current_examples ${ARG_SOURCES})
+    
+    # Remove duplicates and update parent scope
+    list(REMOVE_DUPLICATES current_examples)
+    set(${PROJECT_NAME}_EXAMPLES_FILES "${current_examples}" PARENT_SCOPE)
+
+    # Create all examples target
+    if(NOT TARGET ${PROJECT_NAME}_all_examples)
+      add_custom_target(${PROJECT_NAME}_all_examples)
+    endif()
+
+    # Add example to global examples target
+    add_dependencies(${PROJECT_NAME}_all_examples ${ARG_TARGET_NAME})
+  endfunction()
+
+  # Examples files
+  list(APPEND RETO_EXAMPLES_FILES
     color.vert pick.vert colorUniform.vert
     color.frag pick.frag colorUniform.frag
   )
 
-  # configure_file(
-  #   ${CMAKE_CURRENT_SOURCE_DIR}/glutExampleShaders.h.in
-  #   ${CMAKE_CURRENT_BINARY_DIR}/glutExampleShaders.h )
+  # ReToFileReader
+  add_project_example(
+    TARGET_NAME ReToFileReader
+    SOURCES 
+      MyCube.cpp
+      fileReader.cpp
+  )
 
-  if ( GLUT_FOUND )
+  # ReToSplineDemo
+  add_project_example(
+    TARGET_NAME ReToSplineDemo
+    SOURCES 
+      MyCube.cpp
+      splineExample.cpp
+  )
 
-    set( RETODEMOCUBES_HEADERS MyCube.h )
-    set( RETODEMOCUBES_SOURCES MyCube.cpp demoCubes.cpp )
-    set( RETODEMOCUBES_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoCubes NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCUBES_SOURCES} )
+  if(RETO_USE_GLUT)
+    # ReToDemoCubes
+    add_project_example(
+      TARGET_NAME ReToDemoCubes
+      SOURCES 
+        MyCube.cpp
+        demoCubes.cpp
+    )
 
+    # ReToTextureReader
+    add_project_example(
+      TARGET_NAME ReToTextureReader
+      SOURCES 
+        MyCube.cpp
+        textureReader.cpp
+    )
 
-    if (RETO_USE_FREEIMAGE)
-      set( RETOTEXTUREREADER_HEADERS MyCube.h )
-      set( RETOTEXTUREREADER_SOURCES MyCube.cpp textureReader.cpp )
-      set( RETOTEXTUREREADER_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-      common_application( ReToTextureReader NOHELP )
-      list( APPEND RETO_EXAMPLES_FILES ${RETOTEXTUREREADER_SOURCES} )
-    endif( )
+    # ReToShaderProgram
+    add_project_example(
+      TARGET_NAME ReToShaderProgram
+      SOURCES 
+        MyCube.cpp
+        shaderProgram.cpp
+    )
 
-    set( RETOSHADERPROGRAM_HEADERS )
-    set( RETOSHADERPROGRAM_SOURCES shaderProgram.cpp )
-    set( RETOSHADERPROGRAM_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToShaderProgram NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETOSHADERPROGRAM_SOURCES} )
+    # ReToDemoPicking
+    add_project_example(
+      TARGET_NAME ReToDemoPicking
+      SOURCES 
+        MyCube.cpp
+        pickDemo.cpp
+    )
 
-    set( RETODEMOPICKING_HEADERS MyCube.h )
-    set( RETODEMOPICKING_SOURCES MyCube.cpp pickDemo.cpp )
-    set( RETODEMOPICKING_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoPicking NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOPICKING_SOURCES} )
+    # ReToDemoPicking2
+    add_project_example(
+      TARGET_NAME ReToDemoPicking2
+      SOURCES 
+        MyCube.cpp
+        pickDemo2.cpp
+    )
 
+    # ReToDemoRubberBand
+    add_project_example(
+      TARGET_NAME ReToDemoRubberBand
+      SOURCES 
+        MyCube.cpp
+        rubberBandDemo.cpp
+    )
 
-    set( RETODEMOPICKING2_HEADERS MyCube.h )
-    set( RETODEMOPICKING2_SOURCES MyCube.cpp pickDemo2.cpp )
-    set( RETODEMOPICKING2_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoPicking2 NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOPICKING2_SOURCES} )
+    # ReToDemoLasso
+    add_project_example(
+      TARGET_NAME ReToDemoLasso
+      SOURCES 
+        MyCube.cpp
+        lassoDemo.cpp
+    )
 
+    # ReToDemoClippingPlanes
+    add_project_example(
+      TARGET_NAME ReToDemoClippingPlanes
+      SOURCES 
+        MyCube.cpp
+        clippingPlanesDemo.cpp
+    )
 
-    set( RETODEMORUBBERBAND_HEADERS MyCube.h )
-    set( RETODEMORUBBERBAND_SOURCES MyCube.cpp rubberBandDemo.cpp )
-    set( RETODEMORUBBERBAND_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoRubberBand NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMORUBBERBAND_SOURCES} )
+    # ReToDemoClippingPlanes2
+    add_project_example(
+      TARGET_NAME ReToDemoClippingPlanes2
+      SOURCES 
+        MyCube.cpp
+        clippingPlanes2Demo.cpp
+    )
 
-    set( RETODEMOLASSO_HEADERS MyCube.h )
-    set( RETODEMOLASSO_SOURCES MyCube.cpp lassoDemo.cpp )
-    set( RETODEMOLASSO_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoLasso NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOLASSO_SOURCES} )
+    # ReToDemoClippingPlanesNoCSystem
+    add_project_example(
+      TARGET_NAME ReToDemoClippingPlanesNoCSystem
+      SOURCES 
+        MyCube.cpp
+        clippingPlanesNoCSystemDemo.cpp
+    )
+  endif()
 
-    set( RETODEMOCLIPPINGPLANES_HEADERS MyCube.h )
-    set( RETODEMOCLIPPINGPLANES_SOURCES MyCube.cpp clippingPlanesDemo.cpp )
-    set( RETODEMOCLIPPINGPLANES_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoClippingPlanes NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCLIPPINGPLANES_SOURCES} )
+  # Define installation directory variables
+  include(GNUInstallDirs)
 
-    set( RETODEMOCLIPPINGPLANES2_HEADERS MyCube.h )
-    set( RETODEMOCLIPPINGPLANES2_SOURCES MyCube.cpp clippingPlanes2Demo.cpp )
-    set( RETODEMOCLIPPINGPLANES2_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoClippingPlanes2 NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCLIPPINGPLANES2_SOURCES} )
+  # Install examples source files
+  install(FILES ${${PROJECT_NAME}_EXAMPLES_FILES}
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME_LOWER}/examples
+    COMPONENT ${PROJECT_NAME}_examples
+  )
 
-    set( RETODEMOCLIPPINGPLANESNOCSYSTEM_HEADERS MyCube.h )
-    set( RETODEMOCLIPPINGPLANESNOCSYSTEM_SOURCES MyCube.cpp clippingPlanesNoCSystemDemo.cpp )
-    set( RETODEMOCLIPPINGPLANESNOCSYSTEM_LINK_LIBRARIES ReTo ${GLUT_LIBRARIES} )
-    common_application( ReToDemoClippingPlanesNoCSystem NOHELP )
-    list( APPEND RETO_EXAMPLES_FILES ${RETODEMOCLIPPINGPLANESNOCSYSTEM_SOURCES} )
-
-  endif( )
-
-  set( RETOFILEREADER_HEADERS )
-  set( RETOFILEREADER_SOURCES fileReader.cpp )
-  set( RETOFILEREADER_LINK_LIBRARIES ReTo )
-  common_application( ReToFileReader NOHELP )
-  list( APPEND RETO_EXAMPLES_FILES ${RETOFILEREADER_SOURCES} )
-
-  set( RETOSPLINEDEMO_HEADERS )
-  set( RETOSPLINEDEMO_SOURCES splineExample.cpp )
-  set( RETOSPLINEDEMO_LINK_LIBRARIES ReTo )
-  common_application( ReToSplineDemo NOHELP )
-  list( APPEND RETO_EXAMPLES_FILES ${RETOSPLINEDEMO_SOURCES} )
-
-  include(InstallFiles)
-  install_files(share/ReTo/examples FILES ${RETO_EXAMPLES_FILES} COMPONENT
-    examples )
-
-endif( )
+endif()

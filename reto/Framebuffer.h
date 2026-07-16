@@ -33,7 +33,7 @@
 #endif
 
 //reto
-#include <reto/api.h>
+#include <reto/reto_export.h>
 #include "ShaderProgram.h"
 #include "TextureManager.h"
 
@@ -53,32 +53,32 @@ namespace reto
        * @param vertexCode: vertex shader code
        * @param fragmentCode: fragment shader code
        */
-      RETO_API
+      RETO_EXPORT
       Quad( const std::string& vertexCode, const std::string& fragmentCode );
 
       /**
        * Quad destructor
        */
-      RETO_API
+      RETO_EXPORT
       ~Quad( void );
 
       /**
        * Method to get program handler
        * @return program handler.
        */
-      RETO_API
+      RETO_EXPORT
       reto::ShaderProgram* const& program( void ) const;
 
       /**
        * Method to draw quad
        */
-      RETO_API
+      RETO_EXPORT
       void draw( void ) const;
 
       /**
        * Method to clear quad resources
        */
-      RETO_API
+      RETO_EXPORT
       void clear( void );
 
     private:
@@ -120,7 +120,7 @@ namespace reto
        * @param width: screen width
        * @param height: screen height
        */
-      RETO_API
+      RETO_EXPORT
       Framebuffer2D( const std::string& vertexCode,
         const std::string& fragmentCode, const AttachmentsConfig& attsConfig,
         const unsigned int& width, const unsigned int& height );
@@ -128,19 +128,19 @@ namespace reto
       /**
        * Framebuffer2D destructor
        */
-      RETO_API
+      RETO_EXPORT
       virtual ~Framebuffer2D( void );
 
       /**
        * Method to bind framebuffer
        */
-      RETO_API
+      RETO_EXPORT
       void bind( void );
 
       /**
        * Method to bind default framebuffer
        */
-      RETO_API
+      RETO_EXPORT
       void unbind( void );
 
       /**
@@ -148,19 +148,19 @@ namespace reto
        * @param width: screen width
        * @param height: screen height
        */
-      RETO_API
+      RETO_EXPORT
       void resize( const unsigned int& width, const unsigned int& height );
 
       /**
        * Method to bind all framebuffer attachments
        */
-      RETO_API
+      RETO_EXPORT
       void bindAttachments( void );
 
       /**
        * Method to bind all framebuffer attachments
        */
-      RETO_API
+      RETO_EXPORT
       void clear( void );
 
     private:

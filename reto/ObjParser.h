@@ -23,7 +23,7 @@
 #ifndef __RETO_OBJPARSER__
 #define __RETO_OBJPARSER__
 
-#include <reto/api.h>
+#include <reto/reto_export.h>
 
 #include <iostream>
 #include <fstream>
@@ -58,7 +58,7 @@ namespace reto
     /**
      * ObjParser constructor
      */
-    RETO_API
+    RETO_EXPORT
     ObjParser( void );
     
     /**
@@ -68,7 +68,7 @@ namespace reto
      *   bitangents for object.
      * @return Model object with parsed values.
      */
-    RETO_API
+    RETO_EXPORT
     Model loadObj( const std::string& filename,
       bool calculateTangAndBi = false );
   protected:
