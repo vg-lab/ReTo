@@ -47,8 +47,8 @@ if(RETO_OPTIONALS_AS_REQUIRED)
   set(RETO_OPTS_FIND_ARGS REQUIRED)
 endif()
 
-find_package(GLUT ${RETO_OPTS_FIND_ARGS} QUIET)
-find_package(FreeImage ${RETO_OPTS_FIND_ARGS} QUIET)
+find_package(GLUT ${RETO_OPTS_FIND_ARGS})
+find_package(FreeImage ${RETO_OPTS_FIND_ARGS})
 find_package(Lexis ${RETO_OPTS_FIND_ARGS} QUIET)
 find_package(ZeroEQ ${RETO_OPTS_FIND_ARGS} QUIET)
 
