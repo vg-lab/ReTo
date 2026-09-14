@@ -51,6 +51,7 @@ namespace reto
     unsigned int wrapR = GL_CLAMP_TO_EDGE;
     unsigned int packAlignment = 0;
     unsigned int unpackAlignment = 0;
+    unsigned int samples = 1; // no multisampling >1 for multisampling
   };
   //! Abstract class to manage texture
   class Texture
@@ -65,7 +66,7 @@ namespace reto
      *   glActiveTexture
      */
     RETO_EXPORT
-    void bind( int slot = -1 );
+    void bind( int slot = 0 );
 
     /**
      * Method to unbind this texture
@@ -132,6 +133,7 @@ namespace reto
 
     unsigned int _packAlignment;
     unsigned int _unpackAlignment;
+    unsigned int _samples;
   };
   //! Class to manage 2D textures
   class Texture2D: public Texture
@@ -164,6 +166,13 @@ namespace reto
      */
     RETO_EXPORT
     virtual void resize( int w, int h, void* data );
+
+    /** \brief Changes the multisampling value for a texture. 
+     * \param[in] value New multisample value.
+     */
+    RETO_EXPORT
+    virtual void setMultisampling(const unsigned int value);
+    
   protected:
     void configTexture( void* data = nullptr );
     virtual void load( void );

@@ -198,6 +198,7 @@ namespace reto
   void AbstractCameraController::windowSize( int width_, int height_ )
   {
     _camera->_setRatio(static_cast<float>(width_) / height_ );
+    _conformSetViewMatrix( _position, _rotation, _radius );
   }
 
   Eigen::Matrix3f AbstractCameraController::rotationMatrixFromAngles(

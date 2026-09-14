@@ -40,6 +40,7 @@ namespace reto
 {
   PickingSystem::PickingSystem( )
   {
+    _program = new reto::ShaderProgram();
     _program->loadFromText(
       _VertexCode( ),
       "#version 430\n"

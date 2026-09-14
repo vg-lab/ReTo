@@ -60,6 +60,10 @@ namespace reto
 
     view.block< 3, 1 >( 0, 3 ) = -pos;
     _setCameraViewMatrix( view );
+
+    _position = position_;
+    _rotation = rotation_;
+    _radius = radius_;
   }
 
   void OrbitalCameraController::position( const Eigen::Vector3f& position_ )

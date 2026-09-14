@@ -26,22 +26,25 @@
 #include <GL/glew.h>
 
 #ifdef Darwin
-  #define __gl_h_
-  #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
-  #include <OpenGL/gl.h>
-  #include <OpenGL/glu.h>
+#define __gl_h_
+#define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
 #else
-  #include <GL/gl.h>
+#include <GL/gl.h>
 #endif
 
 #ifdef RETO_USE_FREEIMAGE
-  // Image processing.
-  #include <FreeImage.h>
+// Image processing.
+#include <FreeImage.h>
 #endif
 
-namespace reto {
-  Texture::Texture( const TextureConfig& options, unsigned int type )
-    : _handler( -1 )
+#include <cassert>
+
+namespace reto
+{
+  Texture::Texture(const TextureConfig &options, unsigned int type)
+      : _handler(-1)
   {
     this->_target = type;
     this->_level = options.level;
@@ -59,66 +62,69 @@ namespace reto {
 
     this->_packAlignment = options.packAlignment;
     this->_unpackAlignment = options.unpackAlignment;
+    this->_samples = options.samples;
   }
-  Texture::~Texture( )
+
+  Texture::~Texture()
   {
-    glDeleteTextures( 1, &this->_handler );
+    glDeleteTextures(1, &this->_handler);
     this->_handler = -1;
   }
-  void Texture::bind( int slot )
-  {
-    this->load( );
-    if ( slot >= 0 )
-    {
-      glActiveTexture( GL_TEXTURE0 + slot );
-    }
-    glBindTexture( this->_target, this->_handler );
-  }
-  void Texture::unbind( )
-  {
-    glBindTexture( this->_target, -1 );
-  }
-  void Texture::resize( int, int ) {}
-  void Texture::resize( int, int, void* ) {}
 
-  unsigned int Texture::handler( void ) const
+  void Texture::bind(int slot)
+  {
+    this->load();
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(this->_target, this->_handler);
+  }
+
+  void Texture::unbind()
+  {
+    glBindTexture(this->_target, 0); // Was "-1" but it generates a warning GL_INVALID_OPERATION.
+  }
+
+  void Texture::resize(int, int) {}
+  void Texture::resize(int, int, void *) {}
+
+  unsigned int Texture::handler(void) const
   {
     return this->_handler;
   }
 
-  unsigned int Texture::target( void ) const
+  unsigned int Texture::target(void) const
   {
     return this->_target;
   }
 
-  bool Texture::isLoaded( void ) const
+  bool Texture::isLoaded(void) const
   {
     return this->_loaded;
   }
 
-  Texture1D::Texture1D( const TextureConfig& options, void* data, unsigned int width )
-    : Texture(options, GL_TEXTURE_1D)
-    , _width( width )
-    {
+  Texture1D::Texture1D(const TextureConfig &options, void *data, unsigned int width)
+      : Texture(options, GL_TEXTURE_1D), _width(width)
+  {
     glGenTextures(1, &this->_handler);
 
-    glBindTexture( this->_target, this->_handler );
+    glBindTexture(this->_target, this->_handler);
 
-    this->configTexture( data );
+    this->configTexture(data);
     this->_loaded = true;
-    }
-  Texture1D::~Texture1D( void ) { }
+  }
+  Texture1D::~Texture1D(void) {}
 
-  void Texture1D::load( void )
-  { }
-  void Texture1D::update(void* data, unsigned int width)
+  void Texture1D::load(void)
+  {
+  }
+
+  void Texture1D::update(void *data, unsigned int width)
   {
     _width = width;
-    bind( );
-    configTexture( data );
-    unbind( );
+    bind();
+    configTexture(data);
+    unbind();
   }
-  void Texture1D::configTexture( void* data )
+  void Texture1D::configTexture(void *data)
   {
     if (_packAlignment > 0)
     {
@@ -129,200 +135,208 @@ namespace reto {
       glPixelStorei(GL_UNPACK_ALIGNMENT, this->_unpackAlignment);
     }
 
-    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
+    if (_samples == 1)
+    {
+      glTexParameteri(this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter);
+      glTexParameteri(this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter);
+    }
+    glTexParameteri(this->_target, GL_TEXTURE_WRAP_S, this->_wrapS);
+    glTexParameteri(this->_target, GL_TEXTURE_WRAP_T, this->_wrapT);
 
     glTexImage1D(
-      this->_target,
-      this->_level,
-      this->_internalFormat,
-      this->_width,
-      this->_border,
-      this->_format,
-      this->_type,
-      data
-    );
+        this->_target,
+        this->_level,
+        this->_internalFormat,
+        this->_width,
+        this->_border,
+        this->_format,
+        this->_type,
+        data);
 
-    this->unbind( );
+    this->unbind();
   }
 
-  Texture2D::Texture2D( const TextureConfig& options, unsigned int width, unsigned int height )
-    : Texture2D( options, nullptr, width, height )
+  Texture2D::Texture2D(const TextureConfig &options, unsigned int width, unsigned int height)
+      : Texture2D(options, nullptr, width, height)
   {
   }
 
-  Texture2D::Texture2D( const TextureConfig& options, void* data, unsigned int width, unsigned int height )
-    : Texture( options, GL_TEXTURE_2D )
-    , _width( width )
-    , _height( height )
+  Texture2D::Texture2D(const TextureConfig &options, void *data, unsigned int width, unsigned int height)
+      : Texture(options, options.samples <= 1 ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE), _width(width), _height(height)
   {
     glGenTextures(1, &this->_handler);
 
     this->bind();
-    glBindTexture( this->_target, this->_handler );
+    glBindTexture(this->_target, this->_handler);
 
-    this->configTexture( data );
+    this->configTexture(data);
     this->_loaded = true;
   }
 
-  Texture2D::Texture2D( const TextureConfig& options, const std::string src )
-    : Texture( options, GL_TEXTURE_2D )
-    , _src ( src )
-    , _width {0}
-    , _height {0}
+  Texture2D::Texture2D(const TextureConfig &options, const std::string src)
+      : Texture(options, options.samples <= 1 ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE), _src(src), _width{0}, _height{0}
   {
   }
 
-  Texture2D::~Texture2D( void )
+  Texture2D::~Texture2D(void)
   {
   }
 
-  void Texture2D::configTexture( void* data )
+  void Texture2D::configTexture(void *data)
   {
-    glTexImage2D(
-      this->_target,
-      this->_level,
-      this->_internalFormat,
-      this->_width,
-      this->_height,
-      this->_border,
-      this->_format,
-      this->_type,
-      data
-    );
+    if (_samples <= 1)
+    {
+      glTexImage2D(this->_target, this->_level, this->_internalFormat, this->_width, this->_height, this->_border,
+                   this->_format, this->_type, data);
+      glTexParameteri(this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter);
+      glTexParameteri(this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter);
+      glTexParameteri(this->_target, GL_TEXTURE_WRAP_S, this->_wrapS);
+      glTexParameteri(this->_target, GL_TEXTURE_WRAP_T, this->_wrapT);
+    }
+    else
+    {
+      assert(data == nullptr); // multisample textures doesn't use give data and doesnt use glTexParameteri
+      glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, this->_samples, this->_internalFormat, this->_width, this->_height, GL_TRUE);
+    }
 
-    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
-
-    this->unbind( );
+    this->unbind();
   }
-  void Texture2D::resize( int w, int h)
+
+  void Texture2D::resize(int w, int h)
   {
-    resize( w, h, nullptr );
+    resize(w, h, nullptr);
   }
-  void Texture2D::resize( int w, int h, void* data)
+
+  void Texture2D::setMultisampling(const unsigned int value)
+  {
+    // Must be a GL_TEXTURE_2D_MULTISAMPLE
+    if (this->_samples > 1 && value > 1)
+    {
+      _samples = value;
+      this->bind();
+      this->configTexture();
+    }
+  }
+
+  void Texture2D::resize(int w, int h, void *data)
   {
     _width = w;
     _height = h;
     this->bind();
     configTexture(data);
   }
-  void Texture2D::load( void )
-  {
-    if ( !this->_loaded )
-    {
-      glGenTextures( 1, &this->_handler );
 
-      glBindTexture( this->_target, this->_handler );
+  void Texture2D::load(void)
+  {
+    if (!this->_loaded)
+    {
+      glGenTextures(1, &this->_handler);
+
+      glBindTexture(this->_target, this->_handler);
 
 #ifdef RETO_USE_FREEIMAGE
-      auto pixels = this->loadTexture( this->_src.c_str( ), this->_width, this->_height );
+      auto pixels = this->loadTexture(this->_src.c_str(), this->_width, this->_height);
 
-      this->configTexture( pixels );
+      this->configTexture(pixels);
 #else
-      this->configTexture( nullptr );
+      this->configTexture(nullptr);
 #endif
       this->_loaded = true;
     }
   }
 #ifdef RETO_USE_FREEIMAGE
-  unsigned char* Texture2D::loadTexture( const char* fileName_,
-    unsigned int& width_,
-    unsigned int& height_ )
+  unsigned char *Texture2D::loadTexture(const char *fileName_,
+                                        unsigned int &width_,
+                                        unsigned int &height_)
   {
-    FreeImage_Initialise( TRUE );
+    FreeImage_Initialise(TRUE);
 
-    FREE_IMAGE_FORMAT format = FreeImage_GetFileType( fileName_, 0 );
-    if ( format == FIF_UNKNOWN )
-      format = FreeImage_GetFIFFromFilename( fileName_ );
-    if ( ( format == FIF_UNKNOWN ) || !FreeImage_FIFSupportsReading( format ) )
+    FREE_IMAGE_FORMAT format = FreeImage_GetFileType(fileName_, 0);
+    if (format == FIF_UNKNOWN)
+      format = FreeImage_GetFIFFromFilename(fileName_);
+    if ((format == FIF_UNKNOWN) || !FreeImage_FIFSupportsReading(format))
       return nullptr;
 
-    FIBITMAP* img = FreeImage_Load( format, fileName_ );
-    if ( img == nullptr )
+    FIBITMAP *img = FreeImage_Load(format, fileName_);
+    if (img == nullptr)
       return nullptr;
 
-    FIBITMAP* tempImg = img;
-    img = FreeImage_ConvertTo32Bits( img );
-    FreeImage_Unload( tempImg );
+    FIBITMAP *tempImg = img;
+    img = FreeImage_ConvertTo32Bits(img);
+    FreeImage_Unload(tempImg);
 
-    width_ = FreeImage_GetWidth( img );
-    height_ = FreeImage_GetHeight( img );
+    width_ = FreeImage_GetWidth(img);
+    height_ = FreeImage_GetHeight(img);
 
-    //BGRA a RGBA
-    unsigned char * map = new unsigned char[ 4 * width_*height_ ];
-    char *buff = ( char* )FreeImage_GetBits( img );
+    // BGRA a RGBA
+    unsigned char *map = new unsigned char[4 * width_ * height_];
+    char *buff = (char *)FreeImage_GetBits(img);
 
-    for ( unsigned int j = 0; j < width_*height_; ++j )
+    for (unsigned int j = 0; j < width_ * height_; ++j)
     {
-      map[ j * 4 + 0 ] = buff[ j * 4 + 2 ];
-      map[ j * 4 + 1 ] = buff[ j * 4 + 1 ];
-      map[ j * 4 + 2 ] = buff[ j * 4 + 0 ];
-      map[ j * 4 + 3 ] = buff[ j * 4 + 3 ];
+      map[j * 4 + 0] = buff[j * 4 + 2];
+      map[j * 4 + 1] = buff[j * 4 + 1];
+      map[j * 4 + 2] = buff[j * 4 + 0];
+      map[j * 4 + 3] = buff[j * 4 + 3];
     }
 
-    FreeImage_Unload( img );
-    FreeImage_DeInitialise( );
+    FreeImage_Unload(img);
+    FreeImage_DeInitialise();
 
     return map;
   }
 #endif
 
-  Texture2DArray::Texture2DArray( const TextureConfig& options, std::vector< void* > data,
-    unsigned int width, unsigned int height )
-    : Texture( options, GL_TEXTURE_2D_ARRAY )
+  Texture2DArray::Texture2DArray(const TextureConfig &options, std::vector<void *> data,
+                                 unsigned int width, unsigned int height)
+      : Texture(options, GL_TEXTURE_2D_ARRAY)
   {
-    this->load( );
-    glBindTexture( this->_target, this->_handler );
-    glTexImage3D( this->_target, this->_level, this->_internalFormat,
-      width, height, GLsizei(data.size( )), 0, this->_format, this->_type, nullptr );
+    this->load();
+    glBindTexture(this->_target, this->_handler);
+    glTexImage3D(this->_target, this->_level, this->_internalFormat,
+                 width, height, GLsizei(data.size()), 0, this->_format, this->_type, nullptr);
 
     unsigned int i = 0;
-    for ( const auto& layer: data )
+    for (const auto &layer : data)
     {
       glTexSubImage3D(
-        this->_target, 0, 0, 0, i, width, height, 1,
-        this->_format, this->_type, layer
-      );
+          this->_target, 0, 0, 0, i, width, height, 1,
+          this->_format, this->_type, layer);
       ++i;
     }
-    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT );
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_R, this->_wrapR );
-    this->unbind( );
+    glTexParameteri(this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter);
+    glTexParameteri(this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter);
+    glTexParameteri(this->_target, GL_TEXTURE_WRAP_S, this->_wrapS);
+    glTexParameteri(this->_target, GL_TEXTURE_WRAP_T, this->_wrapT);
+    glTexParameteri(this->_target, GL_TEXTURE_WRAP_R, this->_wrapR);
+    this->unbind();
   }
-  Texture2DArray::~Texture2DArray( void )
+  Texture2DArray::~Texture2DArray(void)
   {
   }
-  void Texture2DArray::load( void )
+  void Texture2DArray::load(void)
   {
-    if ( !this->_loaded ) {
-      glGenTextures( 1, &this->_handler );
-      glBindTexture( this->_target, this->_handler );
+    if (!this->_loaded)
+    {
+      glGenTextures(1, &this->_handler);
+      glBindTexture(this->_target, this->_handler);
       this->_loaded = true;
     }
   }
 
-  Texture3D::Texture3D( const TextureConfig& options, void* data, unsigned int width,
-    unsigned int height, unsigned int depth ):
-    Texture( options, GL_TEXTURE_3D )
+  Texture3D::Texture3D(const TextureConfig &options, void *data, unsigned int width,
+                       unsigned int height, unsigned int depth) : Texture(options, GL_TEXTURE_3D)
   {
-    this->load( );
-    glTexParameteri( this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter );
-    glTexParameteri( this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter );
-    glTexParameterf( this->_target, GL_TEXTURE_WRAP_S, this->_wrapS);
-    glTexParameterf( this->_target, GL_TEXTURE_WRAP_T, this->_wrapT);
-    glTexParameteri( this->_target, GL_TEXTURE_WRAP_R, this->_wrapR);
+    this->load();
+    glTexParameteri(this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter);
+    glTexParameteri(this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter);
+    glTexParameterf(this->_target, GL_TEXTURE_WRAP_S, this->_wrapS);
+    glTexParameterf(this->_target, GL_TEXTURE_WRAP_T, this->_wrapT);
+    glTexParameteri(this->_target, GL_TEXTURE_WRAP_R, this->_wrapR);
 
     // Set the mipmap levels (base and max)
-    glTexParameteri( this->_target, GL_TEXTURE_BASE_LEVEL, 0 );
-    glTexParameteri( this->_target, GL_TEXTURE_MAX_LEVEL, 4 );
+    glTexParameteri(this->_target, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(this->_target, GL_TEXTURE_MAX_LEVEL, 4);
 
     if (_packAlignment > 0)
     {
@@ -334,62 +348,62 @@ namespace reto {
     }
     update(width, height, depth, data);
   }
-  void Texture3D::update( int width, int height, int depth, void* data )
+  void Texture3D::update(int width, int height, int depth, void *data)
   {
     this->bind();
     glTexImage3D(
-      this->_target,
-      this->_level,
-      this->_internalFormat,
-      width,
-      height,
-      depth,
-      0,
-      this->_format,
-      this->_type,
-      data
-    );
+        this->_target,
+        this->_level,
+        this->_internalFormat,
+        width,
+        height,
+        depth,
+        0,
+        this->_format,
+        this->_type,
+        data);
     this->unbind();
   }
-  Texture3D::~Texture3D( void )
+  Texture3D::~Texture3D(void)
   {
   }
-  void Texture3D::load( void )
+  void Texture3D::load(void)
   {
-    if ( !this->_loaded )
+    if (!this->_loaded)
     {
       glGenTextures(1, &this->_handler);
-      glBindTexture( this->_target, this->_handler );
+      glBindTexture(this->_target, this->_handler);
       this->_loaded = true;
     }
   }
 
-  TextureManager& TextureManager::getInstance()
+  TextureManager &TextureManager::getInstance()
   {
     static TextureManager instance; // Guaranteed to be destroyed.
                                     // Instantiated on first use.
     return instance;
   }
 
-  void TextureManager::add( const std::string& alias, Texture* tex )
+  void TextureManager::add(const std::string &alias, Texture *tex)
   {
-    this->_textures[ alias ] = tex;
+    this->_textures[alias] = tex;
   }
 
-  void TextureManager::remove( const std::string& alias )
+  void TextureManager::remove(const std::string &alias)
   {
-    this->_textures.erase( alias );
+    this->_textures.erase(alias);
   }
 
-  Texture* TextureManager::get( const std::string& alias )
+  Texture *TextureManager::get(const std::string &alias)
   {
-    return this->_textures[ alias ];
+    return this->_textures[alias];
   }
 
-  TextureManager::~TextureManager( )
+  TextureManager::~TextureManager()
   {
-    for(auto& pair : this->_textures) delete pair.second;
-    this->_textures.clear( );
+    for (auto &pair : this->_textures)
+      delete pair.second;
+    this->_textures.clear();
   }
 
 };
