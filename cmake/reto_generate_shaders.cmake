@@ -1,7 +1,4 @@
-if(NOT Python_EXECUTABLE)
-  find_package(Python REQUIRED COMPONENTS Interpreter)
-  message(STATUS "Using python: ${PYTHON_EXECUTABLE}")
-endif()
+find_package(Python REQUIRED COMPONENTS Interpreter)
 
 # Find the script
 include(GNUInstallDirs)
@@ -30,7 +27,7 @@ function(reto_generate_shaders
 
   # Configure time
   execute_process(
-    COMMAND ${PYTHON_EXECUTABLE} ${RETO_GENERATE_SHADERS}
+    COMMAND ${Python_EXECUTABLE} ${RETO_GENERATE_SHADERS}
       -d ${__RETO_GEN_SHADERS_DECLARATION__}
       -n ${__RETO_GEN_SHADERS_NAMESPACE__}
       -r ${__RETO_GEN_SHADERS_PATH__}
@@ -46,7 +43,7 @@ function(reto_generate_shaders
   # Build time
   add_custom_command(
     OUTPUT ${__RETO_GEN_SHADERS_FILE__}
-    COMMAND ${PYTHON_EXECUTABLE} ${RETO_GENERATE_SHADERS}
+    COMMAND ${Python_EXECUTABLE} ${RETO_GENERATE_SHADERS}
       -d ${__RETO_GEN_SHADERS_DECLARATION__}
       -n ${__RETO_GEN_SHADERS_NAMESPACE__}
       -r ${__RETO_GEN_SHADERS_PATH__}
