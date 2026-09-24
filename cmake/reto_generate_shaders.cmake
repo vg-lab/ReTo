@@ -8,6 +8,7 @@ include(GNUInstallDirs)
 find_file(RETO_GENERATE_SHADERS reto_generate_shaders.py
   PATHS
     ${CMAKE_CURRENT_LIST_DIR}/../bin
+    ${CMAKE_CURRENT_LIST_DIR}/bin
     ${CMAKE_INSTALL_DATADIR}/reto/bin
   NO_DEFAULT_PATH
 )

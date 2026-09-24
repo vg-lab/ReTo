@@ -16,6 +16,6 @@ install(
   FILES
     reto_generate_shaders.py
     reto_shaders_import.py
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME_LOWER}/bin
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME_LOWER}/bin
   COMPONENT ${PROJECT_NAME}_bin
 )
