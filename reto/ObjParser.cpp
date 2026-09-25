@@ -155,6 +155,7 @@ namespace reto
             j = 2;
             quad = true;
           }
+
           if ( idxCache.find( elems[ j ] ) != idxCache.end( ) )
           {
             m.indices.push_back( idxCache[ elems[ j ] ] );
@@ -162,27 +163,38 @@ namespace reto
           else
           {
             std::vector< int > vertex = splitFace( elems[ j ] );
-            auto v = ( vertex[0] - 1 ) * 3;
+            if(vertex.size() < 3) continue;
+
+            const auto v_idx = vertex[0];
+            const auto t_idx = vertex[1];
+            const auto n_idx = vertex[2];            
+
+            const auto v = ( v_idx - 1 ) * 3;
             m.vertices.push_back( verts[ v ] );
             m.vertices.push_back( verts[ v + 1 ] );
             m.vertices.push_back( verts[ v + 2 ] );
+
             if (!textures.empty())
             {
-              auto tc = ( vertex[ 1 ] - 1) * 2;
+              const auto tc = ( t_idx - 1) * 2;
               m.texCoords.push_back( textures[ tc ] );
               m.texCoords.push_back( textures[ tc + 1 ] );
             }
-            auto n = ( vertex[ 2 ] - 1 ) * 3;
+
+            const auto n = ( n_idx - 1 ) * 3;
             m.normals.push_back( normals[ n ] );
             m.normals.push_back( normals[ n + 1] );
             m.normals.push_back( normals[ n + 2] );
+            
             idxCache[ elems[ j ] ] = idx;
             m.indices.push_back( idx );
             ++idx;
           }
           if ( j == 3 && quad )
           {
+            if (idxCache.count( elems[ 0 ] )) {
             m.indices.push_back( idxCache[ elems[ 0 ] ] );
+            }
           }
         }
       }
