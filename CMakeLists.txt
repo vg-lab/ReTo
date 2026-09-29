@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 
 project(ReTo
-  VERSION 0.3.7
+  VERSION 1.0.0
   LANGUAGES CXX
   DESCRIPTION "Render Tools"
 )
