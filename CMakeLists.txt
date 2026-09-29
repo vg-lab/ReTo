@@ -116,14 +116,14 @@ write_basic_package_version_file(
 file(
   COPY
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/reto_generate_shaders.cmake
-  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/modules
+  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 # Install the cmake files
 install(FILES
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_LOWER}-config.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME_LOWER}-config-version.cmake"
-  "${CMAKE_CURRENT_BINARY_DIR}/modules/reto_generate_shaders.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/reto_generate_shaders.cmake"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME_LOWER}
 )
 
