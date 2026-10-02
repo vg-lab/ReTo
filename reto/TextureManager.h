@@ -51,7 +51,7 @@ namespace reto
     unsigned int wrapR = GL_CLAMP_TO_EDGE;
     unsigned int packAlignment = 0;
     unsigned int unpackAlignment = 0;
-    unsigned int samples = 1; // no multisampling >1 for multisampling
+    unsigned int samples = 0; // no multisampling >0 for multisampling
   };
   //! Abstract class to manage texture
   class Texture

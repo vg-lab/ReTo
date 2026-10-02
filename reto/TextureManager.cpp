@@ -135,7 +135,7 @@ namespace reto
       glPixelStorei(GL_UNPACK_ALIGNMENT, this->_unpackAlignment);
     }
 
-    if (_samples == 1)
+    if (_samples == 0)
     {
       glTexParameteri(this->_target, GL_TEXTURE_MIN_FILTER, this->_minFilter);
       glTexParameteri(this->_target, GL_TEXTURE_MAG_FILTER, this->_magFilter);
@@ -162,7 +162,7 @@ namespace reto
   }
 
   Texture2D::Texture2D(const TextureConfig &options, void *data, unsigned int width, unsigned int height)
-      : Texture(options, options.samples <= 1 ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE), _width(width), _height(height)
+      : Texture(options, options.samples == 0 ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE), _width(width), _height(height)
   {
     glGenTextures(1, &this->_handler);
 
@@ -174,7 +174,7 @@ namespace reto
   }
 
   Texture2D::Texture2D(const TextureConfig &options, const std::string src)
-      : Texture(options, options.samples <= 1 ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE), _src(src), _width{0}, _height{0}
+      : Texture(options, options.samples == 0 ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE), _src(src), _width{0}, _height{0}
   {
   }
 
@@ -184,7 +184,7 @@ namespace reto
 
   void Texture2D::configTexture(void *data)
   {
-    if (_samples <= 1)
+    if (_samples == 0)
     {
       glTexImage2D(this->_target, this->_level, this->_internalFormat, this->_width, this->_height, this->_border,
                    this->_format, this->_type, data);
@@ -210,7 +210,7 @@ namespace reto
   void Texture2D::setMultisampling(const unsigned int value)
   {
     // Must be a GL_TEXTURE_2D_MULTISAMPLE
-    if (this->_samples > 1 && value > 1)
+    if (this->_samples > 0 && value > 0)
     {
       _samples = value;
       this->bind();
